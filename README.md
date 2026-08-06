@@ -19,7 +19,7 @@
 
 ## طريقة الاستخدام
 
-1. افتح الملف `quran-heart-tracker.html` في أي متصفح (كمبيوتر أو موبايل).
+1. افتح الملف `quran-tracker.html` في أي متصفح (كمبيوتر أو موبايل).
 2. دوس على أي سورة في الشبكة لفتح نافذة تغيير حالتها، واختار الحالة المناسبة.
 3. لو السورة محفوظة، حدّد تاريخ آخر مراجعة لها.
 4. استخدم مربع البحث فوق الشبكة لو حابب توصل لسورة معيّنة بسرعة.
@@ -52,7 +52,7 @@ A simple, single-file HTML web app for tracking Qur'an memorization and review, 
 
 ## How to use
 
-1. Open `quran-heart-tracker.html` in any browser (desktop or mobile).
+1. Open `quran-trakecr.html` in any browser (desktop or mobile).
 2. Tap any surah tile to open its status dialog and pick the right status.
 3. If a surah is memorized, set the date of your last review.
 4. Use the search box above the grid to jump straight to a specific surah.
