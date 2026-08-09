@@ -3814,3 +3814,113 @@
           showToast("تم الحفظ ✅");
         }
       });
+/* ============ SETTINGS MODAL ============ */
+      function openSettings() {
+        document.getElementById("settingDailyGoal").value =
+          DATA.settings.dailyGoal || 8;
+        document.getElementById("settingGraceDay").checked =
+          !!DATA.settings.graceDayEnabled;
+        document.getElementById("settingsOverlay").classList.add("show");
+      }
+      function closeSettings() {
+        document.getElementById("settingsOverlay").classList.remove("show");
+      }
+      document
+        .getElementById("btnSettings")
+        .addEventListener("click", openSettings);
+      document
+        .getElementById("btnCloseSettings")
+        .addEventListener("click", closeSettings);
+      document
+        .getElementById("settingsOverlay")
+        .addEventListener("click", (e) => {
+          if (e.target.id === "settingsOverlay") closeSettings();
+        });
+      document
+        .getElementById("btnSaveSettings")
+        .addEventListener("click", () => {
+          const g = parseInt(
+            document.getElementById("settingDailyGoal").value,
+            10,
+          );
+          DATA.settings.dailyGoal = g && g > 0 ? g : 8;
+          DATA.settings.graceDayEnabled =
+            document.getElementById("settingGraceDay").checked;
+          saveData();
+          closeSettings();
+          renderAll();
+          showToast("تم حفظ الإعدادات ✅");
+        });
+      function exportData() {
+        const blob = new Blob([JSON.stringify(DATA, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "quran-tracker-backup-" + todayStr() + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("تم تصدير نسخة احتياطية 📥");
+      }
+      function importDataFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const parsed = JSON.parse(e.target.result);
+            DATA = normalizeData(parsed);
+            saveData();
+            renderAll();
+            showToast("تم استيراد البيانات بنجاح ✅");
+          } catch (err) {
+            showToast("ملف غير صالح ❌");
+          }
+        };
+        reader.readAsText(file);
+      }
+      function resetProgress() {
+        if (
+          !confirm(
+            "سيتم إعادة تعيين كل تقدم الحفظ والمراجعة (مع الاحتفاظ بأهدافك). متابعة؟",
+          )
+        )
+          return;
+        const goals = DATA.goals;
+        const settings = DATA.settings;
+        DATA = defaultData();
+        DATA.goals = goals;
+        DATA.settings = settings;
+        saveData();
+        closeSettings();
+        location.reload();
+      }
+      function deleteAllData() {
+        if (
+          !confirm(
+            "سيتم حذف كل البيانات نهائيًا ولا يمكن التراجع عن هذا. متابعة؟",
+          )
+        )
+          return;
+        localStorage.removeItem(LS_KEY);
+        localStorage.removeItem("quranTrackerData_v2");
+        localStorage.removeItem("quranTrackerData_v1");
+        location.reload();
+      }
+      document
+        .getElementById("btnExportData")
+        .addEventListener("click", exportData);
+      document
+        .getElementById("importFileInput")
+        .addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) importDataFile(file);
+          e.target.value = "";
+        });
+      document
+        .getElementById("btnResetProgress")
+        .addEventListener("click", resetProgress);
+      document
+        .getElementById("btnDeleteAll")
+        .addEventListener("click", deleteAllData);
