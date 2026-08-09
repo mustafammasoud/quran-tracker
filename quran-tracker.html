@@ -24,6 +24,7 @@
     --orange: #F0703D;
     --red: #EF4A5B;
     --blue: #4C6FFF;
+    --purple: #9B6BF2;
     --shadow: 0 8px 24px rgba(16,30,60,.09);
     --radius: 16px;
   }
@@ -57,6 +58,8 @@
   }
   .pill.streak{color:var(--orange);}
   .pill.level{color:var(--emerald);}
+  .pill.icon-only{padding:8px 12px; cursor:pointer; font-family:inherit; font-size:16px; color:var(--ink);}
+  .pill.icon-only:hover{border-color:var(--emerald);}
 
   .ayah-card{
     margin-top:16px; background: linear-gradient(135deg, var(--emerald-deep), var(--emerald) 70%);
@@ -145,12 +148,12 @@
     border-radius: var(--radius); padding:16px 18px; color:#F6EFD9;
   }
   .weekly-title{font-family:'Aref Ruqaa',serif; font-size:15.5px; margin-bottom:10px;}
-  .weekly-row{display:flex; gap:18px;}
-  .weekly-item{flex:1; text-align:center;}
-  .weekly-item .n{font-family:'Aref Ruqaa',serif; font-size:26px; font-weight:700;}
-  .weekly-item .l{font-size:11.5px; opacity:.85; margin-top:2px;}
+  .weekly-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .weekly-item{flex:1; text-align:center; min-width:70px;}
+  .weekly-item .n{font-family:'Aref Ruqaa',serif; font-size:24px; font-weight:700;}
+  .weekly-item .l{font-size:10.5px; opacity:.85; margin-top:2px;}
   .review-item{
-    display:flex; justify-content:space-between; align-items:center;
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
     padding:8px 10px; border-radius:10px; margin-bottom:6px; font-size:13px;
     border-inline-start: 4px solid var(--gray); background: var(--bg-soft);
   }
@@ -158,6 +161,43 @@
   .review-item.o{border-inline-start-color: var(--orange);}
   .review-item.r{border-inline-start-color: var(--red);}
   .review-item small{color:var(--ink-soft);}
+  .mini-review-btn{
+    background:var(--emerald); color:#fff; border:none; border-radius:8px; padding:6px 11px;
+    font-family:'Aref Ruqaa'; font-size:11.5px; cursor:pointer; flex-shrink:0; white-space:nowrap;
+  }
+  .mini-review-btn:hover{background:var(--emerald-deep);}
+
+  /* ===== Journey ===== */
+  .journey-track{display:flex; gap:0; overflow-x:auto; padding:14px 4px 8px;}
+  .journey-node{flex:0 0 148px; text-align:center; position:relative; padding:0 8px;}
+  .journey-node:not(:last-child)::after{content:""; position:absolute; top:28px; right:-40%; width:80%; height:3px; background:var(--gray-line); z-index:0;}
+  .journey-node.done:not(:last-child)::after{background:var(--emerald);}
+  .journey-icon{width:56px;height:56px;border-radius:50%; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 8px; position:relative; z-index:1; border:3px solid var(--gray-line);}
+  .journey-node.done .journey-icon{background:var(--gold-soft); border-color:var(--gold);}
+  .journey-node.next .journey-icon{border-color:var(--emerald); animation:pulseJourney 1.6s infinite;}
+  @keyframes pulseJourney{0%,100%{box-shadow:0 0 0 0 rgba(14,143,132,.35);}50%{box-shadow:0 0 0 8px rgba(14,143,132,0);}}
+  .journey-title{font-weight:700; font-size:13px;}
+  .journey-date{font-size:10.5px; color:var(--emerald); margin-top:4px;}
+  .journey-remaining{font-size:10.5px; color:var(--ink-soft); margin-top:4px;}
+  .journey-locked{font-size:10.5px; color:var(--gray); margin-top:4px;}
+
+  .timeline-item{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--gray-line);}
+  .timeline-item:last-child{border-bottom:none;}
+  .timeline-icon{font-size:18px; width:34px;height:34px;border-radius:50%; background:var(--bg-soft); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
+  .timeline-text{font-size:13.5px; font-weight:600;}
+  .timeline-date{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+  /* ===== Today plan / streak rescue ===== */
+  .risk-banner{
+    display:none; background:linear-gradient(135deg,#FCEFE1,#FDF6E9); border:1.5px solid var(--amber);
+    border-radius:12px; padding:12px 14px; font-size:13px; color:#8A5A12; margin-bottom:16px;
+    align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .icon-btn-text{
+    background:var(--amber); color:#fff; border:none; border-radius:8px; padding:7px 12px;
+    font-family:'Aref Ruqaa'; font-size:12px; cursor:pointer; white-space:nowrap;
+  }
+  .icon-btn-text:disabled{opacity:.5; cursor:default;}
 
   /* ===== Juz view ===== */
   .juz-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:12px;}
@@ -168,18 +208,25 @@
   .bar-fill{height:100%; background: linear-gradient(90deg, var(--mint), var(--emerald));}
 
   /* ===== Stats view ===== */
-  .stats-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:18px;}
+  .stats-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:14px; margin-bottom:18px;}
   .stat-card{background:var(--bg-soft); border-radius:14px; padding:16px; text-align:center;}
-  .stat-card .n{font-family:'Aref Ruqaa',serif; font-size:28px; color:var(--emerald-deep); font-weight:700;}
-  .stat-card .l{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .stat-card .n{font-family:'Aref Ruqaa',serif; font-size:24px; color:var(--emerald-deep); font-weight:700;}
+  .stat-card .l{font-size:11.5px; color:var(--ink-soft); margin-top:2px;}
   .chart{display:flex; align-items:flex-end; gap:3px; height:110px; padding-top:10px;}
   .chart .bar{flex:1; background: linear-gradient(180deg, var(--mint), var(--emerald)); border-radius:3px 3px 0 0; min-height:2px;}
+
+  .level-row{display:flex; align-items:center; gap:10px; padding:8px 4px; font-size:13.5px; border-bottom:1px solid var(--gray-line);}
+  .level-row:last-child{border-bottom:none;}
+  .level-dot{width:12px;height:12px;border-radius:50%; flex-shrink:0;}
+  .level-dot.green{background:var(--emerald);}
+  .level-dot.yellow{background:var(--amber);}
+  .level-dot.red{background:var(--red);}
 
   /* ===== Goals (custom, user-managed) ===== */
   .goals-toolbar{display:flex; justify-content:flex-end; margin-bottom:14px;}
   .btn-add{
     background: var(--emerald-deep); color:#fff; border:none; border-radius:10px; padding:10px 18px;
-    font-family:'Aref Ruqaa'; font-weight:700; font-size:13.5px; cursor:pointer; display:flex; gap:6px; align-items:center;
+    font-family:'Aref Ruqaa'; font-weight:700; font-size:13.5px; cursor:pointer; display:flex; gap:6px; align-items:center; justify-content:center;
   }
   .goal-form{
     background: var(--bg-soft); border-radius:14px; padding:16px; margin-bottom:16px; display:none;
@@ -225,11 +272,12 @@
   .cal-grid{display:grid; grid-template-columns: repeat(13, 1fr); gap:4px; direction:ltr;}
   .cal-week{display:grid; grid-template-rows:repeat(7,1fr); gap:4px;}
   .cal-day{width:100%; padding-top:100%; position:relative; border-radius:3px; background:#E3E7EF;}
+  .day-detail-box{margin-top:12px; font-size:12.5px; color:var(--ink-soft); text-align:center; min-height:18px;}
 
   /* ===== Modal ===== */
   .overlay{position:fixed; inset:0; background:rgba(22,54,40,.45); display:none; align-items:center; justify-content:center; z-index:50; padding:16px;}
   .overlay.show{display:flex;}
-  .modal{background:#fff; border-radius:18px; padding:24px; max-width:380px; width:100%; box-shadow: 0 20px 60px rgba(0,0,0,.3);}
+  .modal{background:#fff; border-radius:18px; padding:24px; max-width:380px; width:100%; box-shadow: 0 20px 60px rgba(0,0,0,.3); max-height:90vh; overflow-y:auto;}
   .modal h3{font-family:'Aref Ruqaa',serif; margin:0 0 2px; color:var(--emerald-deep); font-size:20px;}
   .modal .meta{font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
   .state-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
@@ -255,6 +303,10 @@
   .btn{flex:1; padding:10px; border-radius:10px; border:none; font-family:'Aref Ruqaa'; font-weight:700; cursor:pointer; font-size:13.5px;}
   .btn.primary{background:var(--emerald-deep); color:#fff;}
   .btn.ghost{background:var(--bg-soft); color:var(--ink);}
+
+  .settings-check{display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; color:var(--ink);}
+  .settings-num{width:100%; padding:9px 12px; border-radius:9px; border:1px solid var(--gray-line); font-family:'Aref Ruqaa'; margin-bottom:14px;}
+  .settings-actions{display:flex; flex-direction:column; gap:8px; margin-bottom:14px;}
 
   #toast{
     position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
@@ -285,7 +337,8 @@
       </div>
     </div>
     <div class="badges-row">
-      <div class="pill streak"> <span id="streakVal">0</span> يوم</div>
+      <button class="pill icon-only" id="btnSettings" title="الإعدادات">⚙️</button>
+      <div class="pill streak">🔥 <span id="streakVal">0</span> يوم</div>
       <div class="pill level">⭐ <span id="levelVal">طالب</span></div>
     </div>
   </div>
@@ -298,9 +351,10 @@
 
 <nav class="tabs">
   <button data-view="heart" class="active">❤️ سور القرآن</button>
+  <button data-view="journey">🗺️ رحلتي</button>
   <button data-view="juz">📖 الأجزاء</button>
   <button data-view="stats">📊 الإحصائيات</button>
-  <button data-view="goals">🎯 الأهداف</button>
+  <button data-view="goals">🏹 الأهداف</button>
   <button data-view="badges">🏅 الإنجازات</button>
   <button data-view="calendar">📅 التقويم</button>
 </nav>
@@ -340,7 +394,9 @@
         <div class="weekly-title">🗓️ ملخص آخر 7 أيام</div>
         <div class="weekly-row">
           <div class="weekly-item"><div class="n" id="weeklyAyat">0</div><div class="l">آية محفوظة</div></div>
-          <div class="weekly-item"><div class="n" id="weeklyReviews">0</div><div class="l">سورة تمت مراجعتها</div></div>
+          <div class="weekly-item"><div class="n" id="weeklyReviews">0</div><div class="l">سورة رُوجعت</div></div>
+          <div class="weekly-item"><div class="n" id="weeklyDays">0</div><div class="l">أيام منجزة</div></div>
+          <div class="weekly-item"><div class="n" id="weeklyPct">—</div><div class="l">مقارنة بالأسبوع الماضي</div></div>
         </div>
       </div>
 
@@ -348,6 +404,20 @@
         <div style="font-weight:700; font-size:13px; margin-bottom:6px;">🕑 بحاجة للمراجعة</div>
         <div id="reviewListBox"><span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت!</span></div>
       </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY VIEW -->
+  <section class="view" id="view-journey">
+    <div class="panel">
+      <h2>🗺️ رحلة الحفظ</h2>
+      <div class="hint">محطات رحلتك من أول آية إلى ختم القرآن كاملًا.</div>
+      <div class="journey-track" id="journeyGrid"></div>
+    </div>
+    <div class="panel">
+      <h2>📜 سجل رحلتي</h2>
+      <div class="hint">كل إنجاز تحققه هنا مرتب زمنيًا.</div>
+      <div id="timelineBox"></div>
     </div>
   </section>
 
@@ -367,6 +437,15 @@
       <div class="stats-grid" id="statsGrid"></div>
       <div style="font-weight:700; font-size:14px; margin-bottom:6px;">النشاط في آخر 30 يومًا</div>
       <div class="chart" id="chartBox"></div>
+    </div>
+    <div class="panel">
+      <h2>🏆 أرقامك القياسية</h2>
+      <div class="hint">منافسة مع نفسك، مش مع حد تاني.</div>
+      <div class="stats-grid" id="recordsGrid"></div>
+    </div>
+    <div class="panel">
+      <h2>📈 تحليل هذا الأسبوع</h2>
+      <div id="levelAnalysisBox"></div>
     </div>
   </section>
 
@@ -407,21 +486,24 @@
   <section class="view" id="view-calendar">
     <div class="panel">
       <h2>سجل الأيام</h2>
-      <div class="hint">كل مربع يمثل يومًا — كلما ازدادت الحركة كلما كان اللون أغمق.</div>
+      <div class="hint">كل مربع يمثل يومًا — اللون يعبّر عن نوع النشاط الأكثر في هذا اليوم. اضغط على أي يوم لعرض تفاصيله.</div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="legend" style="margin-top:12px;">
         <span><i class="dot" style="background:#E3E7EF;border-radius:3px;"></i> بلا نشاط</span>
-        <span><i class="dot" style="background:var(--mint);border-radius:3px;"></i> نشاط خفيف</span>
-        <span><i class="dot" style="background:var(--emerald);border-radius:3px;"></i> نشاط قوي</span>
+        <span><i class="dot" style="background:var(--emerald);border-radius:3px;"></i> حفظ</span>
+        <span><i class="dot" style="background:var(--blue);border-radius:3px;"></i> مراجعة</span>
+        <span><i class="dot" style="background:var(--purple);border-radius:3px;"></i> تلاوة</span>
+        <span><i class="dot" style="background:var(--amber);border-radius:3px;"></i> اختبار</span>
       </div>
+      <div class="day-detail-box" id="dayDetailBox"></div>
     </div>
   </section>
 
 </main>
 
-<footer>البيانات محفوظة في متصفحك فقط (localStorage) — لن تُفقد عند إغلاق الصفحة، إلا إذا مسحت بيانات المتصفح.</footer>
+<footer>البيانات محفوظة في متصفحك فقط (localStorage) — لن تُفقد عند إغلاق الصفحة، إلا إذا مسحت بيانات المتصفح. يُنصح بتصدير نسخة احتياطية بين الحين والآخر من الإعدادات ⚙️.</footer>
 
-<!-- Modal -->
+<!-- Surah Modal -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <h3 id="mSurahName">—</h3>
@@ -436,7 +518,12 @@
       </div>
       <div class="session-add-row">
         <input type="number" id="mSessionAyat" min="1" placeholder="كام آية حفظت النهاردة؟">
+        <input type="number" id="mSessionMinutes" min="1" placeholder="دقائق (اختياري)" style="max-width:110px;">
         <button class="btn ghost" id="mSessionAdd" style="flex:none;padding:8px 14px;">＋ إضافة</button>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn ghost" id="mLogRecitation" style="flex:1;">📿 تلاوة اليوم</button>
+        <button class="btn ghost" id="mLogTest" style="flex:1;">📝 اختبار اليوم</button>
       </div>
     </div>
 
@@ -453,6 +540,35 @@
     <div class="modal-actions">
       <button class="btn ghost" id="mCancel">إلغاء</button>
       <button class="btn primary" id="mSave">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <h3>⚙️ الإعدادات</h3>
+    <div class="meta">تحكم في هدفك اليومي وبياناتك</div>
+
+    <label>هدفك اليومي (عدد الآيات)</label>
+    <input type="number" id="settingDailyGoal" min="1" class="settings-num">
+
+    <label class="settings-check">
+      <input type="checkbox" id="settingGraceDay"> تفعيل "يوم إنقاذ" واحد شهريًا للحفاظ على السلسلة
+    </label>
+
+    <div class="settings-actions">
+      <button class="btn ghost" id="btnExportData">📥 تصدير البيانات (JSON)</button>
+      <label class="btn ghost" style="text-align:center; cursor:pointer; display:flex; align-items:center; justify-content:center;">📤 استيراد البيانات
+        <input type="file" id="importFileInput" accept="application/json" style="display:none;">
+      </label>
+      <button class="btn ghost" id="btnResetProgress">🔄 إعادة تعيين التقدم</button>
+      <button class="btn ghost" id="btnDeleteAll" style="color:var(--red);">🗑️ حذف كل البيانات</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn ghost" id="btnCloseSettings">إغلاق</button>
+      <button class="btn primary" id="btnSaveSettings">حفظ الإعدادات</button>
     </div>
   </div>
 </div>
@@ -503,28 +619,18 @@ const AYAT_MOTIVATION = [
 ];
 
 /* ============ STATE / STORAGE ============ */
-const LS_KEY = "quranTrackerData_v2";
+const LS_KEY = "quranTrackerData_v3";
 let DATA = loadData();
 
 function defaultData(){
   const state = {};
-  SURAHS.forEach(s=> state[s.n] = {status:"none", lastReview:null, memorizedDate:null, memorizedAyat:0, notes:""});
-  return {state, log:{}, goals:[], ayahLog:{}, reviewLog:{}, unlockedBadges:[]};
-}
-function loadData(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return migrateOld();
-    const parsed = JSON.parse(raw);
-    const base = defaultData();
-    mergeState(base.state, parsed.state);
-    base.log = parsed.log || {};
-    base.goals = Array.isArray(parsed.goals) ? parsed.goals : [];
-    base.ayahLog = parsed.ayahLog || {};
-    base.reviewLog = parsed.reviewLog || {};
-    base.unlockedBadges = Array.isArray(parsed.unlockedBadges) ? parsed.unlockedBadges : [];
-    return base;
-  }catch(e){ return defaultData(); }
+  SURAHS.forEach(s=> state[s.n] = {status:"none", lastReview:null, memorizedDate:null, startedDate:null, memorizedAyat:0, notes:""});
+  return {
+    state, log:{}, goals:[], ayahLog:{}, reviewLog:{}, unlockedBadges:[],
+    journey:{}, typeLog:{}, surahReviewCount:{}, graceDays:{}, wirdStarted:{}, fajrCount:0,
+    records:{longestSessionMin:0},
+    settings:{dailyGoal:8, graceDayEnabled:true}
+  };
 }
 function mergeState(baseState, savedState){
   if(!savedState) return;
@@ -532,24 +638,53 @@ function mergeState(baseState, savedState){
     if(savedState[n]) Object.assign(baseState[n], savedState[n]);
   });
 }
+function normalizeData(parsed){
+  const base = defaultData();
+  mergeState(base.state, parsed.state);
+  base.log = parsed.log || {};
+  base.goals = Array.isArray(parsed.goals) ? parsed.goals : [];
+  base.ayahLog = parsed.ayahLog || {};
+  base.reviewLog = parsed.reviewLog || {};
+  base.unlockedBadges = Array.isArray(parsed.unlockedBadges) ? parsed.unlockedBadges : [];
+  base.journey = parsed.journey || {};
+  base.typeLog = parsed.typeLog || {};
+  base.surahReviewCount = parsed.surahReviewCount || {};
+  base.graceDays = parsed.graceDays || {};
+  base.wirdStarted = parsed.wirdStarted || {};
+  base.fajrCount = parsed.fajrCount || 0;
+  base.records = Object.assign({}, base.records, parsed.records||{});
+  base.settings = Object.assign({}, base.settings, parsed.settings||{});
+  return base;
+}
+function loadData(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return migrateOld();
+    return normalizeData(JSON.parse(raw));
+  }catch(e){ return defaultData(); }
+}
 function migrateOld(){
   try{
-    const raw = localStorage.getItem("quranTrackerData_v1");
-    if(!raw) return defaultData();
-    const parsed = JSON.parse(raw);
-    const base = defaultData();
-    mergeState(base.state, parsed.state);
-    base.log = parsed.log || {};
-    return base;
+    const rawV2 = localStorage.getItem("quranTrackerData_v2");
+    if(rawV2) return normalizeData(JSON.parse(rawV2));
+    const rawV1 = localStorage.getItem("quranTrackerData_v1");
+    if(rawV1) return normalizeData(JSON.parse(rawV1));
+    return defaultData();
   }catch(e){ return defaultData(); }
 }
 function saveData(){
   try{ localStorage.setItem(LS_KEY, JSON.stringify(DATA)); }catch(e){ console.warn("save failed", e); }
 }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
-function logActivity(){
+
+function logActivity(type){
   const t = todayStr();
   DATA.log[t] = (DATA.log[t]||0)+1;
+  if(!DATA.typeLog[t]) DATA.typeLog[t] = {hifz:0, review:0, recitation:0, test:0};
+  const k = type || "hifz";
+  DATA.typeLog[t][k] = (DATA.typeLog[t][k]||0)+1;
+  const hour = new Date().getHours();
+  if(hour>=4 && hour<6) DATA.fajrCount = (DATA.fajrCount||0)+1;
   saveData();
 }
 function logAyahSession(count){
@@ -570,6 +705,29 @@ function weeklySummary(){
     reviews += DATA.reviewLog[key]||0;
   }
   return {ayat, reviews};
+}
+function weeklyComparison(){
+  const cur = weeklySummary();
+  const base = new Date(todayStr());
+  let prevAyat=0, prevReviews=0;
+  for(let i=7;i<14;i++){
+    const d = new Date(base); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    prevAyat += DATA.ayahLog[key]||0;
+    prevReviews += DATA.reviewLog[key]||0;
+  }
+  let curDaysActive=0;
+  for(let i=0;i<7;i++){
+    const d = new Date(base); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    if(DATA.log[key]) curDaysActive++;
+  }
+  const prevTotal = prevAyat + prevReviews*5;
+  const curTotal = cur.ayat + cur.reviews*5;
+  let pctChange = null;
+  if(prevTotal>0) pctChange = Math.round((curTotal-prevTotal)/prevTotal*100);
+  else if(curTotal>0) pctChange = 100;
+  return {ayat:cur.ayat, reviews:cur.reviews, daysActive:curDaysActive, pctChange};
 }
 
 /* ============ DERIVED DATA ============ */
@@ -602,6 +760,12 @@ function reviewUrgency(surahN){
   if(days>=7) return {level:"o", days};
   if(days>=3) return {level:"y", days};
   return {level:"g", days};
+}
+function stabilityLevel(n){
+  const cnt = DATA.surahReviewCount[n]||0;
+  if(cnt>=8) return "عالٍ";
+  if(cnt>=3) return "متوسط";
+  return "منخفض";
 }
 
 function streaks(){
@@ -639,20 +803,204 @@ function levelName(d){
   return "حافظ جزء";
 }
 
+/* ============ RECORDS ============ */
+function computeRecords(){
+  const ayahEntries = Object.entries(DATA.ayahLog);
+  let maxAyatDay=0;
+  ayahEntries.forEach(([k,v])=>{ if(v>maxAyatDay) maxAyatDay=v; });
+  const reviewVals = Object.values(DATA.reviewLog);
+  const maxReviewDay = reviewVals.length? Math.max(...reviewVals) : 0;
+  const st = streaks();
+  let fastest = null;
+  SURAHS.forEach(s=>{
+    const rec = DATA.state[s.n];
+    if((rec.status==="memorized"||rec.status==="excellent") && rec.memorizedDate && rec.startedDate){
+      const days = Math.max(1, Math.round((new Date(rec.memorizedDate)-new Date(rec.startedDate))/86400000)+1);
+      if(!fastest || days<fastest.days) fastest = {days, name:s.name};
+    }
+  });
+  return {maxAyatDay, maxReviewDay, longestStreak: st.longest, fastest, longestSession: DATA.records.longestSessionMin||0};
+}
+
+/* ============ JOURNEY MILESTONES ============ */
+const JOURNEY_MILESTONES = [
+  {id:"start", icon:"🌱", title:"بداية الرحلة", test:()=>true},
+  {id:"first_surah", icon:"📖", title:"أول سورة", test:d=>d.memorizedCount>=1},
+  {id:"first_juz", icon:"🕌", title:"أول جزء", test:d=>d.juzComplete.length>=1},
+  {id:"five_juz", icon:"⭐", title:"5 أجزاء", test:d=>d.juzComplete.length>=5},
+  {id:"ten_juz", icon:"🌙", title:"10 أجزاء", test:d=>d.juzComplete.length>=10},
+  {id:"thirty_juz", icon:"🏆", title:"30 جزء (الختمة)", test:d=>d.juzComplete.length>=30},
+];
+function checkJourneyMilestones(){
+  const d = computeDerived();
+  if(!DATA.journey.start) DATA.journey.start = todayStr();
+  JOURNEY_MILESTONES.forEach(m=>{
+    if(m.id==="start") return;
+    if(!DATA.journey[m.id] && m.test(d)) DATA.journey[m.id] = todayStr();
+  });
+  saveData();
+}
+function journeyRemainingText(id, d){
+  if(id==="first_surah") return "احفظ أول سورة كاملة لتحقيق هذه المحطة";
+  const targetJuz = id==="first_juz"?1: id==="five_juz"?5: id==="ten_juz"?10: id==="thirty_juz"?30:0;
+  const remainingJuz = Math.max(0, targetJuz - d.juzComplete.length);
+  return "باقي " + remainingJuz + " جزء للوصول لهذه المحطة";
+}
+function renderJourney(){
+  const d = computeDerived();
+  const box = document.getElementById("journeyGrid");
+  let reachedNext = false;
+  let html = "";
+  JOURNEY_MILESTONES.forEach((m,i)=>{
+    const achieved = !!DATA.journey[m.id];
+    const isNext = !achieved && !reachedNext;
+    if(isNext) reachedNext = true;
+    let dateLine = "";
+    if(achieved){
+      let daysTook = "";
+      if(i>0){
+        const prevId = JOURNEY_MILESTONES[i-1].id;
+        const prevDate = DATA.journey[prevId] || DATA.journey.start;
+        if(prevDate){
+          const days = Math.max(0, Math.round((new Date(DATA.journey[m.id]) - new Date(prevDate))/86400000));
+          daysTook = " — استغرقت " + days + " يوم";
+        }
+      }
+      dateLine = '<div class="journey-date">✅ ' + DATA.journey[m.id] + daysTook + '</div>';
+    } else if(isNext){
+      dateLine = '<div class="journey-remaining">' + journeyRemainingText(m.id, d) + '</div>';
+    } else {
+      dateLine = '<div class="journey-locked">🔒 قادم</div>';
+    }
+    html += '<div class="journey-node ' + (achieved?'done':(isNext?'next':'')) + '">' +
+      '<div class="journey-icon">' + m.icon + '</div>' +
+      '<div class="journey-title">' + m.title + '</div>' + dateLine +
+      '</div>';
+  });
+  box.innerHTML = html;
+}
+function buildTimelineEvents(){
+  const events = [];
+  JOURNEY_MILESTONES.forEach(m=>{ if(DATA.journey[m.id]) events.push({date:DATA.journey[m.id], icon:m.icon, text:m.title + " تحققت"}); });
+  SURAHS.forEach(s=>{
+    const rec = DATA.state[s.n];
+    if(rec.memorizedDate) events.push({date:rec.memorizedDate, icon:"📗", text:"حفظت سورة " + s.name});
+  });
+  events.sort((a,b)=> b.date.localeCompare(a.date));
+  return events;
+}
+function renderTimeline(){
+  const events = buildTimelineEvents();
+  const box = document.getElementById("timelineBox");
+  if(!events.length){ box.innerHTML = '<div class="goal-empty">ابدأ رحلتك وستظهر هنا كل محطاتك 🌿</div>'; return; }
+  box.innerHTML = events.slice(0,40).map(e=>
+    '<div class="timeline-item"><div class="timeline-icon">' + e.icon + '</div><div><div class="timeline-text">' + e.text + '</div><div class="timeline-date">' + e.date + '</div></div></div>'
+  ).join("");
+}
+
+/* ============ TODAY'S PLAN ============ */
+function buildReviewItemsHtml(limit){
+  const items = SURAHS.map(s=>({s, u:reviewUrgency(s.n)}))
+    .filter(o=>o.u && o.u.level!=="g")
+    .sort((a,b)=> b.u.days - a.u.days);
+  if(!items.length) return '<span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت! 🌿</span>';
+  return items.slice(0,limit).map(o=>{
+    const cls = o.u.level;
+    return '<div class="review-item ' + cls + '">' +
+      '<div><div>' + o.s.name + '</div><small>آخر مراجعة: منذ ' + o.u.days + ' يوم — ثبات: ' + stabilityLevel(o.s.n) + '</small></div>' +
+      '<button class="mini-review-btn" data-n="' + o.s.n + '">راجعتها اليوم ✓</button>' +
+      '</div>';
+  }).join("");
+}
+function quickReview(n){
+  const rec = DATA.state[n];
+  if(!rec || !(rec.status==="memorized"||rec.status==="excellent")) return;
+  rec.lastReview = todayStr();
+  DATA.surahReviewCount[n] = (DATA.surahReviewCount[n]||0)+1;
+  logReview();
+  logActivity("review");
+  saveData();
+  renderAll();
+  const newBadges = checkProgressEvents();
+  if(newBadges.length) showToast("🏅 إنجاز جديد: " + newBadges.map(b=>b.title).join("، "), true);
+  else showToast("تم تسجيل المراجعة ✅");
+}
+
+/* ============ STREAK RESCUE ============ */
+function useGraceDay(){
+  const month = todayStr().slice(0,7);
+  if(DATA.graceDays[month]){ showToast("استخدمت يوم الإنقاذ لهذا الشهر بالفعل"); return; }
+  if(!DATA.settings.graceDayEnabled){ showToast("يوم الإنقاذ غير مفعّل من الإعدادات"); return; }
+  DATA.graceDays[month] = todayStr();
+  logActivity("hifz");
+  saveData();
+  renderAll();
+  showToast("تم استخدام يوم الإنقاذ 🌿 السلسلة محفوظة");
+}
+function renderStreakBanner(){
+  const box = document.getElementById("streakBanner");
+  const st = streaks();
+  const atRisk = !DATA.log[todayStr()] && st.current>0;
+  if(!atRisk){ box.style.display="none"; box.innerHTML=""; return; }
+  box.style.display="flex";
+  const month = todayStr().slice(0,7);
+  const graceUsed = !!DATA.graceDays[month];
+  box.innerHTML = '⚠️ السلسلة معرضة للانقطاع (' + st.current + ' يوم) — أنجز وردًا بسيطًا اليوم للحفاظ عليها.' +
+    (DATA.settings.graceDayEnabled ? '<button class="icon-btn-text" id="btnGraceDay" ' + (graceUsed?'disabled':'') + '>' + (graceUsed?'✓ تم استخدام يوم الإنقاذ':'استخدم يوم إنقاذ (مرة شهريًا)') + '</button>' : '');
+  const btn = document.getElementById("btnGraceDay");
+  if(btn) btn.addEventListener("click", useGraceDay);
+}
+
 /* ============ BADGES ============ */
+function fullWeekAchieved(){
+  for(let i=0;i<7;i++){
+    const dt=new Date(); dt.setDate(dt.getDate()-i);
+    const key=dt.toISOString().slice(0,10);
+    const t=DATA.typeLog[key];
+    if(!t || !t.hifz || !t.review) return false;
+  }
+  return true;
+}
+function comebackAchieved(){
+  const days = Object.keys(DATA.log).sort();
+  if(days.length<2) return false;
+  for(let i=1;i<days.length;i++){
+    const gap = Math.round((new Date(days[i])-new Date(days[i-1]))/86400000);
+    if(gap>=3) return true;
+  }
+  return false;
+}
+function wirdGoalHitsCount(){
+  const goal = DATA.settings.dailyGoal||8;
+  return Object.values(DATA.ayahLog).filter(v=>v>=goal).length;
+}
+function memoStabilityAchieved(){
+  return SURAHS.some(s=>{
+    const rec = DATA.state[s.n];
+    if(!(rec.status==="memorized"||rec.status==="excellent") || !rec.lastReview) return false;
+    const days = Math.floor((new Date(todayStr()) - new Date(rec.lastReview))/86400000);
+    return days>=30;
+  });
+}
 const BADGES = [
-  {id:"first_surah", icon:"🌱", title:"أول سورة", desc:"احفظ أول سورة كاملة", test:(d,st)=> d.memorizedCount>=1},
-  {id:"ten_surahs", icon:"📗", title:"10 سور", desc:"احفظ 10 سور", test:(d,st)=> d.memorizedCount>=10},
-  {id:"thirty_surahs", icon:"📘", title:"30 سورة", desc:"احفظ 30 سورة", test:(d,st)=> d.memorizedCount>=30},
-  {id:"all_surahs", icon:"📕", title:"114 سورة", desc:"احفظ القرآن كاملاً", test:(d,st)=> d.memorizedCount>=114},
-  {id:"first_juz", icon:"🕌", title:"أول جزء", desc:"أكمل أول جزء", test:(d,st)=> d.juzComplete.length>=1},
-  {id:"five_juz", icon:"🕋", title:"5 أجزاء", desc:"أكمل 5 أجزاء", test:(d,st)=> d.juzComplete.length>=5},
-  {id:"ten_juz", icon:"⭐", title:"10 أجزاء", desc:"أكمل 10 أجزاء", test:(d,st)=> d.juzComplete.length>=10},
-  {id:"quarter", icon:"🌗", title:"ربع القرآن", desc:"25% من القرآن محفوظة", test:(d,st)=> d.overallPct>=25},
-  {id:"half", icon:"🌕", title:"نصف القرآن", desc:"50% من القرآن محفوظة", test:(d,st)=> d.overallPct>=50},
-  {id:"full", icon:"🏆", title:"ختمة الحفظ", desc:"100% من القرآن محفوظة", test:(d,st)=> d.overallPct>=99.99},
+  {id:"first_surah", icon:"🌱", title:"أول سورة", desc:"احفظ أول سورة كاملة", test:(d)=> d.memorizedCount>=1},
+  {id:"ten_surahs", icon:"📗", title:"10 سور", desc:"احفظ 10 سور", test:(d)=> d.memorizedCount>=10},
+  {id:"thirty_surahs", icon:"📘", title:"30 سورة", desc:"احفظ 30 سورة", test:(d)=> d.memorizedCount>=30},
+  {id:"all_surahs", icon:"📕", title:"114 سورة", desc:"احفظ القرآن كاملاً", test:(d)=> d.memorizedCount>=114},
+  {id:"first_juz", icon:"🕌", title:"أول جزء", desc:"أكمل أول جزء", test:(d)=> d.juzComplete.length>=1},
+  {id:"five_juz", icon:"🕋", title:"5 أجزاء", desc:"أكمل 5 أجزاء", test:(d)=> d.juzComplete.length>=5},
+  {id:"ten_juz", icon:"⭐", title:"10 أجزاء", desc:"أكمل 10 أجزاء", test:(d)=> d.juzComplete.length>=10},
+  {id:"quarter", icon:"🌗", title:"ربع القرآن", desc:"25% من القرآن محفوظة", test:(d)=> d.overallPct>=25},
+  {id:"half", icon:"🌕", title:"نصف القرآن", desc:"50% من القرآن محفوظة", test:(d)=> d.overallPct>=50},
+  {id:"full", icon:"🏆", title:"ختمة الحفظ", desc:"100% من القرآن محفوظة", test:(d)=> d.overallPct>=99.99},
   {id:"streak7", icon:"🔥", title:"سلسلة أسبوع", desc:"7 أيام متتالية من النشاط", test:(d,st)=> st.longest>=7},
   {id:"streak30", icon:"💎", title:"سلسلة شهر", desc:"30 يوم متتالي من النشاط", test:(d,st)=> st.longest>=30},
+  {id:"fajr_wird", icon:"🌅", title:"ورد الفجر", desc:"سجّلت نشاطًا 5 مرات في وقت الفجر", test:()=> (DATA.fajrCount||0)>=5},
+  {id:"consistency", icon:"🔄", title:"ثبات", desc:"راجعت نفس السورة 5 مرات", test:()=> Object.values(DATA.surahReviewCount||{}).some(c=>c>=5)},
+  {id:"memo_stability", icon:"🧱", title:"ثبات الحفظ", desc:"سورة بلا مراجعة عاجلة لمدة شهر", test:()=> memoStabilityAchieved()},
+  {id:"full_week", icon:"📚", title:"أسبوع كامل", desc:"حفظ ومراجعة كل يوم لمدة أسبوع", test:()=> fullWeekAchieved()},
+  {id:"comeback", icon:"❤️", title:"عودة", desc:"رجعت للحفظ بعد انقطاع", test:()=> comebackAchieved()},
+  {id:"wird_30", icon:"🕌", title:"حافظ على وردك", desc:"حققت هدفك اليومي 30 مرة", test:()=> wirdGoalHitsCount()>=30},
 ];
 function computeBadges(){
   const d = computeDerived();
@@ -673,18 +1021,22 @@ function checkNewBadges(){
   saveData();
   return newly;
 }
+function checkProgressEvents(){
+  checkJourneyMilestones();
+  return checkNewBadges();
+}
 function renderBadges(){
   const box = document.getElementById("badgeGrid");
   if(!box) return;
   const list = computeBadges();
-  box.innerHTML = list.map(b=>`
-    <div class="badge-card ${b.achieved?'unlocked':'locked'}">
-      <div class="badge-icon">${b.icon}</div>
-      <div class="badge-title">${b.title}</div>
-      <div class="badge-desc">${b.desc}</div>
-      ${b.achieved? '<div class="badge-check">✓ مُحقَّق</div>' : ''}
-    </div>
-  `).join("");
+  box.innerHTML = list.map(b=>
+    '<div class="badge-card ' + (b.achieved?'unlocked':'locked') + '">' +
+      '<div class="badge-icon">' + b.icon + '</div>' +
+      '<div class="badge-title">' + b.title + '</div>' +
+      '<div class="badge-desc">' + b.desc + '</div>' +
+      (b.achieved? '<div class="badge-check">✓ مُحقَّق</div>' : '') +
+    '</div>'
+  ).join("");
 }
 
 /* ============ RENDER: SURAH GRID ============ */
@@ -731,7 +1083,6 @@ function highlightSurah(n){
   document.querySelectorAll('.surah-tile.search-hit').forEach(el=>el.classList.remove('search-hit'));
   const el = document.querySelector(`.surah-tile[data-n="${n}"]`);
   if(!el) return;
-  // force reflow so the animation restarts even if the same tile was just highlighted
   void el.offsetWidth;
   el.classList.add('search-hit');
   el.scrollIntoView({behavior:'smooth', block:'center', inline:'center'});
@@ -789,25 +1140,17 @@ function renderSideStats(d){
   document.getElementById("pctVal").textContent = d.overallPct.toFixed(1);
   document.getElementById("miniSurahs").textContent = d.memorizedCount + "/114";
   document.getElementById("miniJuz").textContent = d.juzComplete.length + "/30";
-
-  const items = SURAHS.map(s=>({s, u:reviewUrgency(s.n)}))
-    .filter(o=>o.u && o.u.level!=="g")
-    .sort((a,b)=> b.u.days - a.u.days);
-  const box = document.getElementById("reviewListBox");
-  if(!items.length){
-    box.innerHTML = '<span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت! 🌿</span>';
-  } else {
-    box.innerHTML = items.slice(0,8).map(o=>{
-      const cls = o.u.level;
-      return `<div class="review-item ${cls}"><span>${o.s.name}</span><small>${o.u.days} يوم</small></div>`;
-    }).join("");
-  }
+  document.getElementById("reviewListBox").innerHTML = buildReviewItemsHtml(8);
 }
 
 function renderWeeklySummary(){
-  const w = weeklySummary();
+  const w = weeklyComparison();
   document.getElementById("weeklyAyat").textContent = w.ayat;
   document.getElementById("weeklyReviews").textContent = w.reviews;
+  document.getElementById("weeklyDays").textContent = w.daysActive;
+  const pctBox = document.getElementById("weeklyPct");
+  if(w.pctChange===null){ pctBox.textContent = "—"; }
+  else { pctBox.textContent = (w.pctChange>=0? "📈 +":"📉 ") + w.pctChange + "%"; }
 }
 
 /* ============ RENDER: JUZ ============ */
@@ -851,6 +1194,43 @@ function renderStats(d){
   document.getElementById("chartBox").innerHTML = days.map(v=>
     `<div class="bar" style="height:${Math.max(3,v/max*100)}%" title="${v}"></div>`
   ).join("");
+}
+function renderRecords(){
+  const r = computeRecords();
+  const cards = [
+    [r.maxAyatDay, "أكبر عدد آيات في يوم"],
+    [r.longestStreak, "أطول سلسلة أيام"],
+    [r.fastest? (r.fastest.days+" يوم") : "—", r.fastest? ("أسرع سورة (" + r.fastest.name + ")") : "أسرع سورة حفظتها"],
+    [r.maxReviewDay, "أكبر عدد مراجعات في يوم"],
+    [r.longestSession? (r.longestSession+" د") : "—", "أطول جلسة"],
+  ];
+  document.getElementById("recordsGrid").innerHTML = cards.map(c=>
+    `<div class="stat-card"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`
+  ).join("");
+}
+function levelAnalysis(){
+  const w = weeklyComparison();
+  const goal = DATA.settings.dailyGoal || 8;
+  const hifzScore = w.ayat >= goal*5 ? "green" : w.ayat>=goal*2 ? "yellow":"red";
+  const reviewScore = w.reviews>=5?"green": w.reviews>=2?"yellow":"red";
+  const consistScore = w.daysActive>=6?"green": w.daysActive>=3?"yellow":"red";
+  const dayCounts = [0,0,0,0,0,0,0];
+  Object.keys(DATA.log).forEach(k=>{ const d=new Date(k).getDay(); dayCounts[d]+=DATA.log[k]; });
+  const dayNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  const maxDay = dayCounts.indexOf(Math.max(...dayCounts));
+  const avgHifz = (w.ayat/7).toFixed(1);
+  return {hifzScore, reviewScore, consistScore, mostActiveDay: dayNames[maxDay], avgHifz};
+}
+function renderLevelAnalysis(){
+  const la = levelAnalysis();
+  const label = c=> c==="green"?"ممتاز": c==="yellow"?"متوسط":"يحتاج اهتمام";
+  document.getElementById("levelAnalysisBox").innerHTML = `
+    <div class="level-row"><span class="level-dot ${la.hifzScore}"></span><span>🟢 الحفظ: ${label(la.hifzScore)}</span></div>
+    <div class="level-row"><span class="level-dot ${la.reviewScore}"></span><span>🟡 المراجعة: ${label(la.reviewScore)}</span></div>
+    <div class="level-row"><span class="level-dot ${la.consistScore}"></span><span>🔴 الاستمرارية: ${label(la.consistScore)}</span></div>
+    <div class="level-row"><span>📅 أكثر الأيام نشاطًا: <b>${la.mostActiveDay}</b></span></div>
+    <div class="level-row"><span>📖 متوسط الحفظ اليومي: <b>${la.avgHifz}</b> آية</span></div>
+  `;
 }
 
 /* ============ GOALS (fully user-managed) ============ */
@@ -945,6 +1325,19 @@ document.getElementById("goalSaveBtn").addEventListener("click", ()=>{
 });
 
 /* ============ RENDER: CALENDAR ============ */
+function dominantColor(t){
+  if(!t) return "#E3E7EF";
+  const entries = [["hifz","var(--emerald)"],["review","var(--blue)"],["recitation","var(--purple)"],["test","var(--amber)"]];
+  entries.sort((a,b)=> (t[b[0]]||0)-(t[a[0]]||0));
+  if(!t[entries[0][0]]) return "#E3E7EF";
+  return entries[0][1];
+}
+function showDayDetail(key){
+  if(!key) return;
+  const t = DATA.typeLog[key] || {};
+  const box = document.getElementById("dayDetailBox");
+  box.textContent = "📅 " + key + " — حفظ: " + (t.hifz||0) + " · مراجعة: " + (t.review||0) + " · تلاوة: " + (t.recitation||0) + " · اختبار: " + (t.test||0);
+}
 function renderCalendar(){
   const totalDays = 91;
   const cells = [];
@@ -960,13 +1353,13 @@ function renderCalendar(){
   box.innerHTML = weeks.map(week=>{
     return `<div class="cal-week">` + week.map(c=>{
       if(c.v===-1) return `<div class="cal-day" style="background:transparent"></div>`;
-      let color = "#E3E7EF";
-      if(c.v>=1) color = "var(--mint)";
-      if(c.v>=3) color = "var(--emerald)";
-      if(c.v>=5) color = "var(--emerald-deep)";
-      return `<div class="cal-day" style="background:${color}" title="${c.key}: ${c.v}"></div>`;
+      const color = dominantColor(DATA.typeLog[c.key]);
+      return `<div class="cal-day" data-key="${c.key||''}" style="background:${color};cursor:${c.key?'pointer':'default'}" title="${c.key||''}"></div>`;
     }).join("") + `</div>`;
   }).join("");
+  box.querySelectorAll(".cal-day[data-key]").forEach(el=>{
+    if(el.dataset.key) el.addEventListener("click", ()=> showDayDetail(el.dataset.key));
+  });
 }
 
 /* ============ MODAL ============ */
@@ -999,6 +1392,7 @@ function openModal(n){
   document.getElementById("mReviewDate").value = rec.lastReview || todayStr();
   document.getElementById("mNotes").value = rec.notes || "";
   document.getElementById("mSessionAyat").value = "";
+  document.getElementById("mSessionMinutes").value = "";
   refreshModalProgress(n);
   document.getElementById("overlay").classList.add("show");
 }
@@ -1013,24 +1407,27 @@ function refreshModalProgress(n){
 document.getElementById("mSessionAdd").addEventListener("click", ()=>{
   if(currentModalSurah==null) return;
   const input = document.getElementById("mSessionAyat");
+  const minInput = document.getElementById("mSessionMinutes");
   const count = parseInt(input.value, 10);
+  const minutes = parseInt(minInput.value, 10);
   if(!count || count<=0) { input.focus(); return; }
   const s = SURAHS.find(x=>x.n===currentModalSurah);
   const rec = DATA.state[currentModalSurah];
   const prevDerived = computeDerived();
-  rec.memorizedAyat = Math.min((rec.memorizedAyat||0) + count, s.ayat);
   if(rec.status==="none") rec.status = "progress";
+  if(!rec.startedDate) rec.startedDate = todayStr();
+  rec.memorizedAyat = Math.min((rec.memorizedAyat||0) + count, s.ayat);
   if(rec.memorizedAyat >= s.ayat && (rec.status==="none"||rec.status==="progress")){
     rec.status = "memorized";
     rec.lastReview = todayStr();
     if(!rec.memorizedDate) rec.memorizedDate = todayStr();
   }
   logAyahSession(count);
-  logActivity();
+  logActivity("hifz");
+  if(minutes && minutes>0 && minutes > (DATA.records.longestSessionMin||0)) DATA.records.longestSessionMin = minutes;
   saveData();
-  input.value = "";
+  input.value = ""; minInput.value = "";
   refreshModalProgress(currentModalSurah);
-  // refresh the state buttons selection to reflect any auto status change
   const btnsBox = document.getElementById("mStateBtns");
   Array.from(btnsBox.children).forEach(b=> b.classList.toggle("sel", b.dataset.key===rec.status));
   toggleReviewField(rec.status);
@@ -1039,12 +1436,22 @@ document.getElementById("mSessionAdd").addEventListener("click", ()=>{
   const newDerived = computeDerived();
   const juzWasComplete = prevDerived.juzComplete.includes(s.juz);
   const juzNowComplete = newDerived.juzComplete.includes(s.juz);
-  const newBadges = checkNewBadges();
+  const newBadges = checkProgressEvents();
   if(newBadges.length){
     showToast(`🏅 إنجاز جديد: ${newBadges.map(b=>b.title).join('، ')}`, true);
   } else {
     showToast(juzWasComplete||!juzNowComplete ? `تم تسجيل ${count} آية ✅` : `أتممت الجزء ${s.juz}! 🌿`, !juzWasComplete && juzNowComplete);
   }
+});
+document.getElementById("mLogRecitation").addEventListener("click", ()=>{
+  logActivity("recitation");
+  renderAll();
+  showToast("تم تسجيل التلاوة 📿");
+});
+document.getElementById("mLogTest").addEventListener("click", ()=>{
+  logActivity("test");
+  renderAll();
+  showToast("تم تسجيل الاختبار 📝");
 });
 function toggleReviewField(status){
   document.getElementById("reviewDateBox").style.display = (status==="memorized"||status==="excellent") ? "block" : "none";
@@ -1063,24 +1470,26 @@ document.getElementById("mSave").addEventListener("click", ()=>{
   const rec = DATA.state[currentModalSurah];
   const s = SURAHS.find(x=>x.n===currentModalSurah);
   const prevDerived = computeDerived();
-  const wasReview = rec.status==="memorized"||rec.status==="excellent";
+  if(rec.status==="none" && newStatus!=="none" && !rec.startedDate) rec.startedDate = todayStr();
   rec.status = newStatus;
   rec.notes = document.getElementById("mNotes").value.trim();
   if(newStatus==="memorized"||newStatus==="excellent"){
     rec.lastReview = document.getElementById("mReviewDate").value || todayStr();
     if(!rec.memorizedDate) rec.memorizedDate = todayStr();
     rec.memorizedAyat = s.ayat;
+    DATA.surahReviewCount[currentModalSurah] = (DATA.surahReviewCount[currentModalSurah]||0)+1;
     logReview();
+    logActivity("review");
   }
-  if(newStatus==="none"){ rec.lastReview=null; rec.memorizedDate=null; rec.memorizedAyat=0; }
-  logActivity();
+  if(newStatus==="none"){ rec.lastReview=null; rec.memorizedDate=null; rec.memorizedAyat=0; rec.startedDate=null; }
+  else { logActivity("hifz"); }
   saveData();
   closeModal();
   renderAll();
   const newDerived = computeDerived();
   const juzWasComplete = prevDerived.juzComplete.includes(s ? s.juz : -1);
   const juzNowComplete = newDerived.juzComplete.includes(s ? s.juz : -1);
-  const newBadges = checkNewBadges();
+  const newBadges = checkProgressEvents();
   if(newBadges.length){
     showToast(`🏅 إنجاز جديد: ${newBadges.map(b=>b.title).join('، ')}`, true);
   } else if(!juzWasComplete && juzNowComplete){
@@ -1088,6 +1497,88 @@ document.getElementById("mSave").addEventListener("click", ()=>{
   } else {
     showToast("تم الحفظ ✅");
   }
+});
+
+/* ============ SETTINGS MODAL ============ */
+function openSettings(){
+  document.getElementById("settingDailyGoal").value = DATA.settings.dailyGoal || 8;
+  document.getElementById("settingGraceDay").checked = !!DATA.settings.graceDayEnabled;
+  document.getElementById("settingsOverlay").classList.add("show");
+}
+function closeSettings(){
+  document.getElementById("settingsOverlay").classList.remove("show");
+}
+document.getElementById("btnSettings").addEventListener("click", openSettings);
+document.getElementById("btnCloseSettings").addEventListener("click", closeSettings);
+document.getElementById("settingsOverlay").addEventListener("click", e=>{ if(e.target.id==="settingsOverlay") closeSettings(); });
+document.getElementById("btnSaveSettings").addEventListener("click", ()=>{
+  const g = parseInt(document.getElementById("settingDailyGoal").value,10);
+  DATA.settings.dailyGoal = (g && g>0) ? g : 8;
+  DATA.settings.graceDayEnabled = document.getElementById("settingGraceDay").checked;
+  saveData();
+  closeSettings();
+  renderAll();
+  showToast("تم حفظ الإعدادات ✅");
+});
+function exportData(){
+  const blob = new Blob([JSON.stringify(DATA,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "quran-tracker-backup-" + todayStr() + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  showToast("تم تصدير نسخة احتياطية 📥");
+}
+function importDataFile(file){
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const parsed = JSON.parse(e.target.result);
+      DATA = normalizeData(parsed);
+      saveData();
+      renderAll();
+      showToast("تم استيراد البيانات بنجاح ✅");
+    }catch(err){
+      showToast("ملف غير صالح ❌");
+    }
+  };
+  reader.readAsText(file);
+}
+function resetProgress(){
+  if(!confirm("سيتم إعادة تعيين كل تقدم الحفظ والمراجعة (مع الاحتفاظ بأهدافك). متابعة؟")) return;
+  const goals = DATA.goals;
+  const settings = DATA.settings;
+  DATA = defaultData();
+  DATA.goals = goals;
+  DATA.settings = settings;
+  saveData();
+  closeSettings();
+  location.reload();
+}
+function deleteAllData(){
+  if(!confirm("سيتم حذف كل البيانات نهائيًا ولا يمكن التراجع عن هذا. متابعة؟")) return;
+  localStorage.removeItem(LS_KEY);
+  localStorage.removeItem("quranTrackerData_v2");
+  localStorage.removeItem("quranTrackerData_v1");
+  location.reload();
+}
+document.getElementById("btnExportData").addEventListener("click", exportData);
+document.getElementById("importFileInput").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(file) importDataFile(file);
+  e.target.value = "";
+});
+document.getElementById("btnResetProgress").addEventListener("click", resetProgress);
+document.getElementById("btnDeleteAll").addEventListener("click", deleteAllData);
+
+/* ============ REVIEW LIST DELEGATION ============ */
+document.getElementById("reviewListBox").addEventListener("click", e=>{
+  const btn = e.target.closest(".mini-review-btn");
+  if(btn) quickReview(parseInt(btn.dataset.n,10));
+});
+document.getElementById("todayReviewListBox").addEventListener("click", e=>{
+  const btn = e.target.closest(".mini-review-btn");
+  if(btn) quickReview(parseInt(btn.dataset.n,10));
 });
 
 /* ============ TOAST ============ */
@@ -1133,14 +1624,23 @@ function renderAll(){
   renderWeeklySummary();
   renderJuz(d);
   renderStats(d);
+  renderRecords();
+  renderLevelAnalysis();
   renderGoals();
   renderBadges();
   renderCalendar();
+  renderJourney();
+  renderTimeline();
+  renderTodayPlan();
+  renderTodayReviewList();
+  renderStreakBanner();
 }
 
 renderAyah();
+if(!DATA.journey.start){ DATA.journey.start = todayStr(); saveData(); }
 renderAll();
 syncBadgesSilently();
+checkJourneyMilestones();
 initSearch();
 </script>
 </body>
