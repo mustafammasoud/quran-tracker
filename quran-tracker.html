@@ -4085,3 +4085,23 @@
           });
         }
       }
+
+      /* ============ ONBOARDING ============ */
+      const ONBOARDING_KEY = "quranTrackerOnboarded";
+      function initOnboarding() {
+        try {
+          if (localStorage.getItem(ONBOARDING_KEY)) return;
+        } catch (e) {}
+        const overlay = document.getElementById("onboardingOverlay");
+        if (!overlay) return;
+        overlay.classList.add("show");
+        const btn = document.getElementById("btnStartOnboarding");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            overlay.classList.remove("show");
+            try {
+              localStorage.setItem(ONBOARDING_KEY, "1");
+            } catch (e) {}
+          });
+        }
+      }
