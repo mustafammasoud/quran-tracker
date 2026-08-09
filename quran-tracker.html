@@ -639,7 +639,53 @@ function levelName(d){
   return "حافظ جزء";
 }
 
-
+/* ============ BADGES ============ */
+const BADGES = [
+  {id:"first_surah", icon:"🌱", title:"أول سورة", desc:"احفظ أول سورة كاملة", test:(d,st)=> d.memorizedCount>=1},
+  {id:"ten_surahs", icon:"📗", title:"10 سور", desc:"احفظ 10 سور", test:(d,st)=> d.memorizedCount>=10},
+  {id:"thirty_surahs", icon:"📘", title:"30 سورة", desc:"احفظ 30 سورة", test:(d,st)=> d.memorizedCount>=30},
+  {id:"all_surahs", icon:"📕", title:"114 سورة", desc:"احفظ القرآن كاملاً", test:(d,st)=> d.memorizedCount>=114},
+  {id:"first_juz", icon:"🕌", title:"أول جزء", desc:"أكمل أول جزء", test:(d,st)=> d.juzComplete.length>=1},
+  {id:"five_juz", icon:"🕋", title:"5 أجزاء", desc:"أكمل 5 أجزاء", test:(d,st)=> d.juzComplete.length>=5},
+  {id:"ten_juz", icon:"⭐", title:"10 أجزاء", desc:"أكمل 10 أجزاء", test:(d,st)=> d.juzComplete.length>=10},
+  {id:"quarter", icon:"🌗", title:"ربع القرآن", desc:"25% من القرآن محفوظة", test:(d,st)=> d.overallPct>=25},
+  {id:"half", icon:"🌕", title:"نصف القرآن", desc:"50% من القرآن محفوظة", test:(d,st)=> d.overallPct>=50},
+  {id:"full", icon:"🏆", title:"ختمة الحفظ", desc:"100% من القرآن محفوظة", test:(d,st)=> d.overallPct>=99.99},
+  {id:"streak7", icon:"🔥", title:"سلسلة أسبوع", desc:"7 أيام متتالية من النشاط", test:(d,st)=> st.longest>=7},
+  {id:"streak30", icon:"💎", title:"سلسلة شهر", desc:"30 يوم متتالي من النشاط", test:(d,st)=> st.longest>=30},
+];
+function computeBadges(){
+  const d = computeDerived();
+  const st = streaks();
+  return BADGES.map(b=>({...b, achieved: b.test(d, st)}));
+}
+function syncBadgesSilently(){
+  const achieved = computeBadges().filter(b=>b.achieved).map(b=>b.id);
+  DATA.unlockedBadges = achieved;
+  saveData();
+}
+function checkNewBadges(){
+  const achievedList = computeBadges().filter(b=>b.achieved);
+  const achievedIds = achievedList.map(b=>b.id);
+  const prev = new Set(DATA.unlockedBadges||[]);
+  const newly = achievedList.filter(b=>!prev.has(b.id));
+  DATA.unlockedBadges = achievedIds;
+  saveData();
+  return newly;
+}
+function renderBadges(){
+  const box = document.getElementById("badgeGrid");
+  if(!box) return;
+  const list = computeBadges();
+  box.innerHTML = list.map(b=>`
+    <div class="badge-card ${b.achieved?'unlocked':'locked'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-title">${b.title}</div>
+      <div class="badge-desc">${b.desc}</div>
+      ${b.achieved? '<div class="badge-check">✓ مُحقَّق</div>' : ''}
+    </div>
+  `).join("");
+}
 
 /* ============ RENDER: SURAH GRID ============ */
 function stateFill(status){
