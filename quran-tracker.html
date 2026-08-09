@@ -4058,3 +4058,30 @@
         موعد الختمة التقديري: <b style="color:var(--emerald)">${estDate.toLocaleDateString("ar-EG")}</b>
       </div>`;
       }
+
+
+      /* ============ THEME (DARK MODE) ============ */
+      const THEME_KEY = "quranTrackerTheme";
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        const btn = document.getElementById("btnTheme");
+        if (btn) btn.textContent = theme === "dark" ? "☀️" : "🌙";
+        try {
+          localStorage.setItem(THEME_KEY, theme);
+        } catch (e) {}
+      }
+      function initTheme() {
+        let theme = "light";
+        try {
+          theme = localStorage.getItem(THEME_KEY) || "light";
+        } catch (e) {}
+        applyTheme(theme);
+        const btn = document.getElementById("btnTheme");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            const current =
+              document.documentElement.getAttribute("data-theme") || "light";
+            applyTheme(current === "dark" ? "light" : "dark");
+          });
+        }
+      }
