@@ -3710,4 +3710,107 @@
         if (e.target.id === "overlay") closeModal();
       });
 
-     
+     /* ============ SELF TEST ============ */
+      const SELF_TEST_AYAT = [
+        "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+        "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+        "الرَّحْمَٰنِ الرَّحِيمِ",
+        "مَالِكِ يَوْمِ الدِّينِ",
+        "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+        "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+        "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ",
+        "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+      ];
+      function startSelfTest() {
+        if (currentModalSurah == null) return;
+        const box = document.getElementById("selfTestBox");
+        const pick =
+          SELF_TEST_AYAT[Math.floor(Math.random() * SELF_TEST_AYAT.length)];
+        const words = pick.split(" ");
+        const revealCount = Math.max(1, Math.floor(words.length / 3));
+        const hint = words.slice(0, revealCount).join(" ");
+        box.innerHTML =
+          '<div style="font-size:12px;color:var(--ink-soft);margin-bottom:6px">أكمل الآية التالية:</div>' +
+          '<div style="font-size:15px;line-height:1.8;margin-bottom:10px;color:var(--emerald-deep)">' +
+          hint +
+          " ...</div>" +
+          '<div style="display:flex;gap:8px">' +
+          '<button class="btn ghost" id="btnTestPass" style="flex:1;background:var(--emerald);color:#fff">أتقنتها</button>' +
+          '<button class="btn ghost" id="btnTestFail" style="flex:1;background:var(--red);color:#fff">نسيتها</button>' +
+          "</div>";
+        document.getElementById("btnTestPass").addEventListener("click", () => {
+          srsReviewSuccess(currentModalSurah);
+          logActivity("test");
+          renderAll();
+          box.innerHTML =
+            '<button class="btn ghost" id="btnStartSelfTest" style="flex:none;padding:8px 14px">اختبر نفسك في هذه السورة</button>';
+          document
+            .getElementById("btnStartSelfTest")
+            .addEventListener("click", startSelfTest);
+          showToast("أحسنت! تم رفع مستوى المراجعة ✅");
+        });
+        document.getElementById("btnTestFail").addEventListener("click", () => {
+          srsReviewFail(currentModalSurah);
+          logActivity("test");
+          renderAll();
+          box.innerHTML =
+            '<button class="btn ghost" id="btnStartSelfTest" style="flex:none;padding:8px 14px">اختبر نفسك في هذه السورة</button>';
+          document
+            .getElementById("btnStartSelfTest")
+            .addEventListener("click", startSelfTest);
+          showToast("لا بأس، راجعها وعد للاختبار لاحقًا 🌿");
+        });
+      }
+      document
+        .getElementById("btnStartSelfTest")
+        .addEventListener("click", startSelfTest);
+
+      document.getElementById("mSave").addEventListener("click", () => {
+        if (currentModalSurah == null) return;
+        const sel = document.querySelector("#mStateBtns button.sel");
+        const newStatus = sel
+          ? sel.dataset.key
+          : DATA.state[currentModalSurah].status;
+        const rec = DATA.state[currentModalSurah];
+        const s = SURAHS.find((x) => x.n === currentModalSurah);
+        const prevDerived = computeDerived();
+        if (rec.status === "none" && newStatus !== "none" && !rec.startedDate)
+          rec.startedDate = todayStr();
+        rec.status = newStatus;
+        rec.notes = document.getElementById("mNotes").value.trim();
+        if (newStatus === "memorized" || newStatus === "excellent") {
+          rec.lastReview =
+            document.getElementById("mReviewDate").value || todayStr();
+          if (!rec.memorizedDate) rec.memorizedDate = todayStr();
+          rec.memorizedAyat = s.ayat;
+          DATA.surahReviewCount[currentModalSurah] =
+            (DATA.surahReviewCount[currentModalSurah] || 0) + 1;
+          logReview();
+          logActivity("review");
+        }
+        if (newStatus === "none") {
+          rec.lastReview = null;
+          rec.memorizedDate = null;
+          rec.memorizedAyat = 0;
+          rec.startedDate = null;
+        } else {
+          logActivity("hifz");
+        }
+        saveData();
+        closeModal();
+        renderAll();
+        const newDerived = computeDerived();
+        const juzWasComplete = prevDerived.juzComplete.includes(s ? s.juz : -1);
+        const juzNowComplete = newDerived.juzComplete.includes(s ? s.juz : -1);
+        const newBadges = checkProgressEvents();
+        if (newBadges.length) {
+          showToast(
+            `🏅 إنجاز جديد: ${newBadges.map((b) => b.title).join("، ")}`,
+            true,
+          );
+        } else if (!juzWasComplete && juzNowComplete) {
+          showToast(`أتممت الجزء ${s.juz}! 🌿`, true);
+        } else {
+          showToast("تم الحفظ ✅");
+        }
+      });
