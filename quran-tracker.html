@@ -1,1250 +1,3353 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title> القرآن — متتبع الحفظ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #F4F6FA;
-    --bg-panel: #FFFFFF;
-    --bg-soft: #EEF1F7;
-    --ink: #1A2333;
-    --ink-soft: #6B7488;
-    --gold: #D8A94B;
-    --gold-soft: #F1E1B8;
-    --emerald-deep: #0F2E3D;
-    --emerald: #0E8F84;
-    --mint: #57D6C4;
-    --gray: #98A2B3;
-    --gray-line: #E3E7EF;
-    --amber: #F2A93B;
-    --orange: #F0703D;
-    --red: #EF4A5B;
-    --blue: #4C6FFF;
-    --purple: #9B6BF2;
-    --shadow: 0 8px 24px rgba(16,30,60,.09);
-    --radius: 16px;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background: radial-gradient(circle at 20% 0%, #FCFDFF 0%, var(--bg) 45%, #EAF0F5 100%);
-    color: var(--ink);
-    font-family: 'Aref Ruqaa', serif;
-    min-height:100vh;
-    padding-bottom: 60px;
-  }
-  .display{font-family:'Aref Ruqaa', serif;}
-  a{color:inherit;}
-
-  header{padding: 22px 18px 14px; max-width: 1200px; margin: 0 auto;}
-  .top-row{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;}
-  .brand{display:flex; align-items:center; gap:10px;}
-  .brand-mark{
-    width:42px;height:42px;border-radius:50%;
-    background: conic-gradient(from 200deg, var(--emerald), var(--gold), var(--emerald));
-    display:flex;align-items:center;justify-content:center; box-shadow: var(--shadow); font-size:20px;
-  }
-  h1{font-family:'Aref Ruqaa',serif; font-size:26px; margin:0; color:var(--emerald-deep);}
-  .sub{font-size:12.5px;color:var(--ink-soft); margin-top:2px;}
-  .badges-row{display:flex; gap:10px; align-items:center;}
-  .pill{
-    background: var(--bg-panel); border:1px solid var(--gray-line); border-radius:999px;
-    padding:8px 14px; font-size:13px; font-weight:600; box-shadow: var(--shadow);
-    display:flex; align-items:center; gap:6px; white-space:nowrap;
-  }
-  .pill.streak{color:var(--orange);}
-  .pill.level{color:var(--emerald);}
-  .pill.icon-only{padding:8px 12px; cursor:pointer; font-family:inherit; font-size:16px; color:var(--ink);}
-  .pill.icon-only:hover{border-color:var(--emerald);}
-
-  .ayah-card{
-    margin-top:16px; background: linear-gradient(135deg, var(--emerald-deep), var(--emerald) 70%);
-    color:#F6EFD9; border-radius: var(--radius); padding: 18px 22px; box-shadow: var(--shadow);
-    position:relative; overflow:hidden;
-  }
-  .ayah-card::before{content:""; position:absolute; inset:0; background: radial-gradient(circle at 90% 10%, rgba(201,162,39,.25), transparent 55%);}
-  .ayah-text{font-family:'Aref Ruqaa',serif; font-size:19px; line-height:2; position:relative;}
-  .ayah-src{font-size:11.5px; opacity:.75; margin-top:6px; position:relative;}
-
-  nav.tabs{max-width:1200px; margin: 18px auto 0; padding:0 18px; display:flex; gap:8px; flex-wrap:wrap;}
-  nav.tabs button{
-    font-family:'Aref Ruqaa',serif; font-weight:700; font-size:14px;
-    background: var(--bg-panel); border:1px solid var(--gray-line); color:var(--ink-soft);
-    padding:10px 18px; border-radius:999px; cursor:pointer; transition:.15s;
-  }
-  nav.tabs button.active{background: var(--emerald-deep); color:#fff; border-color:var(--emerald-deep);}
-  nav.tabs button:hover{border-color:var(--emerald);}
-
-  main{max-width:1200px; margin: 0 auto; padding: 18px;}
-  .view{display:none;}
-  .view.active{display:block;}
-
-  .panel{
-    background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 20px; margin-bottom:18px; border:1px solid var(--gray-line);
-  }
-  .panel h2{font-family:'Aref Ruqaa',serif; font-size:20px; margin:0 0 4px; color:var(--emerald-deep);}
-  .panel .hint{font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;}
-
-  /* ===== Search box (find a surah in the heart) ===== */
-  .search-box{position:relative; margin-bottom:14px;}
-  .search-box input{
-    width:100%; padding:12px 16px; border-radius:12px; border:1.5px solid var(--gray-line);
-    font-family:'Aref Ruqaa',serif; font-size:14px; background:var(--bg-panel); color:var(--ink);
-  }
-  .search-box input:focus{outline:none; border-color:var(--emerald);}
-  .search-results{
-    position:absolute; top:calc(100% + 6px); right:0; left:0; background:#fff; border-radius:12px;
-    box-shadow: var(--shadow); border:1px solid var(--gray-line); max-height:280px; overflow-y:auto; z-index:30; display:none;
-  }
-  .search-results.show{display:block;}
-  .search-result-item{padding:10px 14px; cursor:pointer; font-size:13.5px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-line);}
-  .search-result-item:last-child{border-bottom:none;}
-  .search-result-item:hover{background:var(--bg-soft);}
-  .search-result-item small{color:var(--ink-soft); font-size:11.5px;}
-  .search-empty{padding:14px; font-size:13px; color:var(--ink-soft); text-align:center;}
-
-  /* ===== Surah grid (each tile = one surah) ===== */
-  .surah-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(112px,1fr)); gap:9px;
-  }
-  .surah-tile{
-    border-radius:12px; padding:10px 8px 9px; text-align:center; cursor:pointer;
-    border:2.5px solid transparent; transition:.12s; position:relative; user-select:none;
-  }
-  .surah-tile:hover{filter:brightness(1.08); transform:translateY(-2px);}
-  .surah-tile .num{font-size:10px; opacity:.75; font-weight:600;}
-  .surah-tile .name{font-weight:700; font-size:14px; margin-top:3px; line-height:1.3;}
-  .surah-tile .juz{font-size:9.5px; opacity:.7; margin-top:4px;}
-  .tile-note-dot{position:absolute; top:5px; left:6px; font-size:10px; opacity:.85;}
-  .tile-progress-bg{height:4px; border-radius:3px; margin-top:7px; background:rgba(0,0,0,.16); overflow:hidden;}
-  .tile-progress-fill{height:100%; background:var(--gold); opacity:.9;}
-
-  @keyframes tilePulse{
-    0%,100%{ box-shadow:0 0 0 3px var(--gold); transform:scale(1); }
-    50%{ box-shadow:0 0 0 7px var(--gold); transform:scale(1.06); }
-  }
-  .surah-tile.search-hit{ animation: tilePulse .9s ease-in-out 3; z-index:5; }
-
-  .legend{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; justify-content:center;}
-  .legend span{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft);}
-  .dot{width:11px;height:11px;border-radius:4px; display:inline-block;}
-
-  .side-stats-row{display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:18px;}
-  .progress-ring-box{background: var(--bg-soft); border-radius: var(--radius); padding:18px; text-align:center;}
-  .big-num{font-family:'Aref Ruqaa',serif; font-size:34px; color:var(--emerald-deep); font-weight:700;}
-  .big-num-label{font-size:12.5px; color:var(--ink-soft);}
-  .stat-mini{background:var(--bg-soft); border-radius:12px; padding:14px; text-align:center;}
-  .stat-mini .n{font-weight:700; font-size:22px; color:var(--emerald);}
-  .stat-mini .l{font-size:11.5px; color:var(--ink-soft);}
-
-  .review-list{margin-top:18px;}
-  .weekly-card{
-    margin-top:14px; background: linear-gradient(135deg, var(--emerald-deep), var(--emerald) 85%);
-    border-radius: var(--radius); padding:16px 18px; color:#F6EFD9;
-  }
-  .weekly-title{font-family:'Aref Ruqaa',serif; font-size:15.5px; margin-bottom:10px;}
-  .weekly-row{display:flex; gap:14px; flex-wrap:wrap;}
-  .weekly-item{flex:1; text-align:center; min-width:70px;}
-  .weekly-item .n{font-family:'Aref Ruqaa',serif; font-size:24px; font-weight:700;}
-  .weekly-item .l{font-size:10.5px; opacity:.85; margin-top:2px;}
-  .review-item{
-    display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:8px 10px; border-radius:10px; margin-bottom:6px; font-size:13px;
-    border-inline-start: 4px solid var(--gray); background: var(--bg-soft);
-  }
-  .review-item.y{border-inline-start-color: var(--amber);}
-  .review-item.o{border-inline-start-color: var(--orange);}
-  .review-item.r{border-inline-start-color: var(--red);}
-  .review-item small{color:var(--ink-soft);}
-  .mini-review-btn{
-    background:var(--emerald); color:#fff; border:none; border-radius:8px; padding:6px 11px;
-    font-family:'Aref Ruqaa'; font-size:11.5px; cursor:pointer; flex-shrink:0; white-space:nowrap;
-  }
-  .mini-review-btn:hover{background:var(--emerald-deep);}
-
-  /* ===== Journey ===== */
-  .journey-track{display:flex; gap:0; overflow-x:auto; padding:14px 4px 8px;}
-  .journey-node{flex:0 0 148px; text-align:center; position:relative; padding:0 8px;}
-  .journey-node:not(:last-child)::after{content:""; position:absolute; top:28px; right:-40%; width:80%; height:3px; background:var(--gray-line); z-index:0;}
-  .journey-node.done:not(:last-child)::after{background:var(--emerald);}
-  .journey-icon{width:56px;height:56px;border-radius:50%; background:var(--bg-soft); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 8px; position:relative; z-index:1; border:3px solid var(--gray-line);}
-  .journey-node.done .journey-icon{background:var(--gold-soft); border-color:var(--gold);}
-  .journey-node.next .journey-icon{border-color:var(--emerald); animation:pulseJourney 1.6s infinite;}
-  @keyframes pulseJourney{0%,100%{box-shadow:0 0 0 0 rgba(14,143,132,.35);}50%{box-shadow:0 0 0 8px rgba(14,143,132,0);}}
-  .journey-title{font-weight:700; font-size:13px;}
-  .journey-date{font-size:10.5px; color:var(--emerald); margin-top:4px;}
-  .journey-remaining{font-size:10.5px; color:var(--ink-soft); margin-top:4px;}
-  .journey-locked{font-size:10.5px; color:var(--gray); margin-top:4px;}
-
-  .timeline-item{display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--gray-line);}
-  .timeline-item:last-child{border-bottom:none;}
-  .timeline-icon{font-size:18px; width:34px;height:34px;border-radius:50%; background:var(--bg-soft); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
-  .timeline-text{font-size:13.5px; font-weight:600;}
-  .timeline-date{font-size:11px; color:var(--ink-soft); margin-top:2px;}
-
-  /* ===== Today plan / streak rescue ===== */
-  .risk-banner{
-    display:none; background:linear-gradient(135deg,#FCEFE1,#FDF6E9); border:1.5px solid var(--amber);
-    border-radius:12px; padding:12px 14px; font-size:13px; color:#8A5A12; margin-bottom:16px;
-    align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
-  }
-  .icon-btn-text{
-    background:var(--amber); color:#fff; border:none; border-radius:8px; padding:7px 12px;
-    font-family:'Aref Ruqaa'; font-size:12px; cursor:pointer; white-space:nowrap;
-  }
-  .icon-btn-text:disabled{opacity:.5; cursor:default;}
-
-  /* ===== Juz view ===== */
-  .juz-grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:12px;}
-  .juz-card{background:var(--bg-soft); border-radius:12px; padding:12px 14px;}
-  .juz-card .top{display:flex; justify-content:space-between; font-weight:700; font-size:14px; margin-bottom:6px;}
-  .juz-card .surahs{font-size:11.5px; color:var(--ink-soft); margin-bottom:8px; line-height:1.6;}
-  .bar-bg{height:8px; border-radius:6px; background:#E3E7EF; overflow:hidden;}
-  .bar-fill{height:100%; background: linear-gradient(90deg, var(--mint), var(--emerald));}
-
-  /* ===== Stats view ===== */
-  .stats-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:14px; margin-bottom:18px;}
-  .stat-card{background:var(--bg-soft); border-radius:14px; padding:16px; text-align:center;}
-  .stat-card .n{font-family:'Aref Ruqaa',serif; font-size:24px; color:var(--emerald-deep); font-weight:700;}
-  .stat-card .l{font-size:11.5px; color:var(--ink-soft); margin-top:2px;}
-  .chart{display:flex; align-items:flex-end; gap:3px; height:110px; padding-top:10px;}
-  .chart .bar{flex:1; background: linear-gradient(180deg, var(--mint), var(--emerald)); border-radius:3px 3px 0 0; min-height:2px;}
-
-  .level-row{display:flex; align-items:center; gap:10px; padding:8px 4px; font-size:13.5px; border-bottom:1px solid var(--gray-line);}
-  .level-row:last-child{border-bottom:none;}
-  .level-dot{width:12px;height:12px;border-radius:50%; flex-shrink:0;}
-  .level-dot.green{background:var(--emerald);}
-  .level-dot.yellow{background:var(--amber);}
-  .level-dot.red{background:var(--red);}
-
-  /* ===== Goals (custom, user-managed) ===== */
-  .goals-toolbar{display:flex; justify-content:flex-end; margin-bottom:14px;}
-  .btn-add{
-    background: var(--emerald-deep); color:#fff; border:none; border-radius:10px; padding:10px 18px;
-    font-family:'Aref Ruqaa'; font-weight:700; font-size:13.5px; cursor:pointer; display:flex; gap:6px; align-items:center; justify-content:center;
-  }
-  .goal-form{
-    background: var(--bg-soft); border-radius:14px; padding:16px; margin-bottom:16px; display:none;
-  }
-  .goal-form.show{display:block;}
-  .goal-form .row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;}
-  .goal-form input[type=text], .goal-form textarea{
-    flex:1; min-width:180px; padding:9px 12px; border-radius:9px; border:1px solid var(--gray-line);
-    font-family:'Aref Ruqaa'; font-size:13.5px;
-  }
-  .goal-form textarea{resize:vertical; min-height:44px;}
-  .goal-form .actions{display:flex; gap:8px; justify-content:flex-end;}
-  .goals-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:14px;}
-  .goal-card{background:var(--bg-soft); border-radius:14px; padding:16px; position:relative;}
-  .goal-card.done{box-shadow: 0 0 0 2px var(--gold) inset;}
-  .goal-top{display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:6px;}
-  .goal-title{font-weight:700; font-size:14.5px;}
-  .goal-desc{font-size:12px; color:var(--ink-soft); margin-bottom:10px; white-space:pre-wrap;}
-  .goal-icon-actions{display:flex; gap:6px; flex-shrink:0;}
-  .icon-btn{
-    background:#fff; border:1px solid var(--gray-line); border-radius:8px; width:26px; height:26px;
-    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px;
-  }
-  .goal-progress-row{display:flex; align-items:center; gap:10px; margin-top:8px;}
-  .goal-progress-row input[type=range]{flex:1; accent-color: var(--emerald);}
-  .goal-progress-row .pct{font-weight:700; font-size:13px; color:var(--emerald-deep); min-width:38px; text-align:left;}
-  .goal-empty{font-size:13px; color:var(--ink-soft); text-align:center; padding:30px 0;}
-
-  /* ===== Badges ===== */
-  .badge-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:12px;}
-  .badge-card{
-    background:var(--bg-soft); border-radius:14px; padding:18px 10px 14px; text-align:center;
-    transition:.15s; position:relative;
-  }
-  .badge-card.locked{opacity:.42; filter:grayscale(1);}
-  .badge-card.unlocked{box-shadow:0 0 0 2px var(--gold) inset; background:linear-gradient(160deg, var(--gold-soft), var(--bg-soft) 70%);}
-  .badge-icon{font-size:32px; margin-bottom:8px;}
-  .badge-title{font-weight:700; font-size:13.5px; color:var(--ink);}
-  .badge-desc{font-size:10.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5;}
-  .badge-check{font-size:10.5px; color:var(--emerald); font-weight:700; margin-top:8px;}
-
-  /* ===== Calendar ===== */
-  .cal-grid{display:grid; grid-template-columns: repeat(13, 1fr); gap:4px; direction:ltr;}
-  .cal-week{display:grid; grid-template-rows:repeat(7,1fr); gap:4px;}
-  .cal-day{width:100%; padding-top:100%; position:relative; border-radius:3px; background:#E3E7EF;}
-  .day-detail-box{margin-top:12px; font-size:12.5px; color:var(--ink-soft); text-align:center; min-height:18px;}
-
-  /* ===== Modal ===== */
-  .overlay{position:fixed; inset:0; background:rgba(22,54,40,.45); display:none; align-items:center; justify-content:center; z-index:50; padding:16px;}
-  .overlay.show{display:flex;}
-  .modal{background:#fff; border-radius:18px; padding:24px; max-width:380px; width:100%; box-shadow: 0 20px 60px rgba(0,0,0,.3); max-height:90vh; overflow-y:auto;}
-  .modal h3{font-family:'Aref Ruqaa',serif; margin:0 0 2px; color:var(--emerald-deep); font-size:20px;}
-  .modal .meta{font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
-  .state-btns{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
-  .state-btns button{
-    border:2px solid var(--gray-line); background:#fff; border-radius:10px; padding:9px 6px;
-    font-family:'Aref Ruqaa'; font-size:12.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; justify-content:center;
-  }
-  .state-btns button.sel{border-color: var(--emerald-deep); background: var(--bg-soft);}
-  .modal label{font-size:12.5px; color:var(--ink-soft); display:block; margin-bottom:4px;}
-  .modal input[type=date]{width:100%; padding:8px; border-radius:8px; border:1px solid var(--gray-line); font-family:'Aref Ruqaa'; margin-bottom:14px;}
-  .session-box{background:var(--bg-soft); border-radius:12px; padding:12px; margin-bottom:14px;}
-  .session-progress-row{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
-  .session-add-row{display:flex; gap:8px;}
-  .session-add-row input[type=number]{
-    flex:1; min-width:0; padding:8px 10px; border-radius:8px; border:1px solid var(--gray-line);
-    font-family:'Aref Ruqaa'; font-size:13px;
-  }
-  .modal textarea{
-    width:100%; min-height:60px; padding:9px 12px; border-radius:9px; border:1px solid var(--gray-line);
-    font-family:'Aref Ruqaa'; font-size:13px; resize:vertical;
-  }
-  .modal-actions{display:flex; gap:8px;}
-  .btn{flex:1; padding:10px; border-radius:10px; border:none; font-family:'Aref Ruqaa'; font-weight:700; cursor:pointer; font-size:13.5px;}
-  .btn.primary{background:var(--emerald-deep); color:#fff;}
-  .btn.ghost{background:var(--bg-soft); color:var(--ink);}
-
-  .settings-check{display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:13px; color:var(--ink);}
-  .settings-num{width:100%; padding:9px 12px; border-radius:9px; border:1px solid var(--gray-line); font-family:'Aref Ruqaa'; margin-bottom:14px;}
-  .settings-actions{display:flex; flex-direction:column; gap:8px; margin-bottom:14px;}
-
-  #toast{
-    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
-    background: var(--emerald-deep); color:#F6EFD9; padding:14px 22px; border-radius:14px;
-    font-size:13.5px; box-shadow: var(--shadow); opacity:0; pointer-events:none; transition:.3s;
-    max-width:90vw; text-align:center; z-index:100; border:1px solid var(--gold);
-  }
-  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-  #toast .dua{font-family:'Aref Ruqaa',serif; font-size:16px; display:block; margin-top:4px;}
-
-  footer{text-align:center; font-size:11.5px; color:var(--ink-soft); padding:20px;}
-
-  @media (max-width:640px){
-    h1{font-size:21px;}
-    .ayah-text{font-size:16px;}
-  }
-</style>
-</head>
-<body>
-
-<header>
-  <div class="top-row">
-    <div class="brand">
-      <div class="brand-mark">❤️</div>
-      <div>
-        <h1> القرآن</h1>
-        <div class="sub">متتبع حفظ ومراجعة القرآن الكريم</div>
-      </div>
-    </div>
-    <div class="badges-row">
-      <button class="pill icon-only" id="btnSettings" title="الإعدادات">⚙️</button>
-      <div class="pill streak">🔥 <span id="streakVal">0</span> يوم</div>
-      <div class="pill level">⭐ <span id="levelVal">طالب</span></div>
-    </div>
-  </div>
-
-  <div class="ayah-card">
-    <div class="ayah-text" id="ayahText">—</div>
-    <div class="ayah-src" id="ayahSrc"></div>
-  </div>
-</header>
-
-<nav class="tabs">
-  <button data-view="heart" class="active">❤️ سور القرآن</button>
-  <button data-view="journey">🗺️ رحلتي</button>
-  <button data-view="juz">📖 الأجزاء</button>
-  <button data-view="stats">📊 الإحصائيات</button>
-  <button data-view="goals">🏹 الأهداف</button>
-  <button data-view="badges">🏅 الإنجازات</button>
-  <button data-view="calendar">📅 التقويم</button>
-</nav>
-
-<main>
-
-  <!-- HEART VIEW -->
-  <section class="view active" id="view-heart">
-    <div class="panel">
-      <h2>قلبك مع القرآن</h2>
-      <div class="hint">114 سورة — اضغط على أي سورة لتغيير حالتها. استخدم البحث لو مش لاقي سورة معيّنة بسرعة.</div>
-
-      <div class="search-box">
-        <input type="text" id="surahSearch" placeholder="🔍 اكتب اسم السورة لمعرفة مكانها...">
-        <div class="search-results" id="searchResults"></div>
-      </div>
-
-      <div class="surah-grid" id="surahGrid"></div>
-
-      <div class="legend">
-        <span><i class="dot" style="background:var(--gray)"></i> لم تبدأ</span>
-        <span><i class="dot" style="background:var(--amber)"></i> قيد الحفظ</span>
-        <span><i class="dot" style="background:var(--emerald)"></i> محفوظة</span>
-        <span><i class="dot" style="background:var(--blue)"></i> مراجعة ممتازة</span>
-      </div>
-
-      <div class="side-stats-row">
-        <div class="progress-ring-box">
-          <div class="big-num"><span id="pctVal">0</span>%</div>
-          <div class="big-num-label">نسبة الإنجاز من القرآن</div>
-        </div>
-        <div class="stat-mini"><div class="n" id="miniSurahs">0/114</div><div class="l">سور محفوظة</div></div>
-        <div class="stat-mini"><div class="n" id="miniJuz">0/30</div><div class="l">أجزاء مكتملة</div></div>
-      </div>
-
-      <div class="weekly-card">
-        <div class="weekly-title">🗓️ ملخص آخر 7 أيام</div>
-        <div class="weekly-row">
-          <div class="weekly-item"><div class="n" id="weeklyAyat">0</div><div class="l">آية محفوظة</div></div>
-          <div class="weekly-item"><div class="n" id="weeklyReviews">0</div><div class="l">سورة رُوجعت</div></div>
-          <div class="weekly-item"><div class="n" id="weeklyDays">0</div><div class="l">أيام منجزة</div></div>
-          <div class="weekly-item"><div class="n" id="weeklyPct">—</div><div class="l">مقارنة بالأسبوع الماضي</div></div>
-        </div>
-      </div>
-
-      <div class="review-list">
-        <div style="font-weight:700; font-size:13px; margin-bottom:6px;">🕑 بحاجة للمراجعة</div>
-        <div id="reviewListBox"><span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت!</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- JOURNEY VIEW -->
-  <section class="view" id="view-journey">
-    <div class="panel">
-      <h2>🗺️ رحلة الحفظ</h2>
-      <div class="hint">محطات رحلتك من أول آية إلى ختم القرآن كاملًا.</div>
-      <div class="journey-track" id="journeyGrid"></div>
-    </div>
-    <div class="panel">
-      <h2>📜 سجل رحلتي</h2>
-      <div class="hint">كل إنجاز تحققه هنا مرتب زمنيًا.</div>
-      <div id="timelineBox"></div>
-    </div>
-  </section>
-
-  <!-- JUZ VIEW -->
-  <section class="view" id="view-juz">
-    <div class="panel">
-      <h2>الأجزاء الثلاثون</h2>
-      <div class="hint">كل سورة محسوبة ضمن الجزء الذي تبدأ فيه، والنسبة موزونة بعدد الآيات.</div>
-      <div class="juz-grid" id="juzGrid"></div>
-    </div>
-  </section>
-
-  <!-- STATS VIEW -->
-  <section class="view" id="view-stats">
-    <div class="panel">
-      <h2>إحصائياتك</h2>
-      <div class="stats-grid" id="statsGrid"></div>
-      <div style="font-weight:700; font-size:14px; margin-bottom:6px;">النشاط في آخر 30 يومًا</div>
-      <div class="chart" id="chartBox"></div>
-    </div>
-    <div class="panel">
-      <h2>🏆 أرقامك القياسية</h2>
-      <div class="hint">منافسة مع نفسك، مش مع حد تاني.</div>
-      <div class="stats-grid" id="recordsGrid"></div>
-    </div>
-    <div class="panel">
-      <h2>📈 تحليل هذا الأسبوع</h2>
-      <div id="levelAnalysisBox"></div>
-    </div>
-  </section>
-
-  <!-- GOALS VIEW -->
-  <section class="view" id="view-goals">
-    <div class="panel">
-      <h2>الأهداف</h2>
-      <div class="hint">أهدافك الخاصة — أضف، عدّل نسبة التقدم، أو احذف كما تحب.</div>
-      <div class="goals-toolbar"><button class="btn-add" id="btnShowGoalForm">＋ هدف جديد</button></div>
-
-      <div class="goal-form" id="goalForm">
-        <div class="row">
-          <input type="text" id="goalTitleInput" placeholder="عنوان الهدف (مثال: حفظ سورة الكهف)">
-        </div>
-        <div class="row">
-          <textarea id="goalDescInput" placeholder="وصف اختياري..."></textarea>
-        </div>
-        <div class="row actions">
-          <button class="btn ghost" id="goalCancelBtn" style="flex:none;padding:9px 16px;">إلغاء</button>
-          <button class="btn primary" id="goalSaveBtn" style="flex:none;padding:9px 16px;">حفظ الهدف</button>
-        </div>
-      </div>
-
-      <div class="goals-grid" id="goalsGrid"></div>
-    </div>
-  </section>
-
-  <!-- BADGES VIEW -->
-  <section class="view" id="view-badges">
-    <div class="panel">
-      <h2>الإنجازات</h2>
-      <div class="hint">شارات بتتفتح تلقائيًا كل ما تحقق إنجاز جديد في رحلة حفظك.</div>
-      <div class="badge-grid" id="badgeGrid"></div>
-    </div>
-  </section>
-
-  <!-- CALENDAR VIEW -->
-  <section class="view" id="view-calendar">
-    <div class="panel">
-      <h2>سجل الأيام</h2>
-      <div class="hint">كل مربع يمثل يومًا — اللون يعبّر عن نوع النشاط الأكثر في هذا اليوم. اضغط على أي يوم لعرض تفاصيله.</div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="legend" style="margin-top:12px;">
-        <span><i class="dot" style="background:#E3E7EF;border-radius:3px;"></i> بلا نشاط</span>
-        <span><i class="dot" style="background:var(--emerald);border-radius:3px;"></i> حفظ</span>
-        <span><i class="dot" style="background:var(--blue);border-radius:3px;"></i> مراجعة</span>
-        <span><i class="dot" style="background:var(--purple);border-radius:3px;"></i> تلاوة</span>
-        <span><i class="dot" style="background:var(--amber);border-radius:3px;"></i> اختبار</span>
-      </div>
-      <div class="day-detail-box" id="dayDetailBox"></div>
-    </div>
-  </section>
-
-</main>
-
-<footer>البيانات محفوظة في متصفحك فقط (localStorage) — لن تُفقد عند إغلاق الصفحة، إلا إذا مسحت بيانات المتصفح. يُنصح بتصدير نسخة احتياطية بين الحين والآخر من الإعدادات ⚙️.</footer>
-
-<!-- Surah Modal -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <h3 id="mSurahName">—</h3>
-    <div class="meta" id="mSurahMeta">—</div>
-    <div class="state-btns" id="mStateBtns"></div>
-
-    <div class="session-box">
-      <label>تقدم الحفظ داخل السورة</label>
-      <div class="session-progress-row">
-        <div class="bar-bg" style="flex:1;"><div class="bar-fill" id="mProgressFill" style="width:0%"></div></div>
-        <span id="mProgressLabel" style="font-size:12px;color:var(--ink-soft);white-space:nowrap;">0/0</span>
-      </div>
-      <div class="session-add-row">
-        <input type="number" id="mSessionAyat" min="1" placeholder="كام آية حفظت النهاردة؟">
-        <input type="number" id="mSessionMinutes" min="1" placeholder="دقائق (اختياري)" style="max-width:110px;">
-        <button class="btn ghost" id="mSessionAdd" style="flex:none;padding:8px 14px;">＋ إضافة</button>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button class="btn ghost" id="mLogRecitation" style="flex:1;">📿 تلاوة اليوم</button>
-        <button class="btn ghost" id="mLogTest" style="flex:1;">📝 اختبار اليوم</button>
-      </div>
-    </div>
-
-    <div id="reviewDateBox" style="display:none;">
-      <label>آخر مراجعة</label>
-      <input type="date" id="mReviewDate">
-    </div>
-
-    <div style="margin-bottom:14px;">
-      <label>ملاحظاتك على السورة</label>
-      <textarea id="mNotes" placeholder="آية بتقف عندها، غلطة بتتكرر، أو أي ملاحظة..."></textarea>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn ghost" id="mCancel">إلغاء</button>
-      <button class="btn primary" id="mSave">حفظ</button>
-    </div>
-  </div>
-</div>
-
-<!-- Settings Modal -->
-<div class="overlay" id="settingsOverlay">
-  <div class="modal">
-    <h3>⚙️ الإعدادات</h3>
-    <div class="meta">تحكم في هدفك اليومي وبياناتك</div>
-
-    <label>هدفك اليومي (عدد الآيات)</label>
-    <input type="number" id="settingDailyGoal" min="1" class="settings-num">
-
-    <label class="settings-check">
-      <input type="checkbox" id="settingGraceDay"> تفعيل "يوم إنقاذ" واحد شهريًا للحفاظ على السلسلة
-    </label>
-
-    <div class="settings-actions">
-      <button class="btn ghost" id="btnExportData">📥 تصدير البيانات (JSON)</button>
-      <label class="btn ghost" style="text-align:center; cursor:pointer; display:flex; align-items:center; justify-content:center;">📤 استيراد البيانات
-        <input type="file" id="importFileInput" accept="application/json" style="display:none;">
-      </label>
-      <button class="btn ghost" id="btnResetProgress">🔄 إعادة تعيين التقدم</button>
-      <button class="btn ghost" id="btnDeleteAll" style="color:var(--red);">🗑️ حذف كل البيانات</button>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn ghost" id="btnCloseSettings">إغلاق</button>
-      <button class="btn primary" id="btnSaveSettings">حفظ الإعدادات</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script>
-/* ============ DATA ============ */
-const SURAHS = [
-[1,"الفاتحة",7,1],[2,"البقرة",286,1],[3,"آل عمران",200,3],[4,"النساء",176,4],[5,"المائدة",120,6],
-[6,"الأنعام",165,7],[7,"الأعراف",206,8],[8,"الأنفال",75,9],[9,"التوبة",129,10],[10,"يونس",109,11],
-[11,"هود",123,11],[12,"يوسف",111,12],[13,"الرعد",43,13],[14,"إبراهيم",52,13],[15,"الحجر",99,14],
-[16,"النحل",128,14],[17,"الإسراء",111,15],[18,"الكهف",110,15],[19,"مريم",98,16],[20,"طه",135,16],
-[21,"الأنبياء",112,17],[22,"الحج",78,17],[23,"المؤمنون",118,18],[24,"النور",64,18],[25,"الفرقان",77,18],
-[26,"الشعراء",227,19],[27,"النمل",93,19],[28,"القصص",88,20],[29,"العنكبوت",69,20],[30,"الروم",60,21],
-[31,"لقمان",34,21],[32,"السجدة",30,21],[33,"الأحزاب",73,21],[34,"سبأ",54,22],[35,"فاطر",45,22],
-[36,"يس",83,22],[37,"الصافات",182,23],[38,"ص",88,23],[39,"الزمر",75,23],[40,"غافر",85,24],
-[41,"فصلت",54,24],[42,"الشورى",53,25],[43,"الزخرف",89,25],[44,"الدخان",59,25],[45,"الجاثية",37,25],
-[46,"الأحقاف",35,26],[47,"محمد",38,26],[48,"الفتح",29,26],[49,"الحجرات",18,26],[50,"ق",45,26],
-[51,"الذاريات",60,26],[52,"الطور",49,27],[53,"النجم",62,27],[54,"القمر",55,27],[55,"الرحمن",78,27],
-[56,"الواقعة",96,27],[57,"الحديد",29,27],[58,"المجادلة",22,28],[59,"الحشر",24,28],[60,"الممتحنة",13,28],
-[61,"الصف",14,28],[62,"الجمعة",11,28],[63,"المنافقون",11,28],[64,"التغابن",18,28],[65,"الطلاق",12,28],
-[66,"التحريم",12,28],[67,"الملك",30,29],[68,"القلم",52,29],[69,"الحاقة",52,29],[70,"المعارج",44,29],
-[71,"نوح",28,29],[72,"الجن",28,29],[73,"المزمل",20,29],[74,"المدثر",56,29],[75,"القيامة",40,29],
-[76,"الإنسان",31,29],[77,"المرسلات",50,29],[78,"النبأ",40,30],[79,"النازعات",46,30],[80,"عبس",42,30],
-[81,"التكوير",29,30],[82,"الانفطار",19,30],[83,"المطففين",36,30],[84,"الانشقاق",25,30],[85,"البروج",22,30],
-[86,"الطارق",17,30],[87,"الأعلى",19,30],[88,"الغاشية",26,30],[89,"الفجر",30,30],[90,"البلد",20,30],
-[91,"الشمس",15,30],[92,"الليل",21,30],[93,"الضحى",11,30],[94,"الشرح",8,30],[95,"التين",8,30],
-[96,"العلق",19,30],[97,"القدر",5,30],[98,"البينة",8,30],[99,"الزلزلة",8,30],[100,"العاديات",11,30],
-[101,"القارعة",11,30],[102,"التكاثر",8,30],[103,"العصر",3,30],[104,"الهمزة",9,30],[105,"الفيل",5,30],
-[106,"قريش",4,30],[107,"الماعون",7,30],[108,"الكوثر",3,30],[109,"الكافرون",6,30],[110,"النصر",3,30],
-[111,"المسد",5,30],[112,"الإخلاص",4,30],[113,"الفلق",5,30],[114,"الناس",6,30]
-].map(s=>({n:s[0],name:s[1],ayat:s[2],juz:s[3]}));
-
-const TOTAL_AYAT = SURAHS.reduce((a,s)=>a+s.ayat,0);
-
-const AYAT_MOTIVATION = [
- {t:"وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ", s:"سورة القمر"},
- {t:"إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ", s:"سورة الإسراء"},
- {t:"كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ", s:"سورة ص"},
- {t:"إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ", s:"سورة الحجر"},
- {t:"خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", s:"حديث شريف"},
- {t:"يُقَالُ لِصَاحِبِ الْقُرْآنِ اقْرَأْ وَارْتَقِ وَرَتِّلْ كَمَا كُنْتَ تُرَتِّلُ فِي الدُّنْيَا", s:"حديث شريف"},
- {t:"اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ", s:"حديث شريف"},
- {t:"وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا", s:"سورة المزمل"},
- {t:"أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ أَمْ عَلَىٰ قُلُوبٍ أَقْفَالُهَا", s:"سورة محمد"},
- {t:"اللَّهُمَّ اجْعَلِ الْقُرْآنَ رَبِيعَ قَلْبِي، وَنُورَ صَدْرِي، وَجَلَاءَ حُزْنِي، وَذَهَابَ هَمِّي", s:"دعاء مأثور"},
-];
-
-/* ============ STATE / STORAGE ============ */
-const LS_KEY = "quranTrackerData_v3";
-let DATA = loadData();
-
-function defaultData(){
-  const state = {};
-  SURAHS.forEach(s=> state[s.n] = {status:"none", lastReview:null, memorizedDate:null, startedDate:null, memorizedAyat:0, notes:""});
-  return {
-    state, log:{}, goals:[], ayahLog:{}, reviewLog:{}, unlockedBadges:[],
-    journey:{}, typeLog:{}, surahReviewCount:{}, graceDays:{}, fajrCount:0,
-    records:{longestSessionMin:0},
-    settings:{dailyGoal:8, graceDayEnabled:true}
-  };
-}
-function mergeState(baseState, savedState){
-  if(!savedState) return;
-  Object.keys(baseState).forEach(n=>{
-    if(savedState[n]) Object.assign(baseState[n], savedState[n]);
-  });
-}
-function normalizeData(parsed){
-  const base = defaultData();
-  mergeState(base.state, parsed.state);
-  base.log = parsed.log || {};
-  base.goals = Array.isArray(parsed.goals) ? parsed.goals : [];
-  base.ayahLog = parsed.ayahLog || {};
-  base.reviewLog = parsed.reviewLog || {};
-  base.unlockedBadges = Array.isArray(parsed.unlockedBadges) ? parsed.unlockedBadges : [];
-  base.journey = parsed.journey || {};
-  base.typeLog = parsed.typeLog || {};
-  base.surahReviewCount = parsed.surahReviewCount || {};
-  base.graceDays = parsed.graceDays || {};
-  base.fajrCount = parsed.fajrCount || 0;
-  base.records = Object.assign({}, base.records, parsed.records||{});
-  base.settings = Object.assign({}, base.settings, parsed.settings||{});
-  return base;
-}
-function loadData(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return migrateOld();
-    return normalizeData(JSON.parse(raw));
-  }catch(e){ return defaultData(); }
-}
-function migrateOld(){
-  try{
-    const rawV2 = localStorage.getItem("quranTrackerData_v2");
-    if(rawV2) return normalizeData(JSON.parse(rawV2));
-    const rawV1 = localStorage.getItem("quranTrackerData_v1");
-    if(rawV1) return normalizeData(JSON.parse(rawV1));
-    return defaultData();
-  }catch(e){ return defaultData(); }
-}
-function saveData(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(DATA)); }catch(e){ console.warn("save failed", e); }
-}
-function todayStr(){ return new Date().toISOString().slice(0,10); }
-
-function logActivity(type){
-  const t = todayStr();
-  DATA.log[t] = (DATA.log[t]||0)+1;
-  if(!DATA.typeLog[t]) DATA.typeLog[t] = {hifz:0, review:0, recitation:0, test:0};
-  const k = type || "hifz";
-  DATA.typeLog[t][k] = (DATA.typeLog[t][k]||0)+1;
-  const hour = new Date().getHours();
-  if(hour>=4 && hour<6) DATA.fajrCount = (DATA.fajrCount||0)+1;
-  saveData();
-}
-function logAyahSession(count){
-  const t = todayStr();
-  DATA.ayahLog[t] = (DATA.ayahLog[t]||0) + count;
-}
-function logReview(){
-  const t = todayStr();
-  DATA.reviewLog[t] = (DATA.reviewLog[t]||0) + 1;
-}
-function weeklySummary(){
-  let ayat=0, reviews=0;
-  const base = new Date(todayStr());
-  for(let i=0;i<7;i++){
-    const d = new Date(base); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
-    ayat += DATA.ayahLog[key]||0;
-    reviews += DATA.reviewLog[key]||0;
-  }
-  return {ayat, reviews};
-}
-function weeklyComparison(){
-  const cur = weeklySummary();
-  const base = new Date(todayStr());
-  let prevAyat=0, prevReviews=0;
-  for(let i=7;i<14;i++){
-    const d = new Date(base); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
-    prevAyat += DATA.ayahLog[key]||0;
-    prevReviews += DATA.reviewLog[key]||0;
-  }
-  let curDaysActive=0;
-  for(let i=0;i<7;i++){
-    const d = new Date(base); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
-    if(DATA.log[key]) curDaysActive++;
-  }
-  const prevTotal = prevAyat + prevReviews*5;
-  const curTotal = cur.ayat + cur.reviews*5;
-  let pctChange = null;
-  if(prevTotal>0) pctChange = Math.round((curTotal-prevTotal)/prevTotal*100);
-  else if(curTotal>0) pctChange = 100;
-  return {ayat:cur.ayat, reviews:cur.reviews, daysActive:curDaysActive, pctChange};
-}
-
-/* ============ DERIVED DATA ============ */
-function computeDerived(){
-  const juzTotals = {}, juzWeighted = {};
-  for(let j=1;j<=30;j++){ juzTotals[j]=0; juzWeighted[j]=0; }
-  let memorizedCount=0, weightedAyat=0;
-  SURAHS.forEach(s=>{
-    const st = DATA.state[s.n].status;
-    const w = st==="memorized"||st==="excellent" ? 1 : (st==="progress"?0.5:0);
-    juzTotals[s.juz]+= s.ayat;
-    juzWeighted[s.juz]+= s.ayat*w;
-    weightedAyat += s.ayat*w;
-    if(st==="memorized"||st==="excellent") memorizedCount++;
-  });
-  const juzPct = {};
-  for(let j=1;j<=30;j++){ juzPct[j] = juzTotals[j]? (juzWeighted[j]/juzTotals[j]*100) : 0; }
-  const juzComplete = Object.keys(juzPct).filter(j=>juzPct[j]>=99.99).map(Number);
-  const overallPct = weightedAyat/TOTAL_AYAT*100;
-  const pagesApprox = Math.round(weightedAyat*(604/6236));
-  return {state:DATA.state, juzPct, juzComplete, memorizedCount, overallPct, pagesApprox, weightedAyat};
-}
-
-function reviewUrgency(surahN){
-  const rec = DATA.state[surahN];
-  if(!(rec.status==="memorized"||rec.status==="excellent")) return null;
-  if(!rec.lastReview) return null;
-  const days = Math.floor((new Date(todayStr()) - new Date(rec.lastReview))/86400000);
-  if(days>=14) return {level:"r", days};
-  if(days>=7) return {level:"o", days};
-  if(days>=3) return {level:"y", days};
-  return {level:"g", days};
-}
-function stabilityLevel(n){
-  const cnt = DATA.surahReviewCount[n]||0;
-  if(cnt>=8) return "عالٍ";
-  if(cnt>=3) return "متوسط";
-  return "منخفض";
-}
-
-function streaks(){
-  const days = Object.keys(DATA.log).sort();
-  if(!days.length) return {current:0, longest:0};
-  const set = new Set(days);
-  let longest=0, run=0, prev=null;
-  days.forEach(d=>{
-    if(prev){
-      const diff = Math.round((new Date(d)-new Date(prev))/86400000);
-      run = diff===1 ? run+1 : 1;
-    } else run=1;
-    longest = Math.max(longest, run);
-    prev = d;
-  });
-  let current=0;
-  let cursor = new Date(todayStr());
-  if(!set.has(todayStr())){
-    cursor.setDate(cursor.getDate()-1);
-    if(!set.has(cursor.toISOString().slice(0,10))) return {current:0, longest};
-  }
-  while(set.has(cursor.toISOString().slice(0,10))){
-    current++;
-    cursor.setDate(cursor.getDate()-1);
-  }
-  return {current, longest};
-}
-
-function levelName(d){
-  if(d.memorizedCount===0) return "طالب";
-  if(d.juzComplete.length===0) return "مجتهد";
-  if(d.juzComplete.length>=30) return "حافظ";
-  if(d.juzComplete.length>=10) return "حافظ عشرة أجزاء";
-  if(d.juzComplete.length>=5) return "حافظ خمسة أجزاء";
-  return "حافظ جزء";
-}
-
-/* ============ RECORDS ============ */
-function computeRecords(){
-  const ayahEntries = Object.entries(DATA.ayahLog);
-  let maxAyatDay=0;
-  ayahEntries.forEach(([k,v])=>{ if(v>maxAyatDay) maxAyatDay=v; });
-  const reviewVals = Object.values(DATA.reviewLog);
-  const maxReviewDay = reviewVals.length? Math.max(...reviewVals) : 0;
-  const st = streaks();
-  let fastest = null;
-  SURAHS.forEach(s=>{
-    const rec = DATA.state[s.n];
-    if((rec.status==="memorized"||rec.status==="excellent") && rec.memorizedDate && rec.startedDate){
-      const days = Math.max(1, Math.round((new Date(rec.memorizedDate)-new Date(rec.startedDate))/86400000)+1);
-      if(!fastest || days<fastest.days) fastest = {days, name:s.name};
-    }
-  });
-  return {maxAyatDay, maxReviewDay, longestStreak: st.longest, fastest, longestSession: DATA.records.longestSessionMin||0};
-}
-
-/* ============ JOURNEY MILESTONES ============ */
-const JOURNEY_MILESTONES = [
-  {id:"start", icon:"🌱", title:"بداية الرحلة", test:()=>true},
-  {id:"first_surah", icon:"📖", title:"أول سورة", test:d=>d.memorizedCount>=1},
-  {id:"first_juz", icon:"🕌", title:"أول جزء", test:d=>d.juzComplete.length>=1},
-  {id:"five_juz", icon:"⭐", title:"5 أجزاء", test:d=>d.juzComplete.length>=5},
-  {id:"ten_juz", icon:"🌙", title:"10 أجزاء", test:d=>d.juzComplete.length>=10},
-  {id:"thirty_juz", icon:"🏆", title:"30 جزء (الختمة)", test:d=>d.juzComplete.length>=30},
-];
-function checkJourneyMilestones(){
-  const d = computeDerived();
-  if(!DATA.journey.start) DATA.journey.start = todayStr();
-  JOURNEY_MILESTONES.forEach(m=>{
-    if(m.id==="start") return;
-    if(!DATA.journey[m.id] && m.test(d)) DATA.journey[m.id] = todayStr();
-  });
-  saveData();
-}
-function journeyRemainingText(id, d){
-  if(id==="first_surah") return "احفظ أول سورة كاملة لتحقيق هذه المحطة";
-  const targetJuz = id==="first_juz"?1: id==="five_juz"?5: id==="ten_juz"?10: id==="thirty_juz"?30:0;
-  const remainingJuz = Math.max(0, targetJuz - d.juzComplete.length);
-  return "باقي " + remainingJuz + " جزء للوصول لهذه المحطة";
-}
-function renderJourney(){
-  const d = computeDerived();
-  const box = document.getElementById("journeyGrid");
-  let reachedNext = false;
-  let html = "";
-  JOURNEY_MILESTONES.forEach((m,i)=>{
-    const achieved = !!DATA.journey[m.id];
-    const isNext = !achieved && !reachedNext;
-    if(isNext) reachedNext = true;
-    let dateLine = "";
-    if(achieved){
-      let daysTook = "";
-      if(i>0){
-        const prevId = JOURNEY_MILESTONES[i-1].id;
-        const prevDate = DATA.journey[prevId] || DATA.journey.start;
-        if(prevDate){
-          const days = Math.max(0, Math.round((new Date(DATA.journey[m.id]) - new Date(prevDate))/86400000));
-          daysTook = " — استغرقت " + days + " يوم";
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <title>القرآن — متتبع الحفظ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4f6fa;
+        --bg-panel: #ffffff;
+        --bg-soft: #eef1f7;
+        --ink: #1a2333;
+        --ink-soft: #6b7488;
+        --gold: #d8a94b;
+        --gold-soft: #f1e1b8;
+        --emerald-deep: #0f2e3d;
+        --emerald: #0e8f84;
+        --mint: #57d6c4;
+        --gray: #98a2b3;
+        --gray-line: #e3e7ef;
+        --amber: #f2a93b;
+        --orange: #f0703d;
+        --red: #ef4a5b;
+        --blue: #4c6fff;
+        --purple: #9b6bf2;
+        --shadow: 0 8px 24px rgba(16, 30, 60, 0.09);
+        --radius: 16px;
+        --tile-empty: #e3e7ef;
+        --tile-text: #1a2333;
+        --modal-bg: #ffffff;
+        --toast-bg: var(--emerald-deep);
+        --toast-text: #f6efd9;
+      }
+      html[data-theme="dark"] {
+        --bg: #0f1a24;
+        --bg-panel: #16232f;
+        --bg-soft: #1d2c3a;
+        --ink: #e6edf3;
+        --ink-soft: #93a4b8;
+        --gold: #d8a94b;
+        --gold-soft: #3a3a2a;
+        --emerald-deep: #0b2430;
+        --emerald: #2ba99b;
+        --mint: #57d6c4;
+        --gray: #5a6b7e;
+        --gray-line: #2a3b4d;
+        --amber: #f2a93b;
+        --orange: #f0703d;
+        --red: #ef4a5b;
+        --blue: #4c6fff;
+        --purple: #9b6bf2;
+        --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --tile-empty: #1d2c3a;
+        --tile-text: #e6edf3;
+        --modal-bg: #16232f;
+        --toast-bg: #0b2430;
+        --toast-text: #f6efd9;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: radial-gradient(
+          circle at 20% 0%,
+          #fcfdff 0%,
+          var(--bg) 45%,
+          #eaf0f5 100%
+        );
+        color: var(--ink);
+        font-family: "Aref Ruqaa", serif;
+        min-height: 100vh;
+        padding-bottom: 60px;
+      }
+      .display {
+        font-family: "Aref Ruqaa", serif;
+      }
+      a {
+        color: inherit;
+      }
+
+      header {
+        padding: 22px 18px 14px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 200deg,
+          var(--emerald),
+          var(--gold),
+          var(--emerald)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        font-size: 20px;
+      }
+      h1 {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 26px;
+        margin: 0;
+        color: var(--emerald-deep);
+      }
+      .sub {
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .badges-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .pill {
+        background: var(--bg-panel);
+        border: 1px solid var(--gray-line);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+      .pill.streak {
+        color: var(--orange);
+      }
+      .pill.level {
+        color: var(--emerald);
+      }
+      .pill.icon-only {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 16px;
+        color: var(--ink);
+      }
+      .pill.icon-only:hover {
+        border-color: var(--emerald);
+      }
+
+      .ayah-card {
+        margin-top: 16px;
+        background: linear-gradient(
+          135deg,
+          var(--emerald-deep),
+          var(--emerald) 70%
+        );
+        color: #f6efd9;
+        border-radius: var(--radius);
+        padding: 18px 22px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .ayah-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 90% 10%,
+          rgba(201, 162, 39, 0.25),
+          transparent 55%
+        );
+      }
+      .ayah-text {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 19px;
+        line-height: 2;
+        position: relative;
+      }
+      .ayah-src {
+        font-size: 11.5px;
+        opacity: 0.75;
+        margin-top: 6px;
+        position: relative;
+      }
+
+      nav.tabs {
+        max-width: 1200px;
+        margin: 18px auto 0;
+        padding: 0 18px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      nav.tabs button {
+        font-family: "Aref Ruqaa", serif;
+        font-weight: 700;
+        font-size: 14px;
+        background: var(--bg-panel);
+        border: 1px solid var(--gray-line);
+        color: var(--ink-soft);
+        padding: 10px 18px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: 0.15s;
+      }
+      nav.tabs button.active {
+        background: var(--emerald-deep);
+        color: #fff;
+        border-color: var(--emerald-deep);
+      }
+      nav.tabs button:hover {
+        border-color: var(--emerald);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 18px;
+      }
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+      }
+
+      .panel {
+        background: var(--bg-panel);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+        margin-bottom: 18px;
+        border: 1px solid var(--gray-line);
+      }
+      .panel h2 {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 20px;
+        margin: 0 0 4px;
+        color: var(--emerald-deep);
+      }
+      .panel .hint {
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        margin-bottom: 14px;
+      }
+
+      /* ===== Search box (find a surah in the heart) ===== */
+      .search-box {
+        position: relative;
+        margin-bottom: 14px;
+      }
+      .search-box input {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1.5px solid var(--gray-line);
+        font-family: "Aref Ruqaa", serif;
+        font-size: 14px;
+        background: var(--bg-panel);
+        color: var(--ink);
+      }
+      .search-box input:focus {
+        outline: none;
+        border-color: var(--emerald);
+      }
+      .search-results {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        left: 0;
+        background: var(--bg-panel);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--gray-line);
+        max-height: 280px;
+        overflow-y: auto;
+        z-index: 30;
+        display: none;
+      }
+      .search-results.show {
+        display: block;
+      }
+      .search-result-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13.5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--gray-line);
+      }
+      .search-result-item:last-child {
+        border-bottom: none;
+      }
+      .search-result-item:hover {
+        background: var(--bg-soft);
+      }
+      .search-result-item small {
+        color: var(--ink-soft);
+        font-size: 11.5px;
+      }
+      .search-empty {
+        padding: 14px;
+        font-size: 13px;
+        color: var(--ink-soft);
+        text-align: center;
+      }
+
+      /* ===== Surah grid (each tile = one surah) ===== */
+      .surah-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+        gap: 9px;
+      }
+      .surah-tile {
+        border-radius: 12px;
+        padding: 10px 8px 9px;
+        text-align: center;
+        cursor: pointer;
+        border: 2.5px solid transparent;
+        transition: 0.12s;
+        position: relative;
+        user-select: none;
+      }
+      .surah-tile:hover {
+        filter: brightness(1.08);
+        transform: translateY(-2px);
+      }
+      .surah-tile .num {
+        font-size: 10px;
+        opacity: 0.75;
+        font-weight: 600;
+      }
+      .surah-tile .name {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 3px;
+        line-height: 1.3;
+      }
+      .surah-tile .juz {
+        font-size: 9.5px;
+        opacity: 0.7;
+        margin-top: 4px;
+      }
+      .tile-note-dot {
+        position: absolute;
+        top: 5px;
+        left: 6px;
+        font-size: 10px;
+        opacity: 0.85;
+      }
+      .tile-progress-bg {
+        height: 4px;
+        border-radius: 3px;
+        margin-top: 7px;
+        background: rgba(0, 0, 0, 0.16);
+        overflow: hidden;
+      }
+      .tile-progress-fill {
+        height: 100%;
+        background: var(--gold);
+        opacity: 0.9;
+      }
+
+      @keyframes tilePulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 3px var(--gold);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 0 7px var(--gold);
+          transform: scale(1.06);
         }
       }
-      dateLine = '<div class="journey-date">✅ ' + DATA.journey[m.id] + daysTook + '</div>';
-    } else if(isNext){
-      dateLine = '<div class="journey-remaining">' + journeyRemainingText(m.id, d) + '</div>';
-    } else {
-      dateLine = '<div class="journey-locked">🔒 قادم</div>';
-    }
-    html += '<div class="journey-node ' + (achieved?'done':(isNext?'next':'')) + '">' +
-      '<div class="journey-icon">' + m.icon + '</div>' +
-      '<div class="journey-title">' + m.title + '</div>' + dateLine +
-      '</div>';
-  });
-  box.innerHTML = html;
-}
-function buildTimelineEvents(){
-  const events = [];
-  JOURNEY_MILESTONES.forEach(m=>{ if(DATA.journey[m.id]) events.push({date:DATA.journey[m.id], icon:m.icon, text:m.title + " تحققت"}); });
-  SURAHS.forEach(s=>{
-    const rec = DATA.state[s.n];
-    if(rec.memorizedDate) events.push({date:rec.memorizedDate, icon:"📗", text:"حفظت سورة " + s.name});
-  });
-  events.sort((a,b)=> b.date.localeCompare(a.date));
-  return events;
-}
-function renderTimeline(){
-  const events = buildTimelineEvents();
-  const box = document.getElementById("timelineBox");
-  if(!events.length){ box.innerHTML = '<div class="goal-empty">ابدأ رحلتك وستظهر هنا كل محطاتك 🌿</div>'; return; }
-  box.innerHTML = events.slice(0,40).map(e=>
-    '<div class="timeline-item"><div class="timeline-icon">' + e.icon + '</div><div><div class="timeline-text">' + e.text + '</div><div class="timeline-date">' + e.date + '</div></div></div>'
-  ).join("");
-}
+      .surah-tile.search-hit {
+        animation: tilePulse 0.9s ease-in-out 3;
+        z-index: 5;
+      }
 
-/* ============ TODAY'S PLAN ============ */
-function buildReviewItemsHtml(limit){
-  const items = SURAHS.map(s=>({s, u:reviewUrgency(s.n)}))
-    .filter(o=>o.u && o.u.level!=="g")
-    .sort((a,b)=> b.u.days - a.u.days);
-  if(!items.length) return '<span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت! 🌿</span>';
-  return items.slice(0,limit).map(o=>{
-    const cls = o.u.level;
-    return '<div class="review-item ' + cls + '">' +
-      '<div><div>' + o.s.name + '</div><small>آخر مراجعة: منذ ' + o.u.days + ' يوم — ثبات: ' + stabilityLevel(o.s.n) + '</small></div>' +
-      '<button class="mini-review-btn" data-n="' + o.s.n + '">راجعتها اليوم ✓</button>' +
-      '</div>';
-  }).join("");
-}
-function quickReview(n){
-  const rec = DATA.state[n];
-  if(!rec || !(rec.status==="memorized"||rec.status==="excellent")) return;
-  rec.lastReview = todayStr();
-  DATA.surahReviewCount[n] = (DATA.surahReviewCount[n]||0)+1;
-  logReview();
-  logActivity("review");
-  saveData();
-  renderAll();
-  const newBadges = checkProgressEvents();
-  if(newBadges.length) showToast("🏅 إنجاز جديد: " + newBadges.map(b=>b.title).join("، "), true);
-  else showToast("تم تسجيل المراجعة ✅");
-}
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+        justify-content: center;
+      }
+      .legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--ink-soft);
+      }
+      .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 4px;
+        display: inline-block;
+      }
 
-/* ============ STREAK RESCUE ============ */
-function useGraceDay(){
-  const month = todayStr().slice(0,7);
-  if(DATA.graceDays[month]){ showToast("استخدمت يوم الإنقاذ لهذا الشهر بالفعل"); return; }
-  if(!DATA.settings.graceDayEnabled){ showToast("يوم الإنقاذ غير مفعّل من الإعدادات"); return; }
-  DATA.graceDays[month] = todayStr();
-  logActivity("hifz");
-  saveData();
-  renderAll();
-  showToast("تم استخدام يوم الإنقاذ 🌿 السلسلة محفوظة");
-}
-function renderStreakBanner(){
-  const box = document.getElementById("streakBanner");
-  const st = streaks();
-  const atRisk = !DATA.log[todayStr()] && st.current>0;
-  if(!atRisk){ box.style.display="none"; box.innerHTML=""; return; }
-  box.style.display="flex";
-  const month = todayStr().slice(0,7);
-  const graceUsed = !!DATA.graceDays[month];
-  box.innerHTML = '⚠️ السلسلة معرضة للانقطاع (' + st.current + ' يوم) — أنجز وردًا بسيطًا اليوم للحفاظ عليها.' +
-    (DATA.settings.graceDayEnabled ? '<button class="icon-btn-text" id="btnGraceDay" ' + (graceUsed?'disabled':'') + '>' + (graceUsed?'✓ تم استخدام يوم الإنقاذ':'استخدم يوم إنقاذ (مرة شهريًا)') + '</button>' : '');
-  const btn = document.getElementById("btnGraceDay");
-  if(btn) btn.addEventListener("click", useGraceDay);
-}
+      .side-stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .progress-ring-box {
+        background: var(--bg-soft);
+        border-radius: var(--radius);
+        padding: 18px;
+        text-align: center;
+      }
+      .big-num {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 34px;
+        color: var(--emerald-deep);
+        font-weight: 700;
+      }
+      .big-num-label {
+        font-size: 12.5px;
+        color: var(--ink-soft);
+      }
+      .stat-mini {
+        background: var(--bg-soft);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: center;
+      }
+      .stat-mini .n {
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--emerald);
+      }
+      .stat-mini .l {
+        font-size: 11.5px;
+        color: var(--ink-soft);
+      }
 
-/* ============ BADGES ============ */
-function fullWeekAchieved(){
-  for(let i=0;i<7;i++){
-    const dt=new Date(); dt.setDate(dt.getDate()-i);
-    const key=dt.toISOString().slice(0,10);
-    const t=DATA.typeLog[key];
-    if(!t || !t.hifz || !t.review) return false;
-  }
-  return true;
-}
-function comebackAchieved(){
-  const days = Object.keys(DATA.log).sort();
-  if(days.length<2) return false;
-  for(let i=1;i<days.length;i++){
-    const gap = Math.round((new Date(days[i])-new Date(days[i-1]))/86400000);
-    if(gap>=3) return true;
-  }
-  return false;
-}
-function wirdGoalHitsCount(){
-  const goal = DATA.settings.dailyGoal||8;
-  return Object.values(DATA.ayahLog).filter(v=>v>=goal).length;
-}
-function memoStabilityAchieved(){
-  return SURAHS.some(s=>{
-    const rec = DATA.state[s.n];
-    if(!(rec.status==="memorized"||rec.status==="excellent") || !rec.lastReview) return false;
-    const days = Math.floor((new Date(todayStr()) - new Date(rec.lastReview))/86400000);
-    return days>=30;
-  });
-}
-const BADGES = [
-  {id:"first_surah", icon:"🌱", title:"أول سورة", desc:"احفظ أول سورة كاملة", test:(d)=> d.memorizedCount>=1},
-  {id:"ten_surahs", icon:"📗", title:"10 سور", desc:"احفظ 10 سور", test:(d)=> d.memorizedCount>=10},
-  {id:"thirty_surahs", icon:"📘", title:"30 سورة", desc:"احفظ 30 سورة", test:(d)=> d.memorizedCount>=30},
-  {id:"all_surahs", icon:"📕", title:"114 سورة", desc:"احفظ القرآن كاملاً", test:(d)=> d.memorizedCount>=114},
-  {id:"first_juz", icon:"🕌", title:"أول جزء", desc:"أكمل أول جزء", test:(d)=> d.juzComplete.length>=1},
-  {id:"five_juz", icon:"🕋", title:"5 أجزاء", desc:"أكمل 5 أجزاء", test:(d)=> d.juzComplete.length>=5},
-  {id:"ten_juz", icon:"⭐", title:"10 أجزاء", desc:"أكمل 10 أجزاء", test:(d)=> d.juzComplete.length>=10},
-  {id:"quarter", icon:"🌗", title:"ربع القرآن", desc:"25% من القرآن محفوظة", test:(d)=> d.overallPct>=25},
-  {id:"half", icon:"🌕", title:"نصف القرآن", desc:"50% من القرآن محفوظة", test:(d)=> d.overallPct>=50},
-  {id:"full", icon:"🏆", title:"ختمة الحفظ", desc:"100% من القرآن محفوظة", test:(d)=> d.overallPct>=99.99},
-  {id:"streak7", icon:"🔥", title:"سلسلة أسبوع", desc:"7 أيام متتالية من النشاط", test:(d,st)=> st.longest>=7},
-  {id:"streak30", icon:"💎", title:"سلسلة شهر", desc:"30 يوم متتالي من النشاط", test:(d,st)=> st.longest>=30},
-  {id:"fajr_wird", icon:"🌅", title:"ورد الفجر", desc:"سجّلت نشاطًا 5 مرات في وقت الفجر", test:()=> (DATA.fajrCount||0)>=5},
-  {id:"consistency", icon:"🔄", title:"ثبات", desc:"راجعت نفس السورة 5 مرات", test:()=> Object.values(DATA.surahReviewCount||{}).some(c=>c>=5)},
-  {id:"memo_stability", icon:"🧱", title:"ثبات الحفظ", desc:"سورة بلا مراجعة عاجلة لمدة شهر", test:()=> memoStabilityAchieved()},
-  {id:"full_week", icon:"📚", title:"أسبوع كامل", desc:"حفظ ومراجعة كل يوم لمدة أسبوع", test:()=> fullWeekAchieved()},
-  {id:"comeback", icon:"❤️", title:"عودة", desc:"رجعت للحفظ بعد انقطاع", test:()=> comebackAchieved()},
-  {id:"wird_30", icon:"🕌", title:"حافظ على وردك", desc:"حققت هدفك اليومي 30 مرة", test:()=> wirdGoalHitsCount()>=30},
-];
-function computeBadges(){
-  const d = computeDerived();
-  const st = streaks();
-  return BADGES.map(b=>({...b, achieved: b.test(d, st)}));
-}
-function syncBadgesSilently(){
-  const achieved = computeBadges().filter(b=>b.achieved).map(b=>b.id);
-  DATA.unlockedBadges = achieved;
-  saveData();
-}
-function checkNewBadges(){
-  const achievedList = computeBadges().filter(b=>b.achieved);
-  const achievedIds = achievedList.map(b=>b.id);
-  const prev = new Set(DATA.unlockedBadges||[]);
-  const newly = achievedList.filter(b=>!prev.has(b.id));
-  DATA.unlockedBadges = achievedIds;
-  saveData();
-  return newly;
-}
-function checkProgressEvents(){
-  checkJourneyMilestones();
-  return checkNewBadges();
-}
-function renderBadges(){
-  const box = document.getElementById("badgeGrid");
-  if(!box) return;
-  const list = computeBadges();
-  box.innerHTML = list.map(b=>
-    '<div class="badge-card ' + (b.achieved?'unlocked':'locked') + '">' +
-      '<div class="badge-icon">' + b.icon + '</div>' +
-      '<div class="badge-title">' + b.title + '</div>' +
-      '<div class="badge-desc">' + b.desc + '</div>' +
-      (b.achieved? '<div class="badge-check">✓ مُحقَّق</div>' : '') +
-    '</div>'
-  ).join("");
-}
+      .today-plan {
+        margin-top: 18px;
+        background: var(--bg-soft);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        border: 1.5px solid var(--gray-line);
+      }
+      .today-plan-title {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 15.5px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--emerald-deep);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .plan-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        background: var(--bg-panel);
+        border: 1px solid var(--gray-line);
+        font-size: 13px;
+      }
+      .plan-item.done {
+        opacity: 0.6;
+        text-decoration: line-through;
+      }
+      .plan-check {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        border: 2px solid var(--gray);
+        background: transparent;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #fff;
+        padding: 0;
+      }
+      .plan-check.done {
+        background: var(--emerald);
+        border-color: var(--emerald);
+      }
+      .plan-text {
+        flex: 1;
+      }
+      .plan-type {
+        font-size: 10.5px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .plan-empty {
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        text-align: center;
+        padding: 8px 0;
+      }
+      .review-list {
+        margin-top: 18px;
+      }
+      .weekly-card {
+        margin-top: 14px;
+        background: linear-gradient(
+          135deg,
+          var(--emerald-deep),
+          var(--emerald) 85%
+        );
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        color: #f6efd9;
+      }
+      .weekly-title {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 15.5px;
+        margin-bottom: 10px;
+      }
+      .weekly-row {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .weekly-item {
+        flex: 1;
+        text-align: center;
+        min-width: 70px;
+      }
+      .weekly-item .n {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .weekly-item .l {
+        font-size: 10.5px;
+        opacity: 0.85;
+        margin-top: 2px;
+      }
+      .review-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        font-size: 13px;
+        border-inline-start: 4px solid var(--gray);
+        background: var(--bg-soft);
+      }
+      .review-item.y {
+        border-inline-start-color: var(--amber);
+      }
+      .review-item.o {
+        border-inline-start-color: var(--orange);
+      }
+      .review-item.r {
+        border-inline-start-color: var(--red);
+      }
+      .review-item small {
+        color: var(--ink-soft);
+      }
+      .mini-review-btn {
+        background: var(--emerald);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 6px 11px;
+        font-family: "Aref Ruqaa";
+        font-size: 11.5px;
+        cursor: pointer;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .mini-review-btn:hover {
+        background: var(--emerald-deep);
+      }
 
-/* ============ RENDER: SURAH GRID ============ */
-function stateFill(status){
-  return status==="none" ? "#E3E7EF" :
-         status==="progress" ? "var(--amber)" :
-         status==="memorized" ? "var(--emerald)" : "var(--blue)";
-}
-function stateTextColor(status){
-  return (status==="none") ? "var(--ink)" : "#F7F9FC";
-}
-function ringColor(urg){
-  if(!urg) return null;
-  return urg.level==="y" ? "var(--amber)" : urg.level==="o" ? "var(--orange)" : urg.level==="r" ? "var(--red)" : null;
-}
+      /* ===== Journey ===== */
+      .journey-track {
+        display: flex;
+        gap: 0;
+        overflow-x: auto;
+        padding: 14px 4px 8px;
+      }
+      .journey-node {
+        flex: 0 0 148px;
+        text-align: center;
+        position: relative;
+        padding: 0 8px;
+      }
+      .journey-node:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 28px;
+        right: -40%;
+        width: 80%;
+        height: 3px;
+        background: var(--gray-line);
+        z-index: 0;
+      }
+      .journey-node.done:not(:last-child)::after {
+        background: var(--emerald);
+      }
+      .journey-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--bg-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin: 0 auto 8px;
+        position: relative;
+        z-index: 1;
+        border: 3px solid var(--gray-line);
+      }
+      .journey-node.done .journey-icon {
+        background: var(--gold-soft);
+        border-color: var(--gold);
+      }
+      .journey-node.next .journey-icon {
+        border-color: var(--emerald);
+        animation: pulseJourney 1.6s infinite;
+      }
+      @keyframes pulseJourney {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(14, 143, 132, 0.35);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(14, 143, 132, 0);
+        }
+      }
+      .journey-title {
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .journey-date {
+        font-size: 10.5px;
+        color: var(--emerald);
+        margin-top: 4px;
+      }
+      .journey-remaining {
+        font-size: 10.5px;
+        color: var(--ink-soft);
+        margin-top: 4px;
+      }
+      .journey-locked {
+        font-size: 10.5px;
+        color: var(--gray);
+        margin-top: 4px;
+      }
 
-function renderHeart(){
-  const box = document.getElementById("surahGrid");
-  box.innerHTML = "";
-  SURAHS.forEach(s=>{
-    const rec = DATA.state[s.n];
-    const status = rec.status;
-    const urg = reviewUrgency(s.n);
-    const ring = ringColor(urg);
-    const memPct = Math.max(0, Math.min(100, Math.round((rec.memorizedAyat||0) / s.ayat * 100)));
-    const tile = document.createElement("div");
-    tile.className = "surah-tile";
-    tile.dataset.n = s.n;
-    tile.style.background = stateFill(status);
-    tile.style.color = stateTextColor(status);
-    tile.style.borderColor = ring || "transparent";
-    tile.title = s.name + " — سورة " + s.n + " — " + s.ayat + " آية — الجزء " + s.juz;
-    tile.innerHTML = `
+      .timeline-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--gray-line);
+      }
+      .timeline-item:last-child {
+        border-bottom: none;
+      }
+      .timeline-icon {
+        font-size: 18px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--bg-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .timeline-text {
+        font-size: 13.5px;
+        font-weight: 600;
+      }
+      .timeline-date {
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+
+      /* ===== Today plan / streak rescue ===== */
+      .risk-banner {
+        display: none;
+        background: linear-gradient(135deg, #fcefe1, #fdf6e9);
+        border: 1.5px solid var(--amber);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 13px;
+        color: #8a5a12;
+        margin-bottom: 16px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .icon-btn-text {
+        background: var(--amber);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 7px 12px;
+        font-family: "Aref Ruqaa";
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .icon-btn-text:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      /* ===== Juz view ===== */
+      .juz-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 12px;
+      }
+      .juz-card {
+        background: var(--bg-soft);
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+      .juz-card .top {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+      .juz-card .surahs {
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        margin-bottom: 8px;
+        line-height: 1.6;
+      }
+      .bar-bg {
+        height: 8px;
+        border-radius: 6px;
+        background: var(--tile-empty);
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--mint), var(--emerald));
+      }
+
+      /* ===== Stats view ===== */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .stat-card {
+        background: var(--bg-soft);
+        border-radius: 14px;
+        padding: 16px;
+        text-align: center;
+      }
+      .stat-card .n {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 24px;
+        color: var(--emerald-deep);
+        font-weight: 700;
+      }
+      .stat-card .l {
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 110px;
+        padding-top: 10px;
+      }
+      .chart .bar {
+        flex: 1;
+        background: linear-gradient(180deg, var(--mint), var(--emerald));
+        border-radius: 3px 3px 0 0;
+        min-height: 2px;
+      }
+
+      .level-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 4px;
+        font-size: 13.5px;
+        border-bottom: 1px solid var(--gray-line);
+      }
+      .level-row:last-child {
+        border-bottom: none;
+      }
+      .level-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .level-dot.green {
+        background: var(--emerald);
+      }
+      .level-dot.yellow {
+        background: var(--amber);
+      }
+      .level-dot.red {
+        background: var(--red);
+      }
+
+      /* ===== Goals (custom, user-managed) ===== */
+      .goals-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 14px;
+      }
+      .btn-add {
+        background: var(--emerald-deep);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 18px;
+        font-family: "Aref Ruqaa";
+        font-weight: 700;
+        font-size: 13.5px;
+        cursor: pointer;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        justify-content: center;
+      }
+      .goal-form {
+        background: var(--bg-soft);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: none;
+      }
+      .goal-form.show {
+        display: block;
+      }
+      .goal-form .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .goal-form input[type="text"],
+      .goal-form textarea {
+        flex: 1;
+        min-width: 180px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        font-size: 13.5px;
+      }
+      .goal-form textarea {
+        resize: vertical;
+        min-height: 44px;
+      }
+      .goal-form .actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .goals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
+      .goal-card {
+        background: var(--bg-soft);
+        border-radius: 14px;
+        padding: 16px;
+        position: relative;
+      }
+      .goal-card.done {
+        box-shadow: 0 0 0 2px var(--gold) inset;
+      }
+      .goal-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .goal-title {
+        font-weight: 700;
+        font-size: 14.5px;
+      }
+      .goal-desc {
+        font-size: 12px;
+        color: var(--ink-soft);
+        margin-bottom: 10px;
+        white-space: pre-wrap;
+      }
+      .goal-icon-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .icon-btn {
+        background: var(--bg-panel);
+        border: 1px solid var(--gray-line);
+        border-radius: 8px;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .goal-progress-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .goal-progress-row input[type="range"] {
+        flex: 1;
+        accent-color: var(--emerald);
+      }
+      .goal-progress-row .pct {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--emerald-deep);
+        min-width: 38px;
+        text-align: left;
+      }
+      .goal-empty {
+        font-size: 13px;
+        color: var(--ink-soft);
+        text-align: center;
+        padding: 30px 0;
+      }
+      .goal-card.dragging {
+        opacity: 0.5;
+        transform: scale(0.98);
+      }
+      .goal-card.drag-over {
+        box-shadow: 0 0 0 2px var(--emerald) inset;
+      }
+      .goal-card .drag-handle {
+        cursor: grab;
+        font-size: 14px;
+        color: var(--ink-soft);
+        padding: 2px 6px;
+        border-radius: 6px;
+        user-select: none;
+      }
+      .goal-card .drag-handle:active {
+        cursor: grabbing;
+      }
+
+      /* ===== Badges ===== */
+      .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      .badge-card {
+        background: var(--bg-soft);
+        border-radius: 14px;
+        padding: 18px 10px 14px;
+        text-align: center;
+        transition: 0.15s;
+        position: relative;
+      }
+      .badge-card.locked {
+        opacity: 0.42;
+        filter: grayscale(1);
+      }
+      .badge-card.unlocked {
+        box-shadow: 0 0 0 2px var(--gold) inset;
+        background: linear-gradient(
+          160deg,
+          var(--gold-soft),
+          var(--bg-soft) 70%
+        );
+      }
+      .badge-icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+      }
+      .badge-title {
+        font-weight: 700;
+        font-size: 13.5px;
+        color: var(--ink);
+      }
+      .badge-desc {
+        font-size: 10.5px;
+        color: var(--ink-soft);
+        margin-top: 4px;
+        line-height: 1.5;
+      }
+      .badge-check {
+        font-size: 10.5px;
+        color: var(--emerald);
+        font-weight: 700;
+        margin-top: 8px;
+      }
+
+      /* ===== Calendar ===== */
+      .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(13, 1fr);
+        gap: 4px;
+        direction: ltr;
+      }
+      .cal-week {
+        display: grid;
+        grid-template-rows: repeat(7, 1fr);
+        gap: 4px;
+      }
+      .cal-day {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        border-radius: 3px;
+        background: var(--tile-empty);
+      }
+      .day-detail-box {
+        margin-top: 12px;
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        text-align: center;
+        min-height: 18px;
+      }
+
+      /* ===== Modal ===== */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(22, 54, 40, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 16px;
+      }
+      .overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: var(--modal-bg);
+        border-radius: 18px;
+        padding: 24px;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal h3 {
+        font-family: "Aref Ruqaa", serif;
+        margin: 0 0 2px;
+        color: var(--emerald-deep);
+        font-size: 20px;
+      }
+      .modal .meta {
+        font-size: 12px;
+        color: var(--ink-soft);
+        margin-bottom: 14px;
+      }
+      .state-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .state-btns button {
+        border: 2px solid var(--gray-line);
+        background: var(--bg-panel);
+        border-radius: 10px;
+        padding: 9px 6px;
+        font-family: "Aref Ruqaa";
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        justify-content: center;
+      }
+      .state-btns button.sel {
+        border-color: var(--emerald-deep);
+        background: var(--bg-soft);
+      }
+      .modal label {
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        display: block;
+        margin-bottom: 4px;
+      }
+      .modal input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        margin-bottom: 14px;
+      }
+      .session-box {
+        background: var(--bg-soft);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 14px;
+      }
+      .session-progress-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .session-add-row {
+        display: flex;
+        gap: 8px;
+      }
+      .session-add-row input[type="number"] {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        font-size: 13px;
+      }
+      .modal textarea {
+        width: 100%;
+        min-height: 60px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        font-size: 13px;
+        resize: vertical;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        font-family: "Aref Ruqaa";
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 13.5px;
+      }
+      .btn.primary {
+        background: var(--emerald-deep);
+        color: #fff;
+      }
+      .btn.ghost {
+        background: var(--bg-soft);
+        color: var(--ink);
+      }
+
+      .settings-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .settings-num {
+        width: 100%;
+        padding: 9px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        margin-bottom: 14px;
+      }
+      .settings-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: var(--toast-bg);
+        color: var(--toast-text);
+        padding: 14px 22px;
+        border-radius: 14px;
+        font-size: 13.5px;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
+        max-width: 90vw;
+        text-align: center;
+        z-index: 100;
+        border: 1px solid var(--gold);
+      }
+      #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      #toast .dua {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 16px;
+        display: block;
+        margin-top: 4px;
+      }
+
+      footer {
+        text-align: center;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        padding: 20px;
+      }
+
+      /* ===== Bottom navigation (mobile) ===== */
+      .bottom-nav {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-panel);
+        border-top: 1px solid var(--gray-line);
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+        z-index: 40;
+        padding: 6px 4px;
+        justify-content: space-around;
+      }
+      .bottom-nav button {
+        background: transparent;
+        border: none;
+        font-family: "Aref Ruqaa", serif;
+        font-size: 12px;
+        color: var(--ink-soft);
+        padding: 8px 6px;
+        border-radius: 10px;
+        cursor: pointer;
+        flex: 1;
+        white-space: nowrap;
+      }
+      .bottom-nav button.active {
+        color: var(--emerald);
+        font-weight: 700;
+        background: var(--bg-soft);
+      }
+
+      @media (max-width: 640px) {
+        .bottom-nav {
+          display: flex;
+        }
+        body {
+          padding-bottom: 70px;
+        }
+        nav.tabs {
+          display: none;
+        }
+        .bottom-nav button {
+          font-size: 11px;
+        }
+      }
+      @media (max-width: 640px) {
+        h1 {
+          font-size: 21px;
+        }
+        .ayah-text {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="top-row">
+        <div class="brand">
+          <div class="brand-mark">❤️</div>
+          <div>
+            <h1>القرآن</h1>
+            <div class="sub">متتبع حفظ ومراجعة القرآن الكريم</div>
+          </div>
+        </div>
+        <div class="badges-row">
+          <button class="pill icon-only" id="btnTheme" title="الوضع الليلي">
+            🌙
+          </button>
+          <button class="pill icon-only" id="btnSettings" title="الإعدادات">
+            ⚙️
+          </button>
+          <div class="pill streak">🔥 <span id="streakVal">0</span> يوم</div>
+          <div class="pill level">⭐ <span id="levelVal">طالب</span></div>
+        </div>
+      </div>
+
+      <div class="ayah-card">
+        <div class="ayah-text" id="ayahText">—</div>
+        <div class="ayah-src" id="ayahSrc"></div>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button data-view="heart" class="active">❤️ سور القرآن</button>
+      <button data-view="journey">🗺️ رحلتي</button>
+      <button data-view="juz">📖 الأجزاء</button>
+      <button data-view="stats">📊 الإحصائيات</button>
+      <button data-view="goals">🏹 الأهداف</button>
+      <button data-view="badges">🏅 الإنجازات</button>
+      <button data-view="calendar">📅 التقويم</button>
+    </nav>
+
+    <main>
+      <div class="risk-banner" id="streakBanner"></div>
+      <!-- HEART VIEW -->
+      <section class="view active" id="view-heart">
+        <div class="panel">
+          <h2>قلبك مع القرآن</h2>
+          <div class="hint">
+            114 سورة — اضغط على أي سورة لتغيير حالتها. استخدم البحث لو مش لاقي
+            سورة معيّنة بسرعة.
+          </div>
+
+          <div class="search-box">
+            <input
+              type="text"
+              id="surahSearch"
+              placeholder="🔍 اكتب اسم السورة لمعرفة مكانها..."
+            />
+            <div class="search-results" id="searchResults"></div>
+          </div>
+
+          <div class="surah-grid" id="surahGrid"></div>
+
+          <div class="legend">
+            <span
+              ><i class="dot" style="background: var(--gray)"></i> لم تبدأ</span
+            >
+            <span
+              ><i class="dot" style="background: var(--amber)"></i> قيد
+              الحفظ</span
+            >
+            <span
+              ><i class="dot" style="background: var(--emerald)"></i>
+              محفوظة</span
+            >
+            <span
+              ><i class="dot" style="background: var(--blue)"></i> مراجعة
+              ممتازة</span
+            >
+          </div>
+
+          <div class="side-stats-row">
+            <div class="progress-ring-box">
+              <div class="big-num"><span id="pctVal">0</span>%</div>
+              <div class="big-num-label">نسبة الإنجاز من القرآن</div>
+            </div>
+            <div class="stat-mini">
+              <div class="n" id="miniSurahs">0/114</div>
+              <div class="l">سور محفوظة</div>
+            </div>
+            <div class="stat-mini">
+              <div class="n" id="miniJuz">0/30</div>
+              <div class="l">أجزاء مكتملة</div>
+            </div>
+          </div>
+
+          <div class="weekly-card">
+            <div class="weekly-title">🗓️ ملخص آخر 7 أيام</div>
+            <div class="weekly-row">
+              <div class="weekly-item">
+                <div class="n" id="weeklyAyat">0</div>
+                <div class="l">آية محفوظة</div>
+              </div>
+              <div class="weekly-item">
+                <div class="n" id="weeklyReviews">0</div>
+                <div class="l">سورة رُوجعت</div>
+              </div>
+              <div class="weekly-item">
+                <div class="n" id="weeklyDays">0</div>
+                <div class="l">أيام منجزة</div>
+              </div>
+              <div class="weekly-item">
+                <div class="n" id="weeklyPct">—</div>
+                <div class="l">مقارنة بالأسبوع الماضي</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="today-plan" id="todayPlanBox"></div>
+
+          <div class="review-list">
+            <div style="font-weight: 700; font-size: 13px; margin-bottom: 6px">
+              🕑 بحاجة للمراجعة
+            </div>
+            <div id="reviewListBox">
+              <span style="font-size: 12px; color: var(--ink-soft)"
+                >لا يوجد شيء متأخر، أحسنت!</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOURNEY VIEW -->
+      <section class="view" id="view-journey">
+        <div class="panel">
+          <h2>🗺️ رحلة الحفظ</h2>
+          <div class="hint">محطات رحلتك من أول آية إلى ختم القرآن كاملًا.</div>
+          <div class="journey-track" id="journeyGrid"></div>
+        </div>
+        <div class="panel">
+          <h2>📜 سجل رحلتي</h2>
+          <div class="hint">كل إنجاز تحققه هنا مرتب زمنيًا.</div>
+          <div id="timelineBox"></div>
+        </div>
+      </section>
+
+      <!-- JUZ VIEW -->
+      <section class="view" id="view-juz">
+        <div class="panel">
+          <h2>الأجزاء الثلاثون</h2>
+          <div class="hint">
+            كل سورة محسوبة ضمن الجزء الذي تبدأ فيه، والنسبة موزونة بعدد الآيات.
+          </div>
+          <div class="juz-grid" id="juzGrid"></div>
+        </div>
+      </section>
+
+      <!-- STATS VIEW -->
+      <section class="view" id="view-stats">
+        <div class="panel">
+          <h2>إحصائياتك</h2>
+          <div class="stats-grid" id="statsGrid"></div>
+          <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px">
+            النشاط في آخر 30 يومًا
+          </div>
+          <div class="chart" id="chartBox"></div>
+        </div>
+        <div class="panel">
+          <h2>🏆 أرقامك القياسية</h2>
+          <div class="hint">منافسة مع نفسك، مش مع حد تاني.</div>
+          <div class="stats-grid" id="recordsGrid"></div>
+        </div>
+        <div class="panel">
+          <h2>📈 تحليل هذا الأسبوع</h2>
+          <div id="levelAnalysisBox"></div>
+        </div>
+        <div class="panel">
+          <h2>📊 تقريرك الأسبوعي</h2>
+          <div class="hint">ملخص ذكي لأدائك هذا الأسبوع مع نصيحة مخصصة.</div>
+          <div id="weeklyReportBox"></div>
+        </div>
+        <div class="panel">
+          <h2>📅 خطة الختمة التقديرية</h2>
+          <div class="hint">تقدير موعد ختمة القرآن حسب إيقاعك الحالي.</div>
+          <div id="khatmaEstimateBox"></div>
+        </div>
+      </section>
+
+      <!-- GOALS VIEW -->
+      <section class="view" id="view-goals">
+        <div class="panel">
+          <h2>الأهداف</h2>
+          <div class="hint">
+            أهدافك الخاصة — أضف، عدّل نسبة التقدم، أو احذف كما تحب.
+          </div>
+          <div class="goals-toolbar">
+            <button class="btn-add" id="btnShowGoalForm">＋ هدف جديد</button>
+          </div>
+
+          <div class="goal-form" id="goalForm">
+            <div class="row">
+              <input
+                type="text"
+                id="goalTitleInput"
+                placeholder="عنوان الهدف (مثال: حفظ سورة الكهف)"
+              />
+            </div>
+            <div class="row">
+              <textarea
+                id="goalDescInput"
+                placeholder="وصف اختياري..."
+              ></textarea>
+            </div>
+            <div class="row actions">
+              <button
+                class="btn ghost"
+                id="goalCancelBtn"
+                style="flex: none; padding: 9px 16px"
+              >
+                إلغاء
+              </button>
+              <button
+                class="btn primary"
+                id="goalSaveBtn"
+                style="flex: none; padding: 9px 16px"
+              >
+                حفظ الهدف
+              </button>
+            </div>
+          </div>
+
+          <div class="goals-grid" id="goalsGrid"></div>
+        </div>
+      </section>
+
+      <!-- BADGES VIEW -->
+      <section class="view" id="view-badges">
+        <div class="panel">
+          <h2>الإنجازات</h2>
+          <div class="hint">
+            شارات بتتفتح تلقائيًا كل ما تحقق إنجاز جديد في رحلة حفظك.
+          </div>
+          <div class="badge-grid" id="badgeGrid"></div>
+        </div>
+      </section>
+
+      <!-- CALENDAR VIEW -->
+      <section class="view" id="view-calendar">
+        <div class="panel">
+          <h2>سجل الأيام</h2>
+          <div class="hint">
+            كل مربع يمثل يومًا — اللون يعبّر عن نوع النشاط الأكثر في هذا اليوم.
+            اضغط على أي يوم لعرض تفاصيله.
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="legend" style="margin-top: 12px">
+            <span
+              ><i
+                class="dot"
+                style="background: #e3e7ef; border-radius: 3px"
+              ></i>
+              بلا نشاط</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--emerald); border-radius: 3px"
+              ></i>
+              حفظ</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--blue); border-radius: 3px"
+              ></i>
+              مراجعة</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--purple); border-radius: 3px"
+              ></i>
+              تلاوة</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--amber); border-radius: 3px"
+              ></i>
+              اختبار</span
+            >
+          </div>
+          <div class="day-detail-box" id="dayDetailBox"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      البيانات محفوظة في متصفحك فقط (localStorage) — لن تُفقد عند إغلاق الصفحة،
+      إلا إذا مسحت بيانات المتصفح. يُنصح بتصدير نسخة احتياطية بين الحين والآخر
+      من الإعدادات ⚙️.
+    </footer>
+
+    <!-- Surah Modal -->
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <h3 id="mSurahName">—</h3>
+        <div class="meta" id="mSurahMeta">—</div>
+        <div class="state-btns" id="mStateBtns"></div>
+
+        <div class="session-box">
+          <label>تقدم الحفظ داخل السورة</label>
+          <div class="session-progress-row">
+            <div class="bar-bg" style="flex: 1">
+              <div class="bar-fill" id="mProgressFill" style="width: 0%"></div>
+            </div>
+            <span
+              id="mProgressLabel"
+              style="
+                font-size: 12px;
+                color: var(--ink-soft);
+                white-space: nowrap;
+              "
+              >0/0</span
+            >
+          </div>
+          <div class="session-add-row">
+            <input
+              type="number"
+              id="mSessionFrom"
+              min="1"
+              placeholder="من آية"
+              style="max-width: 80px"
+            />
+            <input
+              type="number"
+              id="mSessionTo"
+              min="1"
+              placeholder="إلى آية"
+              style="max-width: 80px"
+            />
+            <input
+              type="number"
+              id="mSessionMinutes"
+              min="1"
+              placeholder="دقائق (اختياري)"
+              style="max-width: 100px"
+            />
+            <button
+              class="btn ghost"
+              id="mSessionAdd"
+              style="flex: none; padding: 8px 14px"
+            >
+              ＋ إضافة
+            </button>
+          </div>
+          <div style="font-size: 11px; color: var(--ink-soft); margin-top: 6px">
+            حدد نطاق الآيات اللي حفظتها (مثال: من 1 إلى 5) — أو اتركها فارغة
+            وسجّل عددًا تقريبيًا.
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 10px">
+            <button class="btn ghost" id="mLogRecitation" style="flex: 1">
+              📿 تلاوة اليوم
+            </button>
+            <button class="btn ghost" id="mLogTest" style="flex: 1">
+              📝 اختبار اليوم
+            </button>
+          </div>
+          <div id="selfTestBox" style="margin-top: 10px">
+            <button
+              class="btn ghost"
+              id="btnStartSelfTest"
+              style="flex: none; padding: 8px 14px"
+            >
+              اختبر نفسك في هذه السورة
+            </button>
+          </div>
+        </div>
+
+        <div id="reviewDateBox" style="display: none">
+          <label>آخر مراجعة</label>
+          <input type="date" id="mReviewDate" />
+        </div>
+
+        <div style="margin-bottom: 14px">
+          <label>ملاحظاتك على السورة</label>
+          <textarea
+            id="mNotes"
+            placeholder="آية بتقف عندها، غلطة بتتكرر، أو أي ملاحظة..."
+          ></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn ghost" id="mCancel">إلغاء</button>
+          <button class="btn primary" id="mSave">حفظ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="overlay" id="settingsOverlay">
+      <div class="modal">
+        <h3>⚙️ الإعدادات</h3>
+        <div class="meta">تحكم في هدفك اليومي وبياناتك</div>
+
+        <label>هدفك اليومي (عدد الآيات)</label>
+        <input
+          type="number"
+          id="settingDailyGoal"
+          min="1"
+          class="settings-num"
+        />
+
+        <label class="settings-check">
+          <input type="checkbox" id="settingGraceDay" /> تفعيل "يوم إنقاذ" واحد
+          شهريًا للحفاظ على السلسلة
+        </label>
+
+        <div class="settings-actions">
+          <button class="btn ghost" id="btnPrintReport">
+            🖨️ طباعة تقرير الإنجاز
+          </button>
+          <button class="btn ghost" id="btnEnableReminder">
+            ⏰ تفعيل التذكير اليومي
+          </button>
+          <button class="btn ghost" id="btnExportData">
+            📥 تصدير البيانات (JSON)
+          </button>
+          <label
+            class="btn ghost"
+            style="
+              text-align: center;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+            >📤 استيراد البيانات
+            <input
+              type="file"
+              id="importFileInput"
+              accept="application/json"
+              style="display: none"
+            />
+          </label>
+          <button class="btn ghost" id="btnResetProgress">
+            🔄 إعادة تعيين التقدم
+          </button>
+          <button class="btn ghost" id="btnDeleteAll" style="color: var(--red)">
+            🗑️ حذف كل البيانات
+          </button>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn ghost" id="btnCloseSettings">إغلاق</button>
+          <button class="btn primary" id="btnSaveSettings">
+            حفظ الإعدادات
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div class="overlay" id="onboardingOverlay">
+      <div class="modal" style="max-width: 460px">
+        <h3>أهلاً بك في رحلتك مع القرآن 🌿</h3>
+        <div class="meta">خطوات بسيطة للبدء:</div>
+        <div
+          style="
+            font-size: 14px;
+            line-height: 1.9;
+            color: var(--ink);
+            margin-bottom: 16px;
+          "
+        >
+          <div style="margin-bottom: 8px">
+            <span
+              class="dot"
+              style="
+                background: var(--gray);
+                display: inline-block;
+                vertical-align: middle;
+              "
+            ></span>
+            <b> لم تبدأ</b> — السورة لسه محدتش فيها.
+          </div>
+          <div style="margin-bottom: 8px">
+            <span
+              class="dot"
+              style="
+                background: var(--amber);
+                display: inline-block;
+                vertical-align: middle;
+              "
+            ></span>
+            <b> قيد الحفظ</b> — بتتقدم فيها آية آية.
+          </div>
+          <div style="margin-bottom: 8px">
+            <span
+              class="dot"
+              style="
+                background: var(--emerald);
+                display: inline-block;
+                vertical-align: middle;
+              "
+            ></span>
+            <b> محفوظة</b> — حفظتها كاملة.
+          </div>
+          <div style="margin-bottom: 8px">
+            <span
+              class="dot"
+              style="
+                background: var(--blue);
+                display: inline-block;
+                vertical-align: middle;
+              "
+            ></span>
+            <b> مراجعة ممتازة</b> — ثابتة عندك وراجعتها كتير.
+          </div>
+          <div
+            style="
+              margin-top: 12px;
+              padding: 10px 12px;
+              background: var(--bg-soft);
+              border-radius: 10px;
+            "
+          >
+            💡 ابدأ بفتح أي سورة، حدد حالتها، وسجّل آياتك. ولو حطيت هدف "حفظ
+            سورة"، هتلاقي خطة اليوم بتولّد لك آياتها.
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn primary" id="btnStartOnboarding">
+            ابدأ رحلتك
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <!-- Bottom Navigation (mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+      <button data-view="heart" class="active">سور</button>
+      <button data-view="journey">رحلتي</button>
+      <button data-view="juz">أجزاء</button>
+      <button data-view="stats">إحصائيات</button>
+      <button data-view="goals">أهداف</button>
+      <button data-view="badges">إنجازات</button>
+      <button data-view="calendar">تقويم</button>
+    </nav>
+
+    <script>
+      /* ============ DATA ============ */
+      const SURAHS = [
+        [1, "الفاتحة", 7, 1],
+        [2, "البقرة", 286, 1],
+        [3, "آل عمران", 200, 3],
+        [4, "النساء", 176, 4],
+        [5, "المائدة", 120, 6],
+        [6, "الأنعام", 165, 7],
+        [7, "الأعراف", 206, 8],
+        [8, "الأنفال", 75, 9],
+        [9, "التوبة", 129, 10],
+        [10, "يونس", 109, 11],
+        [11, "هود", 123, 11],
+        [12, "يوسف", 111, 12],
+        [13, "الرعد", 43, 13],
+        [14, "إبراهيم", 52, 13],
+        [15, "الحجر", 99, 14],
+        [16, "النحل", 128, 14],
+        [17, "الإسراء", 111, 15],
+        [18, "الكهف", 110, 15],
+        [19, "مريم", 98, 16],
+        [20, "طه", 135, 16],
+        [21, "الأنبياء", 112, 17],
+        [22, "الحج", 78, 17],
+        [23, "المؤمنون", 118, 18],
+        [24, "النور", 64, 18],
+        [25, "الفرقان", 77, 18],
+        [26, "الشعراء", 227, 19],
+        [27, "النمل", 93, 19],
+        [28, "القصص", 88, 20],
+        [29, "العنكبوت", 69, 20],
+        [30, "الروم", 60, 21],
+        [31, "لقمان", 34, 21],
+        [32, "السجدة", 30, 21],
+        [33, "الأحزاب", 73, 21],
+        [34, "سبأ", 54, 22],
+        [35, "فاطر", 45, 22],
+        [36, "يس", 83, 22],
+        [37, "الصافات", 182, 23],
+        [38, "ص", 88, 23],
+        [39, "الزمر", 75, 23],
+        [40, "غافر", 85, 24],
+        [41, "فصلت", 54, 24],
+        [42, "الشورى", 53, 25],
+        [43, "الزخرف", 89, 25],
+        [44, "الدخان", 59, 25],
+        [45, "الجاثية", 37, 25],
+        [46, "الأحقاف", 35, 26],
+        [47, "محمد", 38, 26],
+        [48, "الفتح", 29, 26],
+        [49, "الحجرات", 18, 26],
+        [50, "ق", 45, 26],
+        [51, "الذاريات", 60, 26],
+        [52, "الطور", 49, 27],
+        [53, "النجم", 62, 27],
+        [54, "القمر", 55, 27],
+        [55, "الرحمن", 78, 27],
+        [56, "الواقعة", 96, 27],
+        [57, "الحديد", 29, 27],
+        [58, "المجادلة", 22, 28],
+        [59, "الحشر", 24, 28],
+        [60, "الممتحنة", 13, 28],
+        [61, "الصف", 14, 28],
+        [62, "الجمعة", 11, 28],
+        [63, "المنافقون", 11, 28],
+        [64, "التغابن", 18, 28],
+        [65, "الطلاق", 12, 28],
+        [66, "التحريم", 12, 28],
+        [67, "الملك", 30, 29],
+        [68, "القلم", 52, 29],
+        [69, "الحاقة", 52, 29],
+        [70, "المعارج", 44, 29],
+        [71, "نوح", 28, 29],
+        [72, "الجن", 28, 29],
+        [73, "المزمل", 20, 29],
+        [74, "المدثر", 56, 29],
+        [75, "القيامة", 40, 29],
+        [76, "الإنسان", 31, 29],
+        [77, "المرسلات", 50, 29],
+        [78, "النبأ", 40, 30],
+        [79, "النازعات", 46, 30],
+        [80, "عبس", 42, 30],
+        [81, "التكوير", 29, 30],
+        [82, "الانفطار", 19, 30],
+        [83, "المطففين", 36, 30],
+        [84, "الانشقاق", 25, 30],
+        [85, "البروج", 22, 30],
+        [86, "الطارق", 17, 30],
+        [87, "الأعلى", 19, 30],
+        [88, "الغاشية", 26, 30],
+        [89, "الفجر", 30, 30],
+        [90, "البلد", 20, 30],
+        [91, "الشمس", 15, 30],
+        [92, "الليل", 21, 30],
+        [93, "الضحى", 11, 30],
+        [94, "الشرح", 8, 30],
+        [95, "التين", 8, 30],
+        [96, "العلق", 19, 30],
+        [97, "القدر", 5, 30],
+        [98, "البينة", 8, 30],
+        [99, "الزلزلة", 8, 30],
+        [100, "العاديات", 11, 30],
+        [101, "القارعة", 11, 30],
+        [102, "التكاثر", 8, 30],
+        [103, "العصر", 3, 30],
+        [104, "الهمزة", 9, 30],
+        [105, "الفيل", 5, 30],
+        [106, "قريش", 4, 30],
+        [107, "الماعون", 7, 30],
+        [108, "الكوثر", 3, 30],
+        [109, "الكافرون", 6, 30],
+        [110, "النصر", 3, 30],
+        [111, "المسد", 5, 30],
+        [112, "الإخلاص", 4, 30],
+        [113, "الفلق", 5, 30],
+        [114, "الناس", 6, 30],
+      ].map((s) => ({ n: s[0], name: s[1], ayat: s[2], juz: s[3] }));
+
+      const TOTAL_AYAT = SURAHS.reduce((a, s) => a + s.ayat, 0);
+
+      const AYAT_MOTIVATION = [
+        {
+          t: "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+          s: "سورة القمر",
+        },
+        {
+          t: "إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ",
+          s: "سورة الإسراء",
+        },
+        {
+          t: "كِتَابٌ أَنزَلْنَاهُ إِلَيْكَ مُبَارَكٌ لِّيَدَّبَّرُوا آيَاتِهِ",
+          s: "سورة ص",
+        },
+        {
+          t: "إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ",
+          s: "سورة الحجر",
+        },
+        {
+          t: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+          s: "حديث شريف",
+        },
+        {
+          t: "يُقَالُ لِصَاحِبِ الْقُرْآنِ اقْرَأْ وَارْتَقِ وَرَتِّلْ كَمَا كُنْتَ تُرَتِّلُ فِي الدُّنْيَا",
+          s: "حديث شريف",
+        },
+        {
+          t: "اقْرَءُوا الْقُرْآنَ فَإِنَّهُ يَأْتِي يَوْمَ الْقِيَامَةِ شَفِيعًا لِأَصْحَابِهِ",
+          s: "حديث شريف",
+        },
+        { t: "وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا", s: "سورة المزمل" },
+        {
+          t: "أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ أَمْ عَلَىٰ قُلُوبٍ أَقْفَالُهَا",
+          s: "سورة محمد",
+        },
+        {
+          t: "اللَّهُمَّ اجْعَلِ الْقُرْآنَ رَبِيعَ قَلْبِي، وَنُورَ صَدْرِي، وَجَلَاءَ حُزْنِي، وَذَهَابَ هَمِّي",
+          s: "دعاء مأثور",
+        },
+      ];
+
+      /* ============ STATE / STORAGE ============ */
+      const LS_KEY = "quranTrackerData_v3";
+      let DATA = loadData();
+
+      function defaultData() {
+        const state = {};
+        SURAHS.forEach(
+          (s) =>
+            (state[s.n] = {
+              status: "none",
+              lastReview: null,
+              memorizedDate: null,
+              startedDate: null,
+              memorizedAyat: 0,
+              notes: "",
+              srsBox: 1,
+            }),
+        );
+        return {
+          state,
+          log: {},
+          goals: [],
+          ayahLog: {},
+          reviewLog: {},
+          unlockedBadges: [],
+          journey: {},
+          typeLog: {},
+          surahReviewCount: {},
+          graceDays: {},
+          fajrCount: 0,
+          records: { longestSessionMin: 0 },
+          settings: { dailyGoal: 8, graceDayEnabled: true },
+        };
+      }
+      function mergeState(baseState, savedState) {
+        if (!savedState) return;
+        Object.keys(baseState).forEach((n) => {
+          if (savedState[n]) Object.assign(baseState[n], savedState[n]);
+        });
+      }
+      function normalizeData(parsed) {
+        const base = defaultData();
+        mergeState(base.state, parsed.state);
+        base.log = parsed.log || {};
+        base.goals = Array.isArray(parsed.goals) ? parsed.goals : [];
+        base.ayahLog = parsed.ayahLog || {};
+        base.reviewLog = parsed.reviewLog || {};
+        base.unlockedBadges = Array.isArray(parsed.unlockedBadges)
+          ? parsed.unlockedBadges
+          : [];
+        base.journey = parsed.journey || {};
+        base.typeLog = parsed.typeLog || {};
+        base.surahReviewCount = parsed.surahReviewCount || {};
+        base.graceDays = parsed.graceDays || {};
+        base.fajrCount = parsed.fajrCount || 0;
+        base.records = Object.assign({}, base.records, parsed.records || {});
+        base.settings = Object.assign({}, base.settings, parsed.settings || {});
+        return base;
+      }
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(LS_KEY);
+          if (!raw) return migrateOld();
+          return normalizeData(JSON.parse(raw));
+        } catch (e) {
+          return defaultData();
+        }
+      }
+      function migrateOld() {
+        try {
+          const rawV2 = localStorage.getItem("quranTrackerData_v2");
+          if (rawV2) return normalizeData(JSON.parse(rawV2));
+          const rawV1 = localStorage.getItem("quranTrackerData_v1");
+          if (rawV1) return normalizeData(JSON.parse(rawV1));
+          return defaultData();
+        } catch (e) {
+          return defaultData();
+        }
+      }
+      function saveData() {
+        try {
+          localStorage.setItem(LS_KEY, JSON.stringify(DATA));
+        } catch (e) {
+          console.warn("save failed", e);
+        }
+      }
+      function todayStr() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function logActivity(type) {
+        const t = todayStr();
+        DATA.log[t] = (DATA.log[t] || 0) + 1;
+        if (!DATA.typeLog[t])
+          DATA.typeLog[t] = { hifz: 0, review: 0, recitation: 0, test: 0 };
+        const k = type || "hifz";
+        DATA.typeLog[t][k] = (DATA.typeLog[t][k] || 0) + 1;
+        const hour = new Date().getHours();
+        if (hour >= 4 && hour < 6) DATA.fajrCount = (DATA.fajrCount || 0) + 1;
+        saveData();
+      }
+      function logAyahSession(count) {
+        const t = todayStr();
+        DATA.ayahLog[t] = (DATA.ayahLog[t] || 0) + count;
+      }
+      function logReview() {
+        const t = todayStr();
+        DATA.reviewLog[t] = (DATA.reviewLog[t] || 0) + 1;
+      }
+      function weeklySummary() {
+        let ayat = 0,
+          reviews = 0;
+        const base = new Date(todayStr());
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(base);
+          d.setDate(d.getDate() - i);
+          const key = d.toISOString().slice(0, 10);
+          ayat += DATA.ayahLog[key] || 0;
+          reviews += DATA.reviewLog[key] || 0;
+        }
+        return { ayat, reviews };
+      }
+      function weeklyComparison() {
+        const cur = weeklySummary();
+        const base = new Date(todayStr());
+        let prevAyat = 0,
+          prevReviews = 0;
+        for (let i = 7; i < 14; i++) {
+          const d = new Date(base);
+          d.setDate(d.getDate() - i);
+          const key = d.toISOString().slice(0, 10);
+          prevAyat += DATA.ayahLog[key] || 0;
+          prevReviews += DATA.reviewLog[key] || 0;
+        }
+        let curDaysActive = 0;
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(base);
+          d.setDate(d.getDate() - i);
+          const key = d.toISOString().slice(0, 10);
+          if (DATA.log[key]) curDaysActive++;
+        }
+        const prevTotal = prevAyat + prevReviews * 5;
+        const curTotal = cur.ayat + cur.reviews * 5;
+        let pctChange = null;
+        if (prevTotal > 0)
+          pctChange = Math.round(((curTotal - prevTotal) / prevTotal) * 100);
+        else if (curTotal > 0) pctChange = 100;
+        return {
+          ayat: cur.ayat,
+          reviews: cur.reviews,
+          daysActive: curDaysActive,
+          pctChange,
+        };
+      }
+
+      /* ============ DERIVED DATA ============ */
+      function computeDerived() {
+        const juzTotals = {},
+          juzWeighted = {};
+        for (let j = 1; j <= 30; j++) {
+          juzTotals[j] = 0;
+          juzWeighted[j] = 0;
+        }
+        let memorizedCount = 0,
+          weightedAyat = 0;
+        SURAHS.forEach((s) => {
+          const st = DATA.state[s.n].status;
+          const w =
+            st === "memorized" || st === "excellent"
+              ? 1
+              : st === "progress"
+                ? 0.5
+                : 0;
+          juzTotals[s.juz] += s.ayat;
+          juzWeighted[s.juz] += s.ayat * w;
+          weightedAyat += s.ayat * w;
+          if (st === "memorized" || st === "excellent") memorizedCount++;
+        });
+        const juzPct = {};
+        for (let j = 1; j <= 30; j++) {
+          juzPct[j] = juzTotals[j] ? (juzWeighted[j] / juzTotals[j]) * 100 : 0;
+        }
+        const juzComplete = Object.keys(juzPct)
+          .filter((j) => juzPct[j] >= 99.99)
+          .map(Number);
+        const overallPct = (weightedAyat / TOTAL_AYAT) * 100;
+        const pagesApprox = Math.round(weightedAyat * (604 / 6236));
+        return {
+          state: DATA.state,
+          juzPct,
+          juzComplete,
+          memorizedCount,
+          overallPct,
+          pagesApprox,
+          weightedAyat,
+        };
+      }
+
+      /* ============ SRS (SPACED REPETITION SYSTEM) ============ */
+      const SRS_INTERVALS = [1, 3, 7, 14, 30]; // days per box 1-5
+      function srsInterval(box) {
+        return SRS_INTERVALS[Math.min(Math.max(box, 1), 5) - 1] || 1;
+      }
+      function srsDueDate(surahN) {
+        const rec = DATA.state[surahN];
+        if (!rec.lastReview) return null;
+        const box = rec.srsBox || 1;
+        const due = new Date(rec.lastReview);
+        due.setDate(due.getDate() + srsInterval(box));
+        return due;
+      }
+      function srsDaysOverdue(surahN) {
+        const due = srsDueDate(surahN);
+        if (!due) return 0;
+        return Math.floor((new Date(todayStr()) - due) / 86400000);
+      }
+      function reviewUrgency(surahN) {
+        const rec = DATA.state[surahN];
+        if (!(rec.status === "memorized" || rec.status === "excellent"))
+          return null;
+        if (!rec.lastReview) return null;
+        const days = Math.floor(
+          (new Date(todayStr()) - new Date(rec.lastReview)) / 86400000,
+        );
+        const box = rec.srsBox || 1;
+        const interval = srsInterval(box);
+        const overdue = days - interval;
+        if (overdue >= 7) return { level: "r", days, box, interval, overdue };
+        if (overdue >= 3) return { level: "o", days, box, interval, overdue };
+        if (overdue >= 0) return { level: "y", days, box, interval, overdue };
+        return { level: "g", days, box, interval, overdue };
+      }
+      function srsReviewSuccess(n) {
+        const rec = DATA.state[n];
+        if (!rec) return;
+        rec.srsBox = Math.min((rec.srsBox || 1) + 1, 5);
+        rec.lastReview = todayStr();
+        DATA.surahReviewCount[n] = (DATA.surahReviewCount[n] || 0) + 1;
+        logReview();
+        logActivity("review");
+        saveData();
+      }
+      function srsReviewFail(n) {
+        const rec = DATA.state[n];
+        if (!rec) return;
+        rec.srsBox = Math.max((rec.srsBox || 1) - 1, 1);
+        rec.lastReview = todayStr();
+        DATA.surahReviewCount[n] = (DATA.surahReviewCount[n] || 0) + 1;
+        logReview();
+        logActivity("review");
+        saveData();
+      }
+      function stabilityLevel(n) {
+        const cnt = DATA.surahReviewCount[n] || 0;
+        if (cnt >= 8) return "عالٍ";
+        if (cnt >= 3) return "متوسط";
+        return "منخفض";
+      }
+
+      function streaks() {
+        const days = Object.keys(DATA.log).sort();
+        if (!days.length) return { current: 0, longest: 0 };
+        const set = new Set(days);
+        let longest = 0,
+          run = 0,
+          prev = null;
+        days.forEach((d) => {
+          if (prev) {
+            const diff = Math.round((new Date(d) - new Date(prev)) / 86400000);
+            run = diff === 1 ? run + 1 : 1;
+          } else run = 1;
+          longest = Math.max(longest, run);
+          prev = d;
+        });
+        let current = 0;
+        let cursor = new Date(todayStr());
+        if (!set.has(todayStr())) {
+          cursor.setDate(cursor.getDate() - 1);
+          if (!set.has(cursor.toISOString().slice(0, 10)))
+            return { current: 0, longest };
+        }
+        while (set.has(cursor.toISOString().slice(0, 10))) {
+          current++;
+          cursor.setDate(cursor.getDate() - 1);
+        }
+        return { current, longest };
+      }
+
+      function levelName(d) {
+        if (d.memorizedCount === 0) return "طالب";
+        if (d.juzComplete.length === 0) return "مجتهد";
+        if (d.juzComplete.length >= 30) return "حافظ";
+        if (d.juzComplete.length >= 10) return "حافظ عشرة أجزاء";
+        if (d.juzComplete.length >= 5) return "حافظ خمسة أجزاء";
+        return "حافظ جزء";
+      }
+
+      /* ============ RECORDS ============ */
+      function computeRecords() {
+        const ayahEntries = Object.entries(DATA.ayahLog);
+        let maxAyatDay = 0;
+        ayahEntries.forEach(([k, v]) => {
+          if (v > maxAyatDay) maxAyatDay = v;
+        });
+        const reviewVals = Object.values(DATA.reviewLog);
+        const maxReviewDay = reviewVals.length ? Math.max(...reviewVals) : 0;
+        const st = streaks();
+        let fastest = null;
+        SURAHS.forEach((s) => {
+          const rec = DATA.state[s.n];
+          if (
+            (rec.status === "memorized" || rec.status === "excellent") &&
+            rec.memorizedDate &&
+            rec.startedDate
+          ) {
+            const days = Math.max(
+              1,
+              Math.round(
+                (new Date(rec.memorizedDate) - new Date(rec.startedDate)) /
+                  86400000,
+              ) + 1,
+            );
+            if (!fastest || days < fastest.days)
+              fastest = { days, name: s.name };
+          }
+        });
+        return {
+          maxAyatDay,
+          maxReviewDay,
+          longestStreak: st.longest,
+          fastest,
+          longestSession: DATA.records.longestSessionMin || 0,
+        };
+      }
+
+      /* ============ JOURNEY MILESTONES ============ */
+      const JOURNEY_MILESTONES = [
+        { id: "start", icon: "🌱", title: "بداية الرحلة", test: () => true },
+        {
+          id: "first_surah",
+          icon: "📖",
+          title: "أول سورة",
+          test: (d) => d.memorizedCount >= 1,
+        },
+        {
+          id: "first_juz",
+          icon: "🕌",
+          title: "أول جزء",
+          test: (d) => d.juzComplete.length >= 1,
+        },
+        {
+          id: "five_juz",
+          icon: "⭐",
+          title: "5 أجزاء",
+          test: (d) => d.juzComplete.length >= 5,
+        },
+        {
+          id: "ten_juz",
+          icon: "🌙",
+          title: "10 أجزاء",
+          test: (d) => d.juzComplete.length >= 10,
+        },
+        {
+          id: "thirty_juz",
+          icon: "🏆",
+          title: "30 جزء (الختمة)",
+          test: (d) => d.juzComplete.length >= 30,
+        },
+      ];
+      function checkJourneyMilestones() {
+        const d = computeDerived();
+        if (!DATA.journey.start) DATA.journey.start = todayStr();
+        JOURNEY_MILESTONES.forEach((m) => {
+          if (m.id === "start") return;
+          if (!DATA.journey[m.id] && m.test(d)) DATA.journey[m.id] = todayStr();
+        });
+        saveData();
+      }
+      function journeyRemainingText(id, d) {
+        if (id === "first_surah")
+          return "احفظ أول سورة كاملة لتحقيق هذه المحطة";
+        const targetJuz =
+          id === "first_juz"
+            ? 1
+            : id === "five_juz"
+              ? 5
+              : id === "ten_juz"
+                ? 10
+                : id === "thirty_juz"
+                  ? 30
+                  : 0;
+        const remainingJuz = Math.max(0, targetJuz - d.juzComplete.length);
+        return "باقي " + remainingJuz + " جزء للوصول لهذه المحطة";
+      }
+      function renderJourney() {
+        const d = computeDerived();
+        const box = document.getElementById("journeyGrid");
+        let reachedNext = false;
+        let html = "";
+        JOURNEY_MILESTONES.forEach((m, i) => {
+          const achieved = !!DATA.journey[m.id];
+          const isNext = !achieved && !reachedNext;
+          if (isNext) reachedNext = true;
+          let dateLine = "";
+          if (achieved) {
+            let daysTook = "";
+            if (i > 0) {
+              const prevId = JOURNEY_MILESTONES[i - 1].id;
+              const prevDate = DATA.journey[prevId] || DATA.journey.start;
+              if (prevDate) {
+                const days = Math.max(
+                  0,
+                  Math.round(
+                    (new Date(DATA.journey[m.id]) - new Date(prevDate)) /
+                      86400000,
+                  ),
+                );
+                daysTook = " — استغرقت " + days + " يوم";
+              }
+            }
+            dateLine =
+              '<div class="journey-date">✅ ' +
+              DATA.journey[m.id] +
+              daysTook +
+              "</div>";
+          } else if (isNext) {
+            dateLine =
+              '<div class="journey-remaining">' +
+              journeyRemainingText(m.id, d) +
+              "</div>";
+          } else {
+            dateLine = '<div class="journey-locked">🔒 قادم</div>';
+          }
+          html +=
+            '<div class="journey-node ' +
+            (achieved ? "done" : isNext ? "next" : "") +
+            '">' +
+            '<div class="journey-icon">' +
+            m.icon +
+            "</div>" +
+            '<div class="journey-title">' +
+            m.title +
+            "</div>" +
+            dateLine +
+            "</div>";
+        });
+        box.innerHTML = html;
+      }
+      function buildTimelineEvents() {
+        const events = [];
+        JOURNEY_MILESTONES.forEach((m) => {
+          if (DATA.journey[m.id])
+            events.push({
+              date: DATA.journey[m.id],
+              icon: m.icon,
+              text: m.title + " تحققت",
+            });
+        });
+        SURAHS.forEach((s) => {
+          const rec = DATA.state[s.n];
+          if (rec.memorizedDate)
+            events.push({
+              date: rec.memorizedDate,
+              icon: "📗",
+              text: "حفظت سورة " + s.name,
+            });
+        });
+        events.sort((a, b) => b.date.localeCompare(a.date));
+        return events;
+      }
+      function renderTimeline() {
+        const events = buildTimelineEvents();
+        const box = document.getElementById("timelineBox");
+        if (!events.length) {
+          box.innerHTML =
+            '<div class="goal-empty">ابدأ رحلتك وستظهر هنا كل محطاتك 🌿</div>';
+          return;
+        }
+        box.innerHTML = events
+          .slice(0, 40)
+          .map(
+            (e) =>
+              '<div class="timeline-item"><div class="timeline-icon">' +
+              e.icon +
+              '</div><div><div class="timeline-text">' +
+              e.text +
+              '</div><div class="timeline-date">' +
+              e.date +
+              "</div></div></div>",
+          )
+          .join("");
+      }
+
+      /* ============ TODAY'S PLAN ============ */
+      function buildReviewItemsHtml(limit) {
+        const items = SURAHS.map((s) => ({ s, u: reviewUrgency(s.n) }))
+          .filter((o) => o.u && o.u.level !== "g")
+          .sort((a, b) => b.u.days - a.u.days);
+        if (!items.length)
+          return '<span style="font-size:12px;color:var(--ink-soft)">لا يوجد شيء متأخر، أحسنت! 🌿</span>';
+        return items
+          .slice(0, limit)
+          .map((o) => {
+            const cls = o.u.level;
+            return (
+              '<div class="review-item ' +
+              cls +
+              '">' +
+              "<div><div>" +
+              o.s.name +
+              "</div><small>آخر مراجعة: منذ " +
+              o.u.days +
+              " يوم — ثبات: " +
+              stabilityLevel(o.s.n) +
+              "</small></div>" +
+              '<button class="mini-review-btn" data-n="' +
+              o.s.n +
+              '">راجعتها اليوم ✓</button>' +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+      function quickReview(n) {
+        const rec = DATA.state[n];
+        if (!rec || !(rec.status === "memorized" || rec.status === "excellent"))
+          return;
+        srsReviewSuccess(n);
+        renderAll();
+        const newBadges = checkProgressEvents();
+        if (newBadges.length)
+          showToast(
+            "🏅 إنجاز جديد: " + newBadges.map((b) => b.title).join("، "),
+            true,
+          );
+        else showToast("تم تسجيل المراجعة ✅");
+      }
+
+      /* ============ TODAY'S SMART PLAN ============ */
+      const PLAN_KEY = "quranTrackerPlan";
+      function getPlanData() {
+        try {
+          const raw = localStorage.getItem(PLAN_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return {};
+      }
+      function savePlanData(plan) {
+        try {
+          localStorage.setItem(PLAN_KEY, JSON.stringify(plan));
+        } catch (e) {}
+      }
+      function extractSurahFromGoal(title) {
+        const t = title.trim();
+        const match = t.match(/سورة\s+([\u0600-\u06FF]+)/);
+        if (!match) return null;
+        const name = match[1];
+        return SURAHS.find((s) => s.name === name) || null;
+      }
+      function buildTodayPlan() {
+        const plan = getPlanData();
+        const today = todayStr();
+        if (plan.date !== today) {
+          plan.date = today;
+          plan.items = [];
+        }
+        const goal = DATA.settings.dailyGoal || 8;
+        const items = [];
+        const goalSurahs = DATA.goals
+          .map((g) => ({ g, s: extractSurahFromGoal(g.title) }))
+          .filter((o) => o.s && o.g.progress < 100);
+        if (goalSurahs.length) {
+          goalSurahs.forEach(({ g, s }) => {
+            const rec = DATA.state[s.n];
+            const mem = rec.memorizedAyat || 0;
+            if (mem < s.ayat) {
+              const remaining = s.ayat - mem;
+              const toMem = Math.min(goal, remaining);
+              items.push({
+                id: "hifz_" + s.n,
+                type: "hifz",
+                surahN: s.n,
+                text: "احفظ " + toMem + " آية من سورة " + s.name,
+                sub: "الآيات " + (mem + 1) + " إلى " + (mem + toMem),
+                done: false,
+              });
+            }
+          });
+        } else {
+          const inProgress = SURAHS.find(
+            (s) => DATA.state[s.n].status === "progress",
+          );
+          if (inProgress) {
+            const rec = DATA.state[inProgress.n];
+            const mem = rec.memorizedAyat || 0;
+            const remaining = inProgress.ayat - mem;
+            const toMem = Math.min(goal, remaining);
+            items.push({
+              id: "hifz_" + inProgress.n,
+              type: "hifz",
+              surahN: inProgress.n,
+              text: "احفظ " + toMem + " آية من سورة " + inProgress.name,
+              sub: "الآيات " + (mem + 1) + " إلى " + (mem + toMem),
+              done: false,
+            });
+          } else {
+            const firstNone = SURAHS.find(
+              (s) => DATA.state[s.n].status === "none",
+            );
+            if (firstNone) {
+              const toMem = Math.min(goal, firstNone.ayat);
+              items.push({
+                id: "hifz_" + firstNone.n,
+                type: "hifz",
+                surahN: firstNone.n,
+                text: "احفظ " + toMem + " آية من سورة " + firstNone.name,
+                sub: "الآيات 1 إلى " + toMem,
+                done: false,
+              });
+            }
+          }
+        }
+        const dueReviews = SURAHS.map((s) => ({ s, u: reviewUrgency(s.n) }))
+          .filter((o) => o.u && o.u.level !== "g")
+          .sort((a, b) => b.u.days - a.u.days)
+          .slice(0, 3);
+        dueReviews.forEach((o) => {
+          items.push({
+            id: "review_" + o.s.n,
+            type: "review",
+            surahN: o.s.n,
+            text: "راجع سورة " + o.s.name,
+            sub: "آخر مراجعة منذ " + o.u.days + " يوم",
+            done: false,
+          });
+        });
+        plan.items = items;
+        savePlanData(plan);
+        return plan;
+      }
+      function renderTodayPlan() {
+        const box = document.getElementById("todayPlanBox");
+        if (!box) return;
+        const plan = buildTodayPlan();
+        if (!plan.items.length) {
+          box.innerHTML =
+            '<div class="today-plan"><div class="today-plan-title">خطة اليوم</div><div class="plan-empty">أضف هدف "حفظ سورة" أو ابدأ حفظ سورة لتوليد خطة يومية.</div></div>';
+          return;
+        }
+        const doneCount = plan.items.filter((i) => i.done).length;
+        box.innerHTML =
+          '<div class="today-plan"><div class="today-plan-title">خطة اليوم <span style="font-size:12px;color:var(--ink-soft);font-weight:400">(' +
+          doneCount +
+          "/" +
+          plan.items.length +
+          ")</span></div>" +
+          plan.items
+            .map(
+              (item) =>
+                '<div class="plan-item ' +
+                (item.done ? "done" : "") +
+                '" data-id="' +
+                item.id +
+                '"><button class="plan-check ' +
+                (item.done ? "done" : "") +
+                '">' +
+                (item.done ? "✓" : "") +
+                '</button><div class="plan-text">' +
+                item.text +
+                '<div class="plan-type">' +
+                item.sub +
+                "</div></div></div>",
+            )
+            .join("") +
+          "</div>";
+        box.querySelectorAll(".plan-check").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const itemEl = btn.closest(".plan-item");
+            const id = itemEl.dataset.id;
+            const plan = getPlanData();
+            const item = plan.items.find((i) => i.id === id);
+            if (item) {
+              item.done = !item.done;
+              savePlanData(plan);
+              renderTodayPlan();
+            }
+          });
+        });
+      }
+
+      /* ============ STREAK RESCUE ============ */
+      function useGraceDay() {
+        const month = todayStr().slice(0, 7);
+        if (DATA.graceDays[month]) {
+          showToast("استخدمت يوم الإنقاذ لهذا الشهر بالفعل");
+          return;
+        }
+        if (!DATA.settings.graceDayEnabled) {
+          showToast("يوم الإنقاذ غير مفعّل من الإعدادات");
+          return;
+        }
+        DATA.graceDays[month] = todayStr();
+        logActivity("hifz");
+        saveData();
+        renderAll();
+        showToast("تم استخدام يوم الإنقاذ 🌿 السلسلة محفوظة");
+      }
+      function renderStreakBanner() {
+        const box = document.getElementById("streakBanner");
+        const st = streaks();
+        const atRisk = !DATA.log[todayStr()] && st.current > 0;
+        if (!atRisk) {
+          box.style.display = "none";
+          box.innerHTML = "";
+          return;
+        }
+        box.style.display = "flex";
+        const month = todayStr().slice(0, 7);
+        const graceUsed = !!DATA.graceDays[month];
+        box.innerHTML =
+          "⚠️ السلسلة معرضة للانقطاع (" +
+          st.current +
+          " يوم) — أنجز وردًا بسيطًا اليوم للحفاظ عليها." +
+          (DATA.settings.graceDayEnabled
+            ? '<button class="icon-btn-text" id="btnGraceDay" ' +
+              (graceUsed ? "disabled" : "") +
+              ">" +
+              (graceUsed
+                ? "✓ تم استخدام يوم الإنقاذ"
+                : "استخدم يوم إنقاذ (مرة شهريًا)") +
+              "</button>"
+            : "");
+        const btn = document.getElementById("btnGraceDay");
+        if (btn) btn.addEventListener("click", useGraceDay);
+      }
+
+      /* ============ BADGES ============ */
+      function fullWeekAchieved() {
+        for (let i = 0; i < 7; i++) {
+          const dt = new Date();
+          dt.setDate(dt.getDate() - i);
+          const key = dt.toISOString().slice(0, 10);
+          const t = DATA.typeLog[key];
+          if (!t || !t.hifz || !t.review) return false;
+        }
+        return true;
+      }
+      function comebackAchieved() {
+        const days = Object.keys(DATA.log).sort();
+        if (days.length < 2) return false;
+        for (let i = 1; i < days.length; i++) {
+          const gap = Math.round(
+            (new Date(days[i]) - new Date(days[i - 1])) / 86400000,
+          );
+          if (gap >= 3) return true;
+        }
+        return false;
+      }
+      function wirdGoalHitsCount() {
+        const goal = DATA.settings.dailyGoal || 8;
+        return Object.values(DATA.ayahLog).filter((v) => v >= goal).length;
+      }
+      function memoStabilityAchieved() {
+        return SURAHS.some((s) => {
+          const rec = DATA.state[s.n];
+          if (
+            !(rec.status === "memorized" || rec.status === "excellent") ||
+            !rec.lastReview
+          )
+            return false;
+          const days = Math.floor(
+            (new Date(todayStr()) - new Date(rec.lastReview)) / 86400000,
+          );
+          return days >= 30;
+        });
+      }
+      const BADGES = [
+        {
+          id: "first_surah",
+          icon: "🌱",
+          title: "أول سورة",
+          desc: "احفظ أول سورة كاملة",
+          test: (d) => d.memorizedCount >= 1,
+        },
+        {
+          id: "ten_surahs",
+          icon: "📗",
+          title: "10 سور",
+          desc: "احفظ 10 سور",
+          test: (d) => d.memorizedCount >= 10,
+        },
+        {
+          id: "thirty_surahs",
+          icon: "📘",
+          title: "30 سورة",
+          desc: "احفظ 30 سورة",
+          test: (d) => d.memorizedCount >= 30,
+        },
+        {
+          id: "all_surahs",
+          icon: "📕",
+          title: "114 سورة",
+          desc: "احفظ القرآن كاملاً",
+          test: (d) => d.memorizedCount >= 114,
+        },
+        {
+          id: "first_juz",
+          icon: "🕌",
+          title: "أول جزء",
+          desc: "أكمل أول جزء",
+          test: (d) => d.juzComplete.length >= 1,
+        },
+        {
+          id: "five_juz",
+          icon: "🕋",
+          title: "5 أجزاء",
+          desc: "أكمل 5 أجزاء",
+          test: (d) => d.juzComplete.length >= 5,
+        },
+        {
+          id: "ten_juz",
+          icon: "⭐",
+          title: "10 أجزاء",
+          desc: "أكمل 10 أجزاء",
+          test: (d) => d.juzComplete.length >= 10,
+        },
+        {
+          id: "quarter",
+          icon: "🌗",
+          title: "ربع القرآن",
+          desc: "25% من القرآن محفوظة",
+          test: (d) => d.overallPct >= 25,
+        },
+        {
+          id: "half",
+          icon: "🌕",
+          title: "نصف القرآن",
+          desc: "50% من القرآن محفوظة",
+          test: (d) => d.overallPct >= 50,
+        },
+        {
+          id: "full",
+          icon: "🏆",
+          title: "ختمة الحفظ",
+          desc: "100% من القرآن محفوظة",
+          test: (d) => d.overallPct >= 99.99,
+        },
+        {
+          id: "streak7",
+          icon: "🔥",
+          title: "سلسلة أسبوع",
+          desc: "7 أيام متتالية من النشاط",
+          test: (d, st) => st.longest >= 7,
+        },
+        {
+          id: "streak30",
+          icon: "💎",
+          title: "سلسلة شهر",
+          desc: "30 يوم متتالي من النشاط",
+          test: (d, st) => st.longest >= 30,
+        },
+        {
+          id: "fajr_wird",
+          icon: "🌅",
+          title: "ورد الفجر",
+          desc: "سجّلت نشاطًا 5 مرات في وقت الفجر",
+          test: () => (DATA.fajrCount || 0) >= 5,
+        },
+        {
+          id: "consistency",
+          icon: "🔄",
+          title: "ثبات",
+          desc: "راجعت نفس السورة 5 مرات",
+          test: () =>
+            Object.values(DATA.surahReviewCount || {}).some((c) => c >= 5),
+        },
+        {
+          id: "memo_stability",
+          icon: "🧱",
+          title: "ثبات الحفظ",
+          desc: "سورة بلا مراجعة عاجلة لمدة شهر",
+          test: () => memoStabilityAchieved(),
+        },
+        {
+          id: "full_week",
+          icon: "📚",
+          title: "أسبوع كامل",
+          desc: "حفظ ومراجعة كل يوم لمدة أسبوع",
+          test: () => fullWeekAchieved(),
+        },
+        {
+          id: "comeback",
+          icon: "❤️",
+          title: "عودة",
+          desc: "رجعت للحفظ بعد انقطاع",
+          test: () => comebackAchieved(),
+        },
+        {
+          id: "wird_30",
+          icon: "🕌",
+          title: "حافظ على وردك",
+          desc: "حققت هدفك اليومي 30 مرة",
+          test: () => wirdGoalHitsCount() >= 30,
+        },
+      ];
+      function computeBadges() {
+        const d = computeDerived();
+        const st = streaks();
+        return BADGES.map((b) => ({ ...b, achieved: b.test(d, st) }));
+      }
+      function syncBadgesSilently() {
+        const achieved = computeBadges()
+          .filter((b) => b.achieved)
+          .map((b) => b.id);
+        DATA.unlockedBadges = achieved;
+        saveData();
+      }
+      function checkNewBadges() {
+        const achievedList = computeBadges().filter((b) => b.achieved);
+        const achievedIds = achievedList.map((b) => b.id);
+        const prev = new Set(DATA.unlockedBadges || []);
+        const newly = achievedList.filter((b) => !prev.has(b.id));
+        DATA.unlockedBadges = achievedIds;
+        saveData();
+        return newly;
+      }
+      function checkProgressEvents() {
+        checkJourneyMilestones();
+        return checkNewBadges();
+      }
+      function renderBadges() {
+        const box = document.getElementById("badgeGrid");
+        if (!box) return;
+        const list = computeBadges();
+        box.innerHTML = list
+          .map(
+            (b) =>
+              '<div class="badge-card ' +
+              (b.achieved ? "unlocked" : "locked") +
+              '">' +
+              '<div class="badge-icon">' +
+              b.icon +
+              "</div>" +
+              '<div class="badge-title">' +
+              b.title +
+              "</div>" +
+              '<div class="badge-desc">' +
+              b.desc +
+              "</div>" +
+              (b.achieved ? '<div class="badge-check">✓ مُحقَّق</div>' : "") +
+              "</div>",
+          )
+          .join("");
+      }
+
+      /* ============ RENDER: SURAH GRID ============ */
+      function stateFill(status) {
+        return status === "none"
+          ? "var(--tile-empty)"
+          : status === "progress"
+            ? "var(--amber)"
+            : status === "memorized"
+              ? "var(--emerald)"
+              : "var(--blue)";
+      }
+      function stateTextColor(status) {
+        return status === "none" ? "var(--tile-text)" : "#F7F9FC";
+      }
+      function ringColor(urg) {
+        if (!urg) return null;
+        return urg.level === "y"
+          ? "var(--amber)"
+          : urg.level === "o"
+            ? "var(--orange)"
+            : urg.level === "r"
+              ? "var(--red)"
+              : null;
+      }
+
+      function renderHeart() {
+        const box = document.getElementById("surahGrid");
+        box.innerHTML = "";
+        SURAHS.forEach((s) => {
+          const rec = DATA.state[s.n];
+          const status = rec.status;
+          const urg = reviewUrgency(s.n);
+          const ring = ringColor(urg);
+          const memPct = Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(((rec.memorizedAyat || 0) / s.ayat) * 100),
+            ),
+          );
+          const tile = document.createElement("div");
+          tile.className = "surah-tile";
+          tile.dataset.n = s.n;
+          tile.style.background = stateFill(status);
+          tile.style.color = stateTextColor(status);
+          tile.style.borderColor = ring || "transparent";
+          tile.title =
+            s.name +
+            " — سورة " +
+            s.n +
+            " — " +
+            s.ayat +
+            " آية — الجزء " +
+            s.juz;
+          tile.innerHTML = `
       ${rec.notes ? '<div class="tile-note-dot" title="فيه ملاحظة">📝</div>' : ""}
       <div class="num">${s.n}</div><div class="name">${s.name}</div><div class="juz">ج ${s.juz}</div>
       <div class="tile-progress-bg"><div class="tile-progress-fill" style="width:${memPct}%"></div></div>
     `;
-    tile.addEventListener("click", ()=>openModal(s.n));
-    box.appendChild(tile);
-  });
-}
-
-function highlightSurah(n){
-  document.querySelectorAll('.surah-tile.search-hit').forEach(el=>el.classList.remove('search-hit'));
-  const el = document.querySelector(`.surah-tile[data-n="${n}"]`);
-  if(!el) return;
-  void el.offsetWidth;
-  el.classList.add('search-hit');
-  el.scrollIntoView({behavior:'smooth', block:'center', inline:'center'});
-  setTimeout(()=>el.classList.remove('search-hit'), 3000);
-}
-
-/* ============ SEARCH ============ */
-function statusLabelAr(status){
-  return status==="none" ? "لم تبدأ" : status==="progress" ? "قيد الحفظ" : status==="memorized" ? "محفوظة" : "مراجعة ممتازة";
-}
-function initSearch(){
-  const input = document.getElementById("surahSearch");
-  const box = document.getElementById("searchResults");
-
-  function runSearch(){
-    const q = input.value.trim();
-    if(!q){ box.classList.remove("show"); box.innerHTML=""; return; }
-    const matches = SURAHS.filter(s=> s.name.includes(q) || String(s.n)===q);
-    if(!matches.length){
-      box.innerHTML = '<div class="search-empty">لا توجد نتائج مطابقة</div>';
-    } else {
-      box.innerHTML = matches.slice(0,10).map(s=>
-        `<div class="search-result-item" data-n="${s.n}"><span>${s.name}</span><small>الجزء ${s.juz} — ${statusLabelAr(DATA.state[s.n].status)}</small></div>`
-      ).join("");
-    }
-    box.classList.add("show");
-  }
-
-  input.addEventListener("input", runSearch);
-  input.addEventListener("focus", ()=>{ if(input.value.trim()) runSearch(); });
-  input.addEventListener("keydown", e=>{
-    if(e.key==="Enter"){
-      const q = input.value.trim();
-      const matches = SURAHS.filter(s=> s.name.includes(q) || String(s.n)===q);
-      if(matches.length){
-        highlightSurah(matches[0].n);
-        input.value=""; box.classList.remove("show");
+          tile.addEventListener("click", () => openModal(s.n));
+          box.appendChild(tile);
+        });
       }
-    }
-  });
-  box.addEventListener("click", e=>{
-    const item = e.target.closest(".search-result-item");
-    if(!item || !item.dataset.n) return;
-    highlightSurah(parseInt(item.dataset.n,10));
-    input.value = "";
-    box.classList.remove("show");
-  });
-  document.addEventListener("click", e=>{
-    if(!e.target.closest(".search-box")) box.classList.remove("show");
-  });
-}
 
-/* ============ RENDER: SIDE STATS on heart tab ============ */
-function renderSideStats(d){
-  document.getElementById("pctVal").textContent = d.overallPct.toFixed(1);
-  document.getElementById("miniSurahs").textContent = d.memorizedCount + "/114";
-  document.getElementById("miniJuz").textContent = d.juzComplete.length + "/30";
-  document.getElementById("reviewListBox").innerHTML = buildReviewItemsHtml(8);
-}
+      function highlightSurah(n) {
+        document
+          .querySelectorAll(".surah-tile.search-hit")
+          .forEach((el) => el.classList.remove("search-hit"));
+        const el = document.querySelector(`.surah-tile[data-n="${n}"]`);
+        if (!el) return;
+        void el.offsetWidth;
+        el.classList.add("search-hit");
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+        setTimeout(() => el.classList.remove("search-hit"), 3000);
+      }
 
-function renderWeeklySummary(){
-  const w = weeklyComparison();
-  document.getElementById("weeklyAyat").textContent = w.ayat;
-  document.getElementById("weeklyReviews").textContent = w.reviews;
-  document.getElementById("weeklyDays").textContent = w.daysActive;
-  const pctBox = document.getElementById("weeklyPct");
-  if(w.pctChange===null){ pctBox.textContent = "—"; }
-  else { pctBox.textContent = (w.pctChange>=0? "📈 +":"📉 ") + w.pctChange + "%"; }
-}
+      /* ============ SEARCH ============ */
+      function statusLabelAr(status) {
+        return status === "none"
+          ? "لم تبدأ"
+          : status === "progress"
+            ? "قيد الحفظ"
+            : status === "memorized"
+              ? "محفوظة"
+              : "مراجعة ممتازة";
+      }
+      function initSearch() {
+        const input = document.getElementById("surahSearch");
+        const box = document.getElementById("searchResults");
 
-/* ============ RENDER: JUZ ============ */
-function renderJuz(d){
-  const box = document.getElementById("juzGrid");
-  let html = "";
-  for(let j=1;j<=30;j++){
-    const list = SURAHS.filter(s=>s.juz===j).map(s=>s.name).join("، ");
-    const pct = d.juzPct[j];
-    html += `<div class="juz-card">
+        function runSearch() {
+          const q = input.value.trim();
+          if (!q) {
+            box.classList.remove("show");
+            box.innerHTML = "";
+            return;
+          }
+          const matches = SURAHS.filter(
+            (s) => s.name.includes(q) || String(s.n) === q,
+          );
+          if (!matches.length) {
+            box.innerHTML =
+              '<div class="search-empty">لا توجد نتائج مطابقة</div>';
+          } else {
+            box.innerHTML = matches
+              .slice(0, 10)
+              .map(
+                (s) =>
+                  `<div class="search-result-item" data-n="${s.n}"><span>${s.name}</span><small>الجزء ${s.juz} — ${statusLabelAr(DATA.state[s.n].status)}</small></div>`,
+              )
+              .join("");
+          }
+          box.classList.add("show");
+        }
+
+        input.addEventListener("input", runSearch);
+        input.addEventListener("focus", () => {
+          if (input.value.trim()) runSearch();
+        });
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            const q = input.value.trim();
+            const matches = SURAHS.filter(
+              (s) => s.name.includes(q) || String(s.n) === q,
+            );
+            if (matches.length) {
+              highlightSurah(matches[0].n);
+              input.value = "";
+              box.classList.remove("show");
+            }
+          }
+        });
+        box.addEventListener("click", (e) => {
+          const item = e.target.closest(".search-result-item");
+          if (!item || !item.dataset.n) return;
+          highlightSurah(parseInt(item.dataset.n, 10));
+          input.value = "";
+          box.classList.remove("show");
+        });
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".search-box")) box.classList.remove("show");
+        });
+      }
+
+      /* ============ RENDER: SIDE STATS on heart tab ============ */
+      function renderSideStats(d) {
+        document.getElementById("pctVal").textContent = d.overallPct.toFixed(1);
+        document.getElementById("miniSurahs").textContent =
+          d.memorizedCount + "/114";
+        document.getElementById("miniJuz").textContent =
+          d.juzComplete.length + "/30";
+        document.getElementById("reviewListBox").innerHTML =
+          buildReviewItemsHtml(8);
+      }
+
+      function renderWeeklySummary() {
+        const w = weeklyComparison();
+        document.getElementById("weeklyAyat").textContent = w.ayat;
+        document.getElementById("weeklyReviews").textContent = w.reviews;
+        document.getElementById("weeklyDays").textContent = w.daysActive;
+        const pctBox = document.getElementById("weeklyPct");
+        if (w.pctChange === null) {
+          pctBox.textContent = "—";
+        } else {
+          pctBox.textContent =
+            (w.pctChange >= 0 ? "📈 +" : "📉 ") + w.pctChange + "%";
+        }
+      }
+
+      /* ============ RENDER: JUZ ============ */
+      function renderJuz(d) {
+        const box = document.getElementById("juzGrid");
+        let html = "";
+        for (let j = 1; j <= 30; j++) {
+          const list = SURAHS.filter((s) => s.juz === j)
+            .map((s) => s.name)
+            .join("، ");
+          const pct = d.juzPct[j];
+          html += `<div class="juz-card">
       <div class="top"><span>الجزء ${j}</span><span>${pct.toFixed(0)}%</span></div>
       <div class="surahs">${list}</div>
       <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
     </div>`;
-  }
-  box.innerHTML = html;
-}
+        }
+        box.innerHTML = html;
+      }
 
-/* ============ RENDER: STATS ============ */
-function renderStats(d){
-  const st = streaks();
-  const cards = [
-    [d.memorizedCount+"/114","سور محفوظة"],
-    [d.juzComplete.length+"/30","أجزاء مكتملة"],
-    [d.overallPct.toFixed(1)+"%","نسبة الإنجاز"],
-    [d.pagesApprox,"صفحات (تقريبًا)"],
-    [st.longest,"أطول سلسلة أيام"],
-    [st.current,"السلسلة الحالية"],
-  ];
-  document.getElementById("statsGrid").innerHTML = cards.map(c=>
-    `<div class="stat-card"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`
-  ).join("");
+      /* ============ RENDER: STATS ============ */
+      function renderStats(d) {
+        const st = streaks();
+        const cards = [
+          [d.memorizedCount + "/114", "سور محفوظة"],
+          [d.juzComplete.length + "/30", "أجزاء مكتملة"],
+          [d.overallPct.toFixed(1) + "%", "نسبة الإنجاز"],
+          [d.pagesApprox, "صفحات (تقريبًا)"],
+          [st.longest, "أطول سلسلة أيام"],
+          [st.current, "السلسلة الحالية"],
+        ];
+        document.getElementById("statsGrid").innerHTML = cards
+          .map(
+            (c) =>
+              `<div class="stat-card"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`,
+          )
+          .join("");
 
-  const days = [];
-  for(let i=29;i>=0;i--){
-    const dt = new Date(); dt.setDate(dt.getDate()-i);
-    const key = dt.toISOString().slice(0,10);
-    days.push(DATA.log[key]||0);
-  }
-  const max = Math.max(1, ...days);
-  document.getElementById("chartBox").innerHTML = days.map(v=>
-    `<div class="bar" style="height:${Math.max(3,v/max*100)}%" title="${v}"></div>`
-  ).join("");
-}
-function renderRecords(){
-  const r = computeRecords();
-  const cards = [
-    [r.maxAyatDay, "أكبر عدد آيات في يوم"],
-    [r.longestStreak, "أطول سلسلة أيام"],
-    [r.fastest? (r.fastest.days+" يوم") : "—", r.fastest? ("أسرع سورة (" + r.fastest.name + ")") : "أسرع سورة حفظتها"],
-    [r.maxReviewDay, "أكبر عدد مراجعات في يوم"],
-    [r.longestSession? (r.longestSession+" د") : "—", "أطول جلسة"],
-  ];
-  document.getElementById("recordsGrid").innerHTML = cards.map(c=>
-    `<div class="stat-card"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`
-  ).join("");
-}
-function levelAnalysis(){
-  const w = weeklyComparison();
-  const goal = DATA.settings.dailyGoal || 8;
-  const hifzScore = w.ayat >= goal*5 ? "green" : w.ayat>=goal*2 ? "yellow":"red";
-  const reviewScore = w.reviews>=5?"green": w.reviews>=2?"yellow":"red";
-  const consistScore = w.daysActive>=6?"green": w.daysActive>=3?"yellow":"red";
-  const dayCounts = [0,0,0,0,0,0,0];
-  Object.keys(DATA.log).forEach(k=>{ const d=new Date(k).getDay(); dayCounts[d]+=DATA.log[k]; });
-  const dayNames=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-  const maxDay = dayCounts.indexOf(Math.max(...dayCounts));
-  const avgHifz = (w.ayat/7).toFixed(1);
-  return {hifzScore, reviewScore, consistScore, mostActiveDay: dayNames[maxDay], avgHifz};
-}
-function renderLevelAnalysis(){
-  const la = levelAnalysis();
-  const label = c=> c==="green"?"ممتاز": c==="yellow"?"متوسط":"يحتاج اهتمام";
-  document.getElementById("levelAnalysisBox").innerHTML = `
+        const days = [];
+        for (let i = 29; i >= 0; i--) {
+          const dt = new Date();
+          dt.setDate(dt.getDate() - i);
+          const key = dt.toISOString().slice(0, 10);
+          days.push(DATA.log[key] || 0);
+        }
+        const max = Math.max(1, ...days);
+        document.getElementById("chartBox").innerHTML = days
+          .map(
+            (v) =>
+              `<div class="bar" style="height:${Math.max(3, (v / max) * 100)}%" title="${v}"></div>`,
+          )
+          .join("");
+      }
+      function renderRecords() {
+        const r = computeRecords();
+        const cards = [
+          [r.maxAyatDay, "أكبر عدد آيات في يوم"],
+          [r.longestStreak, "أطول سلسلة أيام"],
+          [
+            r.fastest ? r.fastest.days + " يوم" : "—",
+            r.fastest
+              ? "أسرع سورة (" + r.fastest.name + ")"
+              : "أسرع سورة حفظتها",
+          ],
+          [r.maxReviewDay, "أكبر عدد مراجعات في يوم"],
+          [r.longestSession ? r.longestSession + " د" : "—", "أطول جلسة"],
+        ];
+        document.getElementById("recordsGrid").innerHTML = cards
+          .map(
+            (c) =>
+              `<div class="stat-card"><div class="n">${c[0]}</div><div class="l">${c[1]}</div></div>`,
+          )
+          .join("");
+      }
+      function levelAnalysis() {
+        const w = weeklyComparison();
+        const goal = DATA.settings.dailyGoal || 8;
+        const hifzScore =
+          w.ayat >= goal * 5 ? "green" : w.ayat >= goal * 2 ? "yellow" : "red";
+        const reviewScore =
+          w.reviews >= 5 ? "green" : w.reviews >= 2 ? "yellow" : "red";
+        const consistScore =
+          w.daysActive >= 6 ? "green" : w.daysActive >= 3 ? "yellow" : "red";
+        const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+        Object.keys(DATA.log).forEach((k) => {
+          const d = new Date(k).getDay();
+          dayCounts[d] += DATA.log[k];
+        });
+        const dayNames = [
+          "الأحد",
+          "الإثنين",
+          "الثلاثاء",
+          "الأربعاء",
+          "الخميس",
+          "الجمعة",
+          "السبت",
+        ];
+        const maxDay = dayCounts.indexOf(Math.max(...dayCounts));
+        const avgHifz = (w.ayat / 7).toFixed(1);
+        return {
+          hifzScore,
+          reviewScore,
+          consistScore,
+          mostActiveDay: dayNames[maxDay],
+          avgHifz,
+        };
+      }
+      function renderLevelAnalysis() {
+        const la = levelAnalysis();
+        const label = (c) =>
+          c === "green" ? "ممتاز" : c === "yellow" ? "متوسط" : "يحتاج اهتمام";
+        document.getElementById("levelAnalysisBox").innerHTML = `
     <div class="level-row"><span class="level-dot ${la.hifzScore}"></span><span>🟢 الحفظ: ${label(la.hifzScore)}</span></div>
     <div class="level-row"><span class="level-dot ${la.reviewScore}"></span><span>🟡 المراجعة: ${label(la.reviewScore)}</span></div>
     <div class="level-row"><span class="level-dot ${la.consistScore}"></span><span>🔴 الاستمرارية: ${label(la.consistScore)}</span></div>
     <div class="level-row"><span>📅 أكثر الأيام نشاطًا: <b>${la.mostActiveDay}</b></span></div>
     <div class="level-row"><span>📖 متوسط الحفظ اليومي: <b>${la.avgHifz}</b> آية</span></div>
   `;
-}
+      }
 
-/* ============ GOALS (fully user-managed) ============ */
-function uid(){ return "g" + Date.now() + Math.floor(Math.random()*1000); }
+      /* ============ WEEKLY REPORT ============ */
+      function renderWeeklyReport() {
+        const box = document.getElementById("weeklyReportBox");
+        if (!box) return;
+        const w = weeklyComparison();
+        const goal = DATA.settings.dailyGoal || 8;
+        const target = goal * 7;
+        const hifzPct = target > 0 ? Math.round((w.ayat / target) * 100) : 0;
+        const reviewTarget = 7;
+        const reviewPct =
+          reviewTarget > 0 ? Math.round((w.reviews / reviewTarget) * 100) : 0;
+        const consistPct = Math.round((w.daysActive / 7) * 100);
 
-function renderGoals(){
-  const box = document.getElementById("goalsGrid");
-  if(!DATA.goals.length){
-    box.innerHTML = '<div class="goal-empty">لا توجد أهداف بعد — اضغط "هدف جديد" لإضافة أول هدف لك.</div>';
-    return;
-  }
-  box.innerHTML = DATA.goals.map(g=>{
-    const done = g.progress>=100;
-    return `<div class="goal-card ${done?'done':''}" data-id="${g.id}">
+        const tips = [];
+        if (hifzPct < 50) {
+          tips.push(
+            "حفظك هذا الأسبوع أقل من نصف هدفك — جرّب تقسيم الورد على فترتين قصيرتين بدل مرة واحدة.",
+          );
+        } else if (hifzPct >= 100) {
+          tips.push("تجاوزت هدفك اليومي في الحفظ، أحسنت! واصل بنفس الإيقاع.");
+        } else {
+          tips.push(
+            "حفظك في مسار جيد، خصص 10 دقائق إضافية يوميًا لتصل إلى هدفك.",
+          );
+        }
+        if (reviewPct < 50) {
+          tips.push(
+            "المراجعة قليلة هذا الأسبوع — اجعل مراجعة سورة واحدة على الأقل جزءًا من وردك اليومي.",
+          );
+        } else if (reviewPct >= 100) {
+          tips.push("مراجعتك ممتازة، الحفظ سيصبح ثابتًا بإذن الله.");
+        }
+        if (consistPct < 50) {
+          tips.push(
+            "أيام النشاط قليلة — حدد وقتًا ثابتًا يوميًا ولو لورد صغير يحافظ على السلسلة.",
+          );
+        }
+        if (!tips.length) {
+          tips.push(
+            "أداء متوازن — حافظ على هذا المستوى وزد هدفك اليومي آية واحدة.",
+          );
+        }
+        const weakest =
+          hifzPct <= reviewPct && hifzPct <= consistPct
+            ? "الحفظ"
+            : reviewPct <= consistPct
+              ? "المراجعة"
+              : "الاستمرارية";
+
+        box.innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px">
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${w.ayat}</div><div class="l">آية محفوظة (${hifzPct}% من الهدف)</div></div>
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${w.reviews}</div><div class="l">مراجعة (${reviewPct}%)</div></div>
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${w.daysActive}/7</div><div class="l">أيام نشطة (${consistPct}%)</div></div>
+      </div>
+      <div style="font-size:13px;margin-bottom:8px">أضعف نقطة هذا الأسبوع: <b style="color:var(--red)">${weakest}</b></div>
+      <div style="font-size:13px;line-height:1.8;background:var(--bg-soft);border-radius:10px;padding:12px">
+        <div style="font-weight:700;margin-bottom:4px">نصيحة مخصصة:</div>
+        <ul style="margin:0;padding-inline-start:18px">${tips.map((t) => `<li>${t}</li>`).join("")}</ul>
+      </div>`;
+      }
+
+      /* ============ GOALS (fully user-managed) ============ */
+      function uid() {
+        return "g" + Date.now() + Math.floor(Math.random() * 1000);
+      }
+
+      function renderGoals() {
+        const box = document.getElementById("goalsGrid");
+        if (!DATA.goals.length) {
+          box.innerHTML =
+            '<div class="goal-empty">لا توجد أهداف بعد — اضغط "هدف جديد" لإضافة أول هدف لك.</div>';
+          return;
+        }
+        box.innerHTML = DATA.goals
+          .map((g) => {
+            const done = g.progress >= 100;
+            return `<div class="goal-card ${done ? "done" : ""}" data-id="${g.id}" draggable="true">
       <div class="goal-top">
+        <div class="drag-handle" title="اسحب لإعادة الترتيب">⠿</div>
         <div>
           <div class="goal-title">${escapeHtml(g.title)}</div>
         </div>
@@ -1253,388 +3356,208 @@ function renderGoals(){
           <button class="icon-btn del-goal" title="حذف">🗑️</button>
         </div>
       </div>
-      ${g.desc? `<div class="goal-desc">${escapeHtml(g.desc)}</div>` : ""}
+      ${g.desc ? `<div class="goal-desc">${escapeHtml(g.desc)}</div>` : ""}
       <div class="bar-bg"><div class="bar-fill" style="width:${g.progress}%"></div></div>
       <div class="goal-progress-row">
         <input type="range" min="0" max="100" value="${g.progress}" class="goal-range">
         <span class="pct">${g.progress}%</span>
       </div>
-      ${done? '<div style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700;">✅ تم الإنجاز</div>' : ""}
+      ${done ? '<div style="font-size:11px;color:var(--gold);margin-top:6px;font-weight:700;">✅ تم الإنجاز</div>' : ""}
     </div>`;
-  }).join("");
+          })
+          .join("");
 
-  box.querySelectorAll(".goal-card").forEach(card=>{
-    const id = card.dataset.id;
-    card.querySelector(".goal-range").addEventListener("input", e=>{
-      const g = DATA.goals.find(x=>x.id===id);
-      g.progress = parseInt(e.target.value,10);
-      card.querySelector(".pct").textContent = g.progress + "%";
-      card.querySelector(".bar-fill").style.width = g.progress + "%";
-    });
-    card.querySelector(".goal-range").addEventListener("change", ()=>{
-      saveData();
-      renderGoals();
-    });
-    card.querySelector(".del-goal").addEventListener("click", ()=>{
-      if(confirm("حذف هذا الهدف؟")){
-        DATA.goals = DATA.goals.filter(x=>x.id!==id);
+        box.querySelectorAll(".goal-card").forEach((card) => {
+          const id = card.dataset.id;
+          card.querySelector(".goal-range").addEventListener("input", (e) => {
+            const g = DATA.goals.find((x) => x.id === id);
+            g.progress = parseInt(e.target.value, 10);
+            card.querySelector(".pct").textContent = g.progress + "%";
+            card.querySelector(".bar-fill").style.width = g.progress + "%";
+          });
+          card.querySelector(".goal-range").addEventListener("change", () => {
+            saveData();
+            renderGoals();
+          });
+          card.querySelector(".del-goal").addEventListener("click", () => {
+            if (confirm("حذف هذا الهدف؟")) {
+              DATA.goals = DATA.goals.filter((x) => x.id !== id);
+              saveData();
+              renderGoals();
+            }
+          });
+          card.querySelector(".edit-goal").addEventListener("click", () => {
+            const g = DATA.goals.find((x) => x.id === id);
+            openGoalForm(g);
+          });
+        });
+      }
+      function escapeHtml(str) {
+        const d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      /* ============ GOALS DRAG & DROP ============ */
+      let dragGoalId = null;
+      document
+        .getElementById("goalsGrid")
+        .addEventListener("dragstart", (e) => {
+          const card = e.target.closest(".goal-card");
+          if (!card) return;
+          dragGoalId = card.dataset.id;
+          card.classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+          try {
+            e.dataTransfer.setData("text/plain", dragGoalId);
+          } catch (err) {}
+        });
+      document.getElementById("goalsGrid").addEventListener("dragend", (e) => {
+        const card = e.target.closest(".goal-card");
+        if (card) card.classList.remove("dragging");
+        document
+          .querySelectorAll(".goal-card")
+          .forEach((c) => c.classList.remove("drag-over"));
+        dragGoalId = null;
+      });
+      document.getElementById("goalsGrid").addEventListener("dragover", (e) => {
+        e.preventDefault();
+        const card = e.target.closest(".goal-card");
+        if (!card || card.dataset.id === dragGoalId) return;
+        document
+          .querySelectorAll(".goal-card")
+          .forEach((c) => c.classList.remove("drag-over"));
+        card.classList.add("drag-over");
+      });
+      document.getElementById("goalsGrid").addEventListener("drop", (e) => {
+        e.preventDefault();
+        document
+          .querySelectorAll(".goal-card")
+          .forEach((c) => c.classList.remove("drag-over"));
+        const target = e.target.closest(".goal-card");
+        if (!target || !dragGoalId || target.dataset.id === dragGoalId) return;
+        const fromIndex = DATA.goals.findIndex((g) => g.id === dragGoalId);
+        const toIndex = DATA.goals.findIndex((g) => g.id === target.dataset.id);
+        if (fromIndex < 0 || toIndex < 0) return;
+        const [moved] = DATA.goals.splice(fromIndex, 1);
+        DATA.goals.splice(toIndex, 0, moved);
         saveData();
         renderGoals();
+      });
+
+      let editingGoalId = null;
+      function openGoalForm(goal) {
+        editingGoalId = goal ? goal.id : null;
+        document.getElementById("goalTitleInput").value = goal
+          ? goal.title
+          : "";
+        document.getElementById("goalDescInput").value = goal
+          ? goal.desc || ""
+          : "";
+        document.getElementById("goalForm").classList.add("show");
+        document.getElementById("goalTitleInput").focus();
       }
-    });
-    card.querySelector(".edit-goal").addEventListener("click", ()=>{
-      const g = DATA.goals.find(x=>x.id===id);
-      openGoalForm(g);
-    });
-  });
-}
-function escapeHtml(str){
-  const d = document.createElement("div");
-  d.textContent = str;
-  return d.innerHTML;
-}
+      function closeGoalForm() {
+        document.getElementById("goalForm").classList.remove("show");
+        editingGoalId = null;
+      }
+      document
+        .getElementById("btnShowGoalForm")
+        .addEventListener("click", () => openGoalForm(null));
+      document
+        .getElementById("goalCancelBtn")
+        .addEventListener("click", closeGoalForm);
+      document.getElementById("goalSaveBtn").addEventListener("click", () => {
+        const title = document.getElementById("goalTitleInput").value.trim();
+        const desc = document.getElementById("goalDescInput").value.trim();
+        if (!title) {
+          document.getElementById("goalTitleInput").focus();
+          return;
+        }
+        if (editingGoalId) {
+          const g = DATA.goals.find((x) => x.id === editingGoalId);
+          g.title = title;
+          g.desc = desc;
+        } else {
+          DATA.goals.push({ id: uid(), title, desc, progress: 0 });
+        }
+        saveData();
+        closeGoalForm();
+        renderGoals();
+      });
 
-let editingGoalId = null;
-function openGoalForm(goal){
-  editingGoalId = goal ? goal.id : null;
-  document.getElementById("goalTitleInput").value = goal ? goal.title : "";
-  document.getElementById("goalDescInput").value = goal ? (goal.desc||"") : "";
-  document.getElementById("goalForm").classList.add("show");
-  document.getElementById("goalTitleInput").focus();
-}
-function closeGoalForm(){
-  document.getElementById("goalForm").classList.remove("show");
-  editingGoalId = null;
-}
-document.getElementById("btnShowGoalForm").addEventListener("click", ()=>openGoalForm(null));
-document.getElementById("goalCancelBtn").addEventListener("click", closeGoalForm);
-document.getElementById("goalSaveBtn").addEventListener("click", ()=>{
-  const title = document.getElementById("goalTitleInput").value.trim();
-  const desc = document.getElementById("goalDescInput").value.trim();
-  if(!title){ document.getElementById("goalTitleInput").focus(); return; }
-  if(editingGoalId){
-    const g = DATA.goals.find(x=>x.id===editingGoalId);
-    g.title = title; g.desc = desc;
-  } else {
-    DATA.goals.push({id:uid(), title, desc, progress:0});
-  }
-  saveData();
-  closeGoalForm();
-  renderGoals();
-});
+      /* ============ RENDER: CALENDAR ============ */
+      function dominantColor(t) {
+        if (!t) return "#E3E7EF";
+        const entries = [
+          ["hifz", "var(--emerald)"],
+          ["review", "var(--blue)"],
+          ["recitation", "var(--purple)"],
+          ["test", "var(--amber)"],
+        ];
+        entries.sort((a, b) => (t[b[0]] || 0) - (t[a[0]] || 0));
+        if (!t[entries[0][0]]) return "#E3E7EF";
+        return entries[0][1];
+      }
+      function showDayDetail(key) {
+        if (!key) return;
+        const t = DATA.typeLog[key] || {};
+        const box = document.getElementById("dayDetailBox");
+        box.textContent =
+          "📅 " +
+          key +
+          " — حفظ: " +
+          (t.hifz || 0) +
+          " · مراجعة: " +
+          (t.review || 0) +
+          " · تلاوة: " +
+          (t.recitation || 0) +
+          " · اختبار: " +
+          (t.test || 0);
+      }
+      function renderCalendar() {
+        const totalDays = 91;
+        const cells = [];
+        for (let i = totalDays - 1; i >= 0; i--) {
+          const dt = new Date();
+          dt.setDate(dt.getDate() - i);
+          const key = dt.toISOString().slice(0, 10);
+          cells.push({ key, v: DATA.log[key] || 0 });
+        }
+        while (cells.length % 7 !== 0) cells.unshift({ key: null, v: -1 });
+        const weeks = [];
+        for (let i = 0; i < cells.length; i += 7)
+          weeks.push(cells.slice(i, i + 7));
+        const box = document.getElementById("calGrid");
+        box.innerHTML = weeks
+          .map((week) => {
+            return (
+              `<div class="cal-week">` +
+              week
+                .map((c) => {
+                  if (c.v === -1)
+                    return `<div class="cal-day" style="background:transparent"></div>`;
+                  const color = dominantColor(DATA.typeLog[c.key]);
+                  return `<div class="cal-day" data-key="${c.key || ""}" style="background:${color};cursor:${c.key ? "pointer" : "default"}" title="${c.key || ""}"></div>`;
+                })
+                .join("") +
+              `</div>`
+            );
+          })
+          .join("");
+        box.querySelectorAll(".cal-day[data-key]").forEach((el) => {
+          if (el.dataset.key)
+            el.addEventListener("click", () => showDayDetail(el.dataset.key));
+        });
+      }
 
-/* ============ RENDER: CALENDAR ============ */
-function dominantColor(t){
-  if(!t) return "#E3E7EF";
-  const entries = [["hifz","var(--emerald)"],["review","var(--blue)"],["recitation","var(--purple)"],["test","var(--amber)"]];
-  entries.sort((a,b)=> (t[b[0]]||0)-(t[a[0]]||0));
-  if(!t[entries[0][0]]) return "#E3E7EF";
-  return entries[0][1];
-}
-function showDayDetail(key){
-  if(!key) return;
-  const t = DATA.typeLog[key] || {};
-  const box = document.getElementById("dayDetailBox");
-  box.textContent = "📅 " + key + " — حفظ: " + (t.hifz||0) + " · مراجعة: " + (t.review||0) + " · تلاوة: " + (t.recitation||0) + " · اختبار: " + (t.test||0);
-}
-function renderCalendar(){
-  const totalDays = 91;
-  const cells = [];
-  for(let i=totalDays-1;i>=0;i--){
-    const dt = new Date(); dt.setDate(dt.getDate()-i);
-    const key = dt.toISOString().slice(0,10);
-    cells.push({key, v: DATA.log[key]||0});
-  }
-  while(cells.length % 7 !== 0) cells.unshift({key:null, v:-1});
-  const weeks = [];
-  for(let i=0;i<cells.length;i+=7) weeks.push(cells.slice(i,i+7));
-  const box = document.getElementById("calGrid");
-  box.innerHTML = weeks.map(week=>{
-    return `<div class="cal-week">` + week.map(c=>{
-      if(c.v===-1) return `<div class="cal-day" style="background:transparent"></div>`;
-      const color = dominantColor(DATA.typeLog[c.key]);
-      return `<div class="cal-day" data-key="${c.key||''}" style="background:${color};cursor:${c.key?'pointer':'default'}" title="${c.key||''}"></div>`;
-    }).join("") + `</div>`;
-  }).join("");
-  box.querySelectorAll(".cal-day[data-key]").forEach(el=>{
-    if(el.dataset.key) el.addEventListener("click", ()=> showDayDetail(el.dataset.key));
-  });
-}
+      /* ============ MODAL ============ */
+      let currentModalSurah = null;
+      const STATE_LABELS = [
+        ["none", "⚪", "لم تبدأ"],
+        ["progress", "🟡", "قيد الحفظ"],
+        ["memorized", "🟢", "محفوظة"],
+        ["excellent", "🔵", "مراجعة ممتازة"],
+      ];
 
-/* ============ MODAL ============ */
-let currentModalSurah = null;
-const STATE_LABELS = [
-  ["none","⚪","لم تبدأ"],
-  ["progress","🟡","قيد الحفظ"],
-  ["memorized","🟢","محفوظة"],
-  ["excellent","🔵","مراجعة ممتازة"],
-];
-
-function openModal(n){
-  currentModalSurah = n;
-  const s = SURAHS.find(x=>x.n===n);
-  const rec = DATA.state[n];
-  document.getElementById("mSurahName").textContent = s.name + " (سورة " + s.n + ")";
-  document.getElementById("mSurahMeta").textContent = s.ayat + " آية — الجزء " + s.juz;
-  const btnsBox = document.getElementById("mStateBtns");
-  btnsBox.innerHTML = STATE_LABELS.map(([key,icon,label])=>
-    `<button data-key="${key}" class="${rec.status===key?'sel':''}">${icon} ${label}</button>`
-  ).join("");
-  Array.from(btnsBox.children).forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      Array.from(btnsBox.children).forEach(b=>b.classList.remove("sel"));
-      btn.classList.add("sel");
-      toggleReviewField(btn.dataset.key);
-    });
-  });
-  toggleReviewField(rec.status);
-  document.getElementById("mReviewDate").value = rec.lastReview || todayStr();
-  document.getElementById("mNotes").value = rec.notes || "";
-  document.getElementById("mSessionAyat").value = "";
-  document.getElementById("mSessionMinutes").value = "";
-  refreshModalProgress(n);
-  document.getElementById("overlay").classList.add("show");
-}
-function refreshModalProgress(n){
-  const s = SURAHS.find(x=>x.n===n);
-  const rec = DATA.state[n];
-  const mem = Math.min(rec.memorizedAyat||0, s.ayat);
-  const pct = s.ayat ? (mem/s.ayat*100) : 0;
-  document.getElementById("mProgressFill").style.width = pct + "%";
-  document.getElementById("mProgressLabel").textContent = mem + "/" + s.ayat;
-}
-document.getElementById("mSessionAdd").addEventListener("click", ()=>{
-  if(currentModalSurah==null) return;
-  const input = document.getElementById("mSessionAyat");
-  const minInput = document.getElementById("mSessionMinutes");
-  const count = parseInt(input.value, 10);
-  const minutes = parseInt(minInput.value, 10);
-  if(!count || count<=0) { input.focus(); return; }
-  const s = SURAHS.find(x=>x.n===currentModalSurah);
-  const rec = DATA.state[currentModalSurah];
-  const prevDerived = computeDerived();
-  if(rec.status==="none") rec.status = "progress";
-  if(!rec.startedDate) rec.startedDate = todayStr();
-  rec.memorizedAyat = Math.min((rec.memorizedAyat||0) + count, s.ayat);
-  if(rec.memorizedAyat >= s.ayat && (rec.status==="none"||rec.status==="progress")){
-    rec.status = "memorized";
-    rec.lastReview = todayStr();
-    if(!rec.memorizedDate) rec.memorizedDate = todayStr();
-  }
-  logAyahSession(count);
-  logActivity("hifz");
-  if(minutes && minutes>0 && minutes > (DATA.records.longestSessionMin||0)) DATA.records.longestSessionMin = minutes;
-  saveData();
-  input.value = ""; minInput.value = "";
-  refreshModalProgress(currentModalSurah);
-  const btnsBox = document.getElementById("mStateBtns");
-  Array.from(btnsBox.children).forEach(b=> b.classList.toggle("sel", b.dataset.key===rec.status));
-  toggleReviewField(rec.status);
-  document.getElementById("mReviewDate").value = rec.lastReview || todayStr();
-  renderAll();
-  const newDerived = computeDerived();
-  const juzWasComplete = prevDerived.juzComplete.includes(s.juz);
-  const juzNowComplete = newDerived.juzComplete.includes(s.juz);
-  const newBadges = checkProgressEvents();
-  if(newBadges.length){
-    showToast(`🏅 إنجاز جديد: ${newBadges.map(b=>b.title).join('، ')}`, true);
-  } else {
-    showToast(juzWasComplete||!juzNowComplete ? `تم تسجيل ${count} آية ✅` : `أتممت الجزء ${s.juz}! 🌿`, !juzWasComplete && juzNowComplete);
-  }
-});
-document.getElementById("mLogRecitation").addEventListener("click", ()=>{
-  logActivity("recitation");
-  renderAll();
-  showToast("تم تسجيل التلاوة 📿");
-});
-document.getElementById("mLogTest").addEventListener("click", ()=>{
-  logActivity("test");
-  renderAll();
-  showToast("تم تسجيل الاختبار 📝");
-});
-function toggleReviewField(status){
-  document.getElementById("reviewDateBox").style.display = (status==="memorized"||status==="excellent") ? "block" : "none";
-}
-function closeModal(){
-  document.getElementById("overlay").classList.remove("show");
-  currentModalSurah = null;
-}
-document.getElementById("mCancel").addEventListener("click", closeModal);
-document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeModal(); });
-
-document.getElementById("mSave").addEventListener("click", ()=>{
-  if(currentModalSurah==null) return;
-  const sel = document.querySelector("#mStateBtns button.sel");
-  const newStatus = sel ? sel.dataset.key : DATA.state[currentModalSurah].status;
-  const rec = DATA.state[currentModalSurah];
-  const s = SURAHS.find(x=>x.n===currentModalSurah);
-  const prevDerived = computeDerived();
-  if(rec.status==="none" && newStatus!=="none" && !rec.startedDate) rec.startedDate = todayStr();
-  rec.status = newStatus;
-  rec.notes = document.getElementById("mNotes").value.trim();
-  if(newStatus==="memorized"||newStatus==="excellent"){
-    rec.lastReview = document.getElementById("mReviewDate").value || todayStr();
-    if(!rec.memorizedDate) rec.memorizedDate = todayStr();
-    rec.memorizedAyat = s.ayat;
-    DATA.surahReviewCount[currentModalSurah] = (DATA.surahReviewCount[currentModalSurah]||0)+1;
-    logReview();
-    logActivity("review");
-  }
-  if(newStatus==="none"){ rec.lastReview=null; rec.memorizedDate=null; rec.memorizedAyat=0; rec.startedDate=null; }
-  else { logActivity("hifz"); }
-  saveData();
-  closeModal();
-  renderAll();
-  const newDerived = computeDerived();
-  const juzWasComplete = prevDerived.juzComplete.includes(s ? s.juz : -1);
-  const juzNowComplete = newDerived.juzComplete.includes(s ? s.juz : -1);
-  const newBadges = checkProgressEvents();
-  if(newBadges.length){
-    showToast(`🏅 إنجاز جديد: ${newBadges.map(b=>b.title).join('، ')}`, true);
-  } else if(!juzWasComplete && juzNowComplete){
-    showToast(`أتممت الجزء ${s.juz}! 🌿`, true);
-  } else {
-    showToast("تم الحفظ ✅");
-  }
-});
-
-/* ============ SETTINGS MODAL ============ */
-function openSettings(){
-  document.getElementById("settingDailyGoal").value = DATA.settings.dailyGoal || 8;
-  document.getElementById("settingGraceDay").checked = !!DATA.settings.graceDayEnabled;
-  document.getElementById("settingsOverlay").classList.add("show");
-}
-function closeSettings(){
-  document.getElementById("settingsOverlay").classList.remove("show");
-}
-document.getElementById("btnSettings").addEventListener("click", openSettings);
-document.getElementById("btnCloseSettings").addEventListener("click", closeSettings);
-document.getElementById("settingsOverlay").addEventListener("click", e=>{ if(e.target.id==="settingsOverlay") closeSettings(); });
-document.getElementById("btnSaveSettings").addEventListener("click", ()=>{
-  const g = parseInt(document.getElementById("settingDailyGoal").value,10);
-  DATA.settings.dailyGoal = (g && g>0) ? g : 8;
-  DATA.settings.graceDayEnabled = document.getElementById("settingGraceDay").checked;
-  saveData();
-  closeSettings();
-  renderAll();
-  showToast("تم حفظ الإعدادات ✅");
-});
-function exportData(){
-  const blob = new Blob([JSON.stringify(DATA,null,2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "quran-tracker-backup-" + todayStr() + ".json";
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-  showToast("تم تصدير نسخة احتياطية 📥");
-}
-function importDataFile(file){
-  const reader = new FileReader();
-  reader.onload = e=>{
-    try{
-      const parsed = JSON.parse(e.target.result);
-      DATA = normalizeData(parsed);
-      saveData();
-      renderAll();
-      showToast("تم استيراد البيانات بنجاح ✅");
-    }catch(err){
-      showToast("ملف غير صالح ❌");
-    }
-  };
-  reader.readAsText(file);
-}
-function resetProgress(){
-  if(!confirm("سيتم إعادة تعيين كل تقدم الحفظ والمراجعة (مع الاحتفاظ بأهدافك). متابعة؟")) return;
-  const goals = DATA.goals;
-  const settings = DATA.settings;
-  DATA = defaultData();
-  DATA.goals = goals;
-  DATA.settings = settings;
-  saveData();
-  closeSettings();
-  location.reload();
-}
-function deleteAllData(){
-  if(!confirm("سيتم حذف كل البيانات نهائيًا ولا يمكن التراجع عن هذا. متابعة؟")) return;
-  localStorage.removeItem(LS_KEY);
-  localStorage.removeItem("quranTrackerData_v2");
-  localStorage.removeItem("quranTrackerData_v1");
-  location.reload();
-}
-document.getElementById("btnExportData").addEventListener("click", exportData);
-document.getElementById("importFileInput").addEventListener("change", e=>{
-  const file = e.target.files[0];
-  if(file) importDataFile(file);
-  e.target.value = "";
-});
-document.getElementById("btnResetProgress").addEventListener("click", resetProgress);
-document.getElementById("btnDeleteAll").addEventListener("click", deleteAllData);
-
-/* ============ REVIEW LIST DELEGATION ============ */
-document.getElementById("reviewListBox").addEventListener("click", e=>{
-  const btn = e.target.closest(".mini-review-btn");
-  if(btn) quickReview(parseInt(btn.dataset.n,10));
-});
-
-/* ============ TOAST ============ */
-let toastTimer=null;
-function showToast(msg, withDua){
-  const t = document.getElementById("toast");
-  t.innerHTML = msg + (withDua ? `<span class="dua">اللهم اجعل القرآن ربيع قلبي ونور صدري</span>` : "");
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove("show"), withDua ? 4500 : 2200);
-}
-
-/* ============ TABS ============ */
-document.querySelectorAll("nav.tabs button").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-    document.getElementById("view-"+btn.dataset.view).classList.add("active");
-  });
-});
-
-/* ============ HEADER ============ */
-function renderHeader(d){
-  const st = streaks();
-  document.getElementById("streakVal").textContent = st.current;
-  document.getElementById("levelVal").textContent = levelName(d);
-}
-
-/* ============ AYAH OF THE DAY ============ */
-function renderAyah(){
-  const pick = AYAT_MOTIVATION[Math.floor(Math.random()*AYAT_MOTIVATION.length)];
-  document.getElementById("ayahText").textContent = "﴿ " + pick.t + " ﴾";
-  document.getElementById("ayahSrc").textContent = "— " + pick.s;
-}
-
-/* ============ MASTER RENDER ============ */
-function renderAll(){
-  const d = computeDerived();
-  renderHeader(d);
-  renderHeart();
-  renderSideStats(d);
-  renderWeeklySummary();
-  renderJuz(d);
-  renderStats(d);
-  renderRecords();
-  renderLevelAnalysis();
-  renderGoals();
-  renderBadges();
-  renderCalendar();
-  renderJourney();
-  renderTimeline();
-  renderStreakBanner();
-}
-
-renderAyah();
-if(!DATA.journey.start){ DATA.journey.start = todayStr(); saveData(); }
-renderAll();
-syncBadgesSilently();
-checkJourneyMilestones();
-initSearch();
-</script>
-</body>
-</html>
+      
