@@ -3974,3 +3974,87 @@
       document
         .getElementById("btnPrintReport")
         .addEventListener("click", printReport);
+
+      /* ============ DAILY REMINDER ============ */
+      const REMINDER_KEY = "quranTrackerReminder";
+      function enableReminder() {
+        if (!("Notification" in window)) {
+          showToast("متصفحك لا يدعم الإشعارات");
+          return;
+        }
+        Notification.requestPermission().then((perm) => {
+          if (perm === "granted") {
+            try {
+              localStorage.setItem(REMINDER_KEY, "1");
+            } catch (e) {}
+            showToast("تم تفعيل التذكير اليومي ✅");
+            scheduleReminder();
+          } else {
+            showToast("لم يتم منح إذن الإشعارات");
+          }
+        });
+      }
+      function scheduleReminder() {
+        try {
+          if (localStorage.getItem(REMINDER_KEY) !== "1") return;
+        } catch (e) {
+          return;
+        }
+        const now = new Date();
+        const target = new Date(now);
+        target.setHours(20, 0, 0, 0); // 8 PM
+        if (now > target) target.setDate(target.getDate() + 1);
+        const delay = target - now;
+        setTimeout(() => {
+          if (Notification.permission === "granted") {
+            new Notification("وردك اليومي 📖", {
+              body: "هل أنجزت وردك اليومي من الحفظ والمراجعة؟",
+            });
+          }
+          scheduleReminder();
+        }, delay);
+      }
+      document
+        .getElementById("btnEnableReminder")
+        .addEventListener("click", enableReminder);
+
+      /* ============ KHATMA ESTIMATE ============ */
+      function renderKhatmaEstimate() {
+        const box = document.getElementById("khatmaEstimateBox");
+        if (!box) return;
+        const memorizedAyatTotal = SURAHS.reduce(
+          (sum, s) => sum + (DATA.state[s.n].memorizedAyat || 0),
+          0,
+        );
+        const remainingAyat = Math.max(0, TOTAL_AYAT - memorizedAyatTotal);
+        const days = Object.keys(DATA.ayahLog);
+        if (!days.length) {
+          box.innerHTML =
+            '<div style="font-size:12.5px;color:var(--ink-soft)">ابدأ الحفظ لتقدير موعد ختمتك.</div>';
+          return;
+        }
+        const totalAyat = Object.values(DATA.ayahLog).reduce(
+          (a, b) => a + b,
+          0,
+        );
+        const activeDays = days.length;
+        const avgPerDay = totalAyat / activeDays;
+        const estDays =
+          avgPerDay > 0 ? Math.ceil(remainingAyat / avgPerDay) : null;
+        if (estDays === null) {
+          box.innerHTML =
+            '<div style="font-size:12.5px;color:var(--ink-soft)">ابدأ الحفظ لتقدير موعد ختمتك.</div>';
+          return;
+        }
+        const estDate = new Date();
+        estDate.setDate(estDate.getDate() + estDays);
+        box.innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px">
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${remainingAyat}</div><div class="l">آية متبقية</div></div>
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${avgPerDay.toFixed(1)}</div><div class="l">متوسط آية/يوم</div></div>
+        <div class="stat-mini" style="flex:1;min-width:110px"><div class="n">${estDays}</div><div class="l">يوم تقديري</div></div>
+      </div>
+      <div style="font-size:13px;background:var(--bg-soft);border-radius:10px;padding:12px;text-align:center">
+        موعد الختمة التقديري: <b style="color:var(--emerald)">${estDate.toLocaleDateString("ar-EG")}</b>
+      </div>`;
+      }
