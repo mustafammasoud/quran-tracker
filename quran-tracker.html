@@ -627,7 +627,7 @@ function defaultData(){
   SURAHS.forEach(s=> state[s.n] = {status:"none", lastReview:null, memorizedDate:null, startedDate:null, memorizedAyat:0, notes:""});
   return {
     state, log:{}, goals:[], ayahLog:{}, reviewLog:{}, unlockedBadges:[],
-    journey:{}, typeLog:{}, surahReviewCount:{}, graceDays:{}, wirdStarted:{}, fajrCount:0,
+    journey:{}, typeLog:{}, surahReviewCount:{}, graceDays:{}, fajrCount:0,
     records:{longestSessionMin:0},
     settings:{dailyGoal:8, graceDayEnabled:true}
   };
@@ -650,7 +650,6 @@ function normalizeData(parsed){
   base.typeLog = parsed.typeLog || {};
   base.surahReviewCount = parsed.surahReviewCount || {};
   base.graceDays = parsed.graceDays || {};
-  base.wirdStarted = parsed.wirdStarted || {};
   base.fajrCount = parsed.fajrCount || 0;
   base.records = Object.assign({}, base.records, parsed.records||{});
   base.settings = Object.assign({}, base.settings, parsed.settings||{});
@@ -1576,10 +1575,6 @@ document.getElementById("reviewListBox").addEventListener("click", e=>{
   const btn = e.target.closest(".mini-review-btn");
   if(btn) quickReview(parseInt(btn.dataset.n,10));
 });
-document.getElementById("todayReviewListBox").addEventListener("click", e=>{
-  const btn = e.target.closest(".mini-review-btn");
-  if(btn) quickReview(parseInt(btn.dataset.n,10));
-});
 
 /* ============ TOAST ============ */
 let toastTimer=null;
@@ -1631,8 +1626,6 @@ function renderAll(){
   renderCalendar();
   renderJourney();
   renderTimeline();
-  renderTodayPlan();
-  renderTodayReviewList();
   renderStreakBanner();
 }
 
