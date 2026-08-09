@@ -3560,4 +3560,154 @@
         ["excellent", "🔵", "مراجعة ممتازة"],
       ];
 
-      
+      function openModal(n) {
+        currentModalSurah = n;
+        const s = SURAHS.find((x) => x.n === n);
+        const rec = DATA.state[n];
+        document.getElementById("mSurahName").textContent =
+          s.name + " (سورة " + s.n + ")";
+        document.getElementById("mSurahMeta").textContent =
+          s.ayat + " آية — الجزء " + s.juz;
+        const btnsBox = document.getElementById("mStateBtns");
+        btnsBox.innerHTML = STATE_LABELS.map(
+          ([key, icon, label]) =>
+            `<button data-key="${key}" class="${rec.status === key ? "sel" : ""}">${icon} ${label}</button>`,
+        ).join("");
+        Array.from(btnsBox.children).forEach((btn) => {
+          btn.addEventListener("click", () => {
+            Array.from(btnsBox.children).forEach((b) =>
+              b.classList.remove("sel"),
+            );
+            btn.classList.add("sel");
+            toggleReviewField(btn.dataset.key);
+          });
+        });
+        toggleReviewField(rec.status);
+        document.getElementById("mReviewDate").value =
+          rec.lastReview || todayStr();
+        document.getElementById("mNotes").value = rec.notes || "";
+        document.getElementById("mSessionFrom").value = "";
+        document.getElementById("mSessionTo").value = "";
+        document.getElementById("mSessionMinutes").value = "";
+        refreshModalProgress(n);
+        document.getElementById("overlay").classList.add("show");
+      }
+      function refreshModalProgress(n) {
+        const s = SURAHS.find((x) => x.n === n);
+        const rec = DATA.state[n];
+        const mem = Math.min(rec.memorizedAyat || 0, s.ayat);
+        const pct = s.ayat ? (mem / s.ayat) * 100 : 0;
+        document.getElementById("mProgressFill").style.width = pct + "%";
+        document.getElementById("mProgressLabel").textContent =
+          mem + "/" + s.ayat;
+      }
+      document.getElementById("mSessionAdd").addEventListener("click", () => {
+        if (currentModalSurah == null) return;
+        const fromInput = document.getElementById("mSessionFrom");
+        const toInput = document.getElementById("mSessionTo");
+        const minInput = document.getElementById("mSessionMinutes");
+        const fromVal = fromInput.value.trim();
+        const toVal = toInput.value.trim();
+        const minutes = parseInt(minInput.value, 10);
+        let count;
+        if (fromVal && toVal) {
+          const from = parseInt(fromVal, 10);
+          const to = parseInt(toVal, 10);
+          if (
+            !from ||
+            !to ||
+            from < 1 ||
+            to < from ||
+            to > SURAHS.find((x) => x.n === currentModalSurah).ayat
+          ) {
+            showToast("نطاق آيات غير صالح");
+            return;
+          }
+          count = to - from + 1;
+        } else {
+          const input = fromInput;
+          count = parseInt(input.value, 10);
+          if (!count || count <= 0) {
+            input.focus();
+            return;
+          }
+        }
+        const s = SURAHS.find((x) => x.n === currentModalSurah);
+        const rec = DATA.state[currentModalSurah];
+        const prevDerived = computeDerived();
+        if (rec.status === "none") rec.status = "progress";
+        if (!rec.startedDate) rec.startedDate = todayStr();
+        rec.memorizedAyat = Math.min((rec.memorizedAyat || 0) + count, s.ayat);
+        if (
+          rec.memorizedAyat >= s.ayat &&
+          (rec.status === "none" || rec.status === "progress")
+        ) {
+          rec.status = "memorized";
+          rec.lastReview = todayStr();
+          if (!rec.memorizedDate) rec.memorizedDate = todayStr();
+        }
+        logAyahSession(count);
+        logActivity("hifz");
+        if (
+          minutes &&
+          minutes > 0 &&
+          minutes > (DATA.records.longestSessionMin || 0)
+        )
+          DATA.records.longestSessionMin = minutes;
+        saveData();
+        fromInput.value = "";
+        toInput.value = "";
+        minInput.value = "";
+        refreshModalProgress(currentModalSurah);
+        const btnsBox = document.getElementById("mStateBtns");
+        Array.from(btnsBox.children).forEach((b) =>
+          b.classList.toggle("sel", b.dataset.key === rec.status),
+        );
+        toggleReviewField(rec.status);
+        document.getElementById("mReviewDate").value =
+          rec.lastReview || todayStr();
+        renderAll();
+        const newDerived = computeDerived();
+        const juzWasComplete = prevDerived.juzComplete.includes(s.juz);
+        const juzNowComplete = newDerived.juzComplete.includes(s.juz);
+        const newBadges = checkProgressEvents();
+        if (newBadges.length) {
+          showToast(
+            `🏅 إنجاز جديد: ${newBadges.map((b) => b.title).join("، ")}`,
+            true,
+          );
+        } else {
+          showToast(
+            juzWasComplete || !juzNowComplete
+              ? `تم تسجيل ${count} آية ✅`
+              : `أتممت الجزء ${s.juz}! 🌿`,
+            !juzWasComplete && juzNowComplete,
+          );
+        }
+      });
+      document
+        .getElementById("mLogRecitation")
+        .addEventListener("click", () => {
+          logActivity("recitation");
+          renderAll();
+          showToast("تم تسجيل التلاوة 📿");
+        });
+      document.getElementById("mLogTest").addEventListener("click", () => {
+        logActivity("test");
+        renderAll();
+        showToast("تم تسجيل الاختبار 📝");
+      });
+      function toggleReviewField(status) {
+        document.getElementById("reviewDateBox").style.display =
+          status === "memorized" || status === "excellent" ? "block" : "none";
+      }
+      function closeModal() {
+        document.getElementById("overlay").classList.remove("show");
+        currentModalSurah = null;
+      }
+      document.getElementById("mCancel").addEventListener("click", closeModal);
+      document.getElementById("overlay").addEventListener("click", (e) => {
+        if (e.target.id === "overlay") closeModal();
+      });
+
+     
