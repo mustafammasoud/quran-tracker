@@ -53,6 +53,17 @@
 
 - خريطة حرارية (Heatmap) لآخر 91 يوم توضح نشاطك اليومي (حفظ/مراجعة/تلاوة/اختبار).
 
+### الورد اليومي
+
+- حدّد وردك اليومي من القرآن (سورة + نطاق آيات) وتابع إنجازه يومًا بيوم مع حفظ التقدم تلقائيًا في `localStorage`.
+- سجّل تقدمك تدريجيًا (＋ آية واحدة) أو أتمّ الورد كاملًا بضغطة واحدة — وعند الإنجاز يتقدّم الورد تلقائيًا لنفس المقدار في اليوم التالي حتى إكمال ختمة القرآن.
+- سجل تفاعلي لآخر 30 يومًا يوضح الأيام المكتملة والجزئية.
+
+### الخيارات المحفوظة
+
+- وضع لتصفّح كل الخيارات المحفوظة سابقًا لسورك (الحالة، عدد الآيات، آخر مراجعة، صندوق المراجعة، الملاحظات).
+- بحث وفلترة حسب الحالة، وفتح أي سورة بضغطة واحدة لتعديلها سريعًا.
+
 ### الإعدادات
 
 - **وضع ليلي (Dark Mode):** زر تبديل سريع في الهيدر مع حفظ التفضيل.
@@ -90,6 +101,8 @@
 | `G`     | الأهداف            |
 | `B`     | الإنجازات          |
 | `C`     | التقويم            |
+| `W`     | الورد اليومي       |
+| `O`     | الخيارات المحفوظة  |
 | `/`     | البحث السريع       |
 
 ## ملاحظة تقنية
@@ -149,6 +162,17 @@ A single-file HTML web app for tracking Qur'an memorization and review, surah by
 
 - 91-day heatmap showing daily activity (hifz/review/recitation/test).
 
+### Daily Wird
+
+- Set your daily Qur'an wird (surah + verse range) and track its completion day by day, with progress persisted in `localStorage`.
+- Log progress step by step (+1 verse) or complete the whole wird in one tap — on completion the wird auto-advances by the same amount the next day until you finish the full Qur'an.
+- Interactive 30-day log showing completed and partial days.
+
+### Saved Options
+
+- A mode to browse all previously saved per-surah options (status, verse count, last review, SRS box, notes).
+- Search and filter by status, and open any surah in one tap to edit it quickly.
+
 ### Settings
 
 - **Dark mode:** quick toggle in header with preference saved.
@@ -185,8 +209,10 @@ A single-file HTML web app for tracking Qur'an memorization and review, surah by
 | `S` | Stats              |
 | `G` | Goals              |
 | `B` | Badges             |
-| `C` | Calendar           |
-| `/` | Quick search       |
+| `C`     | Calendar           |
+| `W`     | Daily wird         |
+| `O`     | Saved options      |
+| `/`     | Quick search       |
 
 ## Technical note
 
