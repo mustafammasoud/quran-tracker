@@ -1219,6 +1219,141 @@
         margin-bottom: 14px;
       }
 
+      /* ===== Saved options ===== */
+      .saved-toolbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .saved-toolbar select {
+        flex: 1;
+        min-width: 130px;
+        padding: 9px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--gray-line);
+        font-family: "Aref Ruqaa";
+        margin-bottom: 0;
+      }
+      .saved-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--bg-soft);
+        margin-bottom: 6px;
+        cursor: pointer;
+        border: 1.5px solid var(--gray-line);
+        transition: 0.12s;
+      }
+      .saved-row:hover {
+        border-color: var(--emerald);
+        transform: translateY(-1px);
+      }
+      .saved-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .saved-name {
+        font-weight: 700;
+        font-size: 13.5px;
+      }
+      .saved-name small {
+        color: var(--ink-soft);
+        font-size: 11px;
+      }
+      .saved-meta {
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .saved-row .mini-review-btn {
+        background: var(--emerald-deep);
+      }
+
+      /* ===== Daily Wird ===== */
+      .wird-form {
+        background: var(--bg-soft);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: none;
+      }
+      .wird-form.show {
+        display: block;
+      }
+      .wird-form-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .wird-card {
+        background: linear-gradient(
+          135deg,
+          var(--emerald-deep),
+          var(--emerald) 85%
+        );
+        border-radius: var(--radius);
+        padding: 18px;
+        color: #f6efd9;
+      }
+      .wird-card .bar-bg {
+        background: rgba(255, 255, 255, 0.22);
+      }
+      .wird-title {
+        font-family: "Aref Ruqaa", serif;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .wird-range {
+        font-size: 19px;
+        font-weight: 700;
+        margin: 8px 0 4px;
+      }
+      .wird-meta {
+        font-size: 12.5px;
+        opacity: 0.9;
+        margin-bottom: 10px;
+      }
+      .wird-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .wird-btn {
+        background: #fff;
+        color: var(--emerald-deep);
+        border: none;
+        border-radius: 10px;
+        padding: 9px 16px;
+        font-family: "Aref Ruqaa";
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .wird-btn.ghost {
+        background: transparent;
+        color: #f6efd9;
+        border: 1.5px solid rgba(255, 255, 255, 0.55);
+      }
+      .wird-cal {
+        display: grid;
+        grid-template-columns: repeat(15, 1fr);
+        gap: 4px;
+        direction: ltr;
+      }
+      .wird-day {
+        aspect-ratio: 1/1;
+        border-radius: 3px;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .wird-day:hover {
+        border-color: var(--emerald);
+      }
+
       #toast {
         position: fixed;
         bottom: 20px;
@@ -1348,6 +1483,8 @@
       <button data-view="goals">🏹 الأهداف</button>
       <button data-view="badges">🏅 الإنجازات</button>
       <button data-view="calendar">📅 التقويم</button>
+      <button data-view="wird">📿 الورد اليومي</button>
+      <button data-view="saved">🗂️ الخيارات المحفوظة</button>
     </nav>
 
     <main>
@@ -1605,6 +1742,114 @@
           <div class="day-detail-box" id="dayDetailBox"></div>
         </div>
       </section>
+
+      <!-- WIRD VIEW -->
+      <section class="view" id="view-wird">
+        <div class="panel">
+          <h2>📿 الورد اليومي</h2>
+          <div class="hint">
+            حدّد وردك اليومي من القرآن (سورة ونطاق آيات)، وتابع إنجازه يومًا
+            بيوم مع حفظ التقدم تلقائيًا.
+          </div>
+
+          <div class="wird-form" id="wirdFormBox">
+            <label>السورة</label>
+            <select id="wirdSurahSelect" class="settings-num"></select>
+            <div class="wird-form-row">
+              <div style="flex: 1; min-width: 130px">
+                <label>من آية</label>
+                <input
+                  type="number"
+                  id="wirdFromInput"
+                  min="1"
+                  class="settings-num"
+                  value="1"
+                />
+              </div>
+              <div style="flex: 1; min-width: 130px">
+                <label>إلى آية</label>
+                <input
+                  type="number"
+                  id="wirdToInput"
+                  min="1"
+                  class="settings-num"
+                />
+              </div>
+            </div>
+            <label class="settings-check">
+              <input type="checkbox" id="wirdAutoAdvance" checked />
+              التقدّم التلقائي لنفس المقدار في اليوم التالي عند الإنجاز
+            </label>
+            <div class="modal-actions">
+              <button class="btn ghost" id="btnWirdCancel">إلغاء</button>
+              <button class="btn primary" id="btnWirdSave">حفظ الورد</button>
+            </div>
+          </div>
+
+          <div id="wirdTodayBox"></div>
+        </div>
+        <div class="panel">
+          <h2>🗓️ سجل الورد</h2>
+          <div class="hint">
+            إنجاز وردك في آخر 30 يومًا — اضغط على أي يوم للتفاصيل.
+          </div>
+          <div class="wird-cal" id="wirdCalGrid"></div>
+          <div class="legend" style="margin-top: 12px">
+            <span
+              ><i
+                class="dot"
+                style="background: var(--emerald); border-radius: 3px"
+              ></i>
+              أُنجز كاملًا</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--gold); border-radius: 3px"
+              ></i>
+              جزئي</span
+            >
+            <span
+              ><i
+                class="dot"
+                style="background: var(--tile-empty); border-radius: 3px"
+              ></i>
+              بلا إنجاز</span
+            >
+          </div>
+          <div class="day-detail-box" id="wirdDetailBox"></div>
+        </div>
+      </section>
+
+      <!-- SAVED OPTIONS VIEW -->
+      <section class="view" id="view-saved">
+        <div class="panel">
+          <h2>🗂️ الخيارات المحفوظة</h2>
+          <div class="hint">
+            تصفّح كل الخيارات التي حفظتها سابقًا لسورك (الحالة، عدد الآيات،
+            آخر مراجعة...)، واضغط على أي سورة لفتحها وتعديلها بسرعة.
+          </div>
+
+          <div class="search-box">
+            <input
+              type="text"
+              id="savedSearch"
+              placeholder="🔍 ابحث في السور المحفوظة..."
+            />
+          </div>
+
+          <div class="saved-toolbar">
+            <select id="savedFilter">
+              <option value="all">كل الحالات</option>
+              <option value="progress">قيد الحفظ</option>
+              <option value="memorized">محفوظة</option>
+              <option value="excellent">مراجعة ممتازة</option>
+            </select>
+          </div>
+
+          <div id="savedOptionsList"></div>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -1860,6 +2105,8 @@
       <button data-view="goals">أهداف</button>
       <button data-view="badges">إنجازات</button>
       <button data-view="calendar">تقويم</button>
+      <button data-view="wird">ورد</button>
+      <button data-view="saved">خيارات</button>
     </nav>
 
     <script>
@@ -2055,6 +2302,8 @@
           fajrCount: 0,
           records: { longestSessionMin: 0 },
           settings: { dailyGoal: 8, graceDayEnabled: true },
+          wird: { enabled: false, surahN: 1, from: 1, to: 1, autoAdvance: true },
+          wirdLog: {},
         };
       }
       function mergeState(baseState, savedState) {
@@ -2080,6 +2329,8 @@
         base.fajrCount = parsed.fajrCount || 0;
         base.records = Object.assign({}, base.records, parsed.records || {});
         base.settings = Object.assign({}, base.settings, parsed.settings || {});
+        base.wird = Object.assign({}, base.wird, parsed.wird || {});
+        base.wirdLog = parsed.wirdLog || {};
         return base;
       }
       function loadData() {
@@ -4167,6 +4418,8 @@
           g: "goals",
           b: "badges",
           c: "calendar",
+          w: "wird",
+          o: "saved",
         };
         if (map[key]) {
           switchTab(map[key]);
@@ -4195,6 +4448,368 @@
         document.getElementById("ayahSrc").textContent = "— " + pick.s;
       }
 
+      /* ============ DAILY WIRD ============ */
+      let wirdFormOpen = false;
+      function wirdSurah(surahN) {
+        return SURAHS.find((x) => x.n === surahN) || null;
+      }
+      function advanceWirdRange() {
+        const w = DATA.wird;
+        const len = Math.max(1, w.to - w.from + 1);
+        let surah = wirdSurah(w.surahN);
+        let surahN = w.surahN;
+        let from = w.to + 1;
+        let to = from + len - 1;
+        while (surah && to > surah.ayat) {
+          const idx = SURAHS.indexOf(surah);
+          if (idx >= SURAHS.length - 1) return false;
+          surah = SURAHS[idx + 1];
+          surahN = surah.n;
+          from = 1;
+          to = Math.min(surah.ayat, from + len - 1);
+        }
+        w.surahN = surahN;
+        w.from = from;
+        w.to = to;
+        return true;
+      }
+      function ensureWirdForToday() {
+        const w = DATA.wird;
+        if (!w.enabled) return;
+        const today = todayStr();
+        if (DATA.wirdLog[today]) return;
+        const days = Object.keys(DATA.wirdLog).sort();
+        const last = days.length ? DATA.wirdLog[days[days.length - 1]] : null;
+        if (last && last.done && w.autoAdvance) {
+          w.surahN = last.surahN;
+          w.from = last.to + 1;
+          w.to = last.to + (last.to - last.from + 1);
+          if (!advanceWirdRange()) {
+            w.enabled = false;
+            saveData();
+            showToast("ما شاء الله! أتممت وردك حتى ختمة القرآن 🎉", true);
+            return;
+          }
+        }
+        DATA.wirdLog[today] = {
+          surahN: w.surahN,
+          from: w.from,
+          to: w.to,
+          progress: 0,
+          done: false,
+        };
+        saveData();
+      }
+      function addWirdProgress(n) {
+        ensureWirdForToday();
+        const t = todayStr();
+        const entry = DATA.wirdLog[t];
+        if (!entry) return;
+        const wasDone = entry.done;
+        const len = entry.to - entry.from + 1;
+        entry.progress = Math.min((entry.progress || 0) + n, len);
+        if (entry.progress >= len && !wasDone) {
+          entry.done = true;
+          logActivity("recitation");
+          showToast("أتممت ورد اليوم، جزاك الله خيرًا 🌿", true);
+        }
+        saveData();
+        renderAll();
+      }
+      function fillWirdForm() {
+        const w = DATA.wird;
+        document.getElementById("wirdSurahSelect").value = String(
+          w.surahN || 1,
+        );
+        document.getElementById("wirdFromInput").value = w.from || 1;
+        document.getElementById("wirdToInput").value = w.to || "";
+        document.getElementById("wirdAutoAdvance").checked =
+          w.autoAdvance !== false;
+      }
+      function renderWird() {
+        const form = document.getElementById("wirdFormBox");
+        const box = document.getElementById("wirdTodayBox");
+        if (!form || !box) return;
+        const w = DATA.wird;
+        form.classList.toggle("show", wirdFormOpen || !w.enabled);
+        if (!w.enabled) {
+          box.innerHTML =
+            '<div class="goal-empty">حدّد وردك اليومي من النموذج بالأعلى، وسيظهر هنا ورد اليوم مع تتبع إنجازه يومًا بيوم.</div>';
+          renderWirdCal();
+          return;
+        }
+        ensureWirdForToday();
+        const entry =
+          DATA.wirdLog[todayStr()] || { progress: 0, done: false };
+        const surah = wirdSurah(entry.surahN || w.surahN);
+        const from = entry.from || w.from;
+        const to = entry.to || w.to;
+        const len = to - from + 1;
+        const progress = Math.min(entry.progress || 0, len);
+        const pct = len ? Math.round((progress / len) * 100) : 0;
+        const done = progress >= len;
+        box.innerHTML =
+          '<div class="wird-card">' +
+          '<div class="wird-title">📿 ورد اليوم</div>' +
+          '<div class="wird-range">' +
+          (surah ? surah.name : "") +
+          " — الآيات " +
+          from +
+          " إلى " +
+          to +
+          "</div>" +
+          '<div class="wird-meta">' +
+          len +
+          " آية" +
+          (done
+            ? " · ✅ أتممته بحمد الله"
+            : progress > 0
+              ? " · أنجزت " + progress + " من " + len
+              : " · لم تبدأ بعد") +
+          "</div>" +
+          '<div class="bar-bg"><div class="bar-fill" style="width:' +
+          pct +
+          '%;background:var(--gold)"></div></div>' +
+          '<div class="wird-actions">' +
+          (done
+            ? ""
+            : '<button class="wird-btn" id="btnWirdAdd1">＋ آية واحدة</button>') +
+          '<button class="wird-btn" id="btnWirdComplete">' +
+          (done ? "✓ أتممت ورد اليوم" : "أنجزت وردي كاملًا ✅") +
+          "</button>" +
+          '<button class="wird-btn ghost" id="btnWirdEdit">⚙️ تعديل الورد</button>' +
+          "</div>" +
+          (done
+            ? '<div style="font-size:12px;opacity:.85;margin-top:10px">سيتقدّم الورد تلقائيًا لليوم التالي إن شاء الله.</div>'
+            : "") +
+          "</div>";
+        const addBtn = document.getElementById("btnWirdAdd1");
+        if (addBtn) addBtn.addEventListener("click", () => addWirdProgress(1));
+        document
+          .getElementById("btnWirdComplete")
+          .addEventListener("click", () => addWirdProgress(len));
+        document
+          .getElementById("btnWirdEdit")
+          .addEventListener("click", () => {
+            wirdFormOpen = true;
+            fillWirdForm();
+            form.classList.add("show");
+          });
+        renderWirdCal();
+      }
+      function renderWirdCal() {
+        const grid = document.getElementById("wirdCalGrid");
+        const box = document.getElementById("wirdDetailBox");
+        if (!grid) return;
+        const cells = [];
+        for (let i = 29; i >= 0; i--) {
+          const dt = new Date();
+          dt.setDate(dt.getDate() - i);
+          cells.push(dt.toISOString().slice(0, 10));
+        }
+        grid.innerHTML = cells
+          .map((key) => {
+            const e = DATA.wirdLog[key];
+            const done = e && e.done;
+            const part = e && e.progress > 0;
+            let bg = "var(--tile-empty)";
+            if (done) bg = "var(--emerald)";
+            else if (part) bg = "var(--gold)";
+            const title =
+              key +
+              (e
+                ? " — " + e.progress + "/" + (e.to - e.from + 1) + (done ? " ✓" : "")
+                : "");
+            return (
+              '<div class="wird-day" data-key="' +
+              key +
+              '" style="background:' +
+              bg +
+              '" title="' +
+              title +
+              '"></div>'
+            );
+          })
+          .join("");
+        grid.querySelectorAll(".wird-day").forEach((el) => {
+          el.addEventListener("click", () => {
+            const key = el.dataset.key;
+            const e = DATA.wirdLog[key];
+            const s = e ? wirdSurah(e.surahN) : null;
+            box.textContent = e
+              ? key +
+                (e.done
+                  ? " ✓ " + (s ? s.name : "") + " " + e.from + "–" + e.to
+                  : " • " +
+                    (s ? s.name : "") +
+                    " " +
+                    e.from +
+                    "–" +
+                    e.to +
+                    " (" +
+                    e.progress +
+                    ")")
+              : key + " — لم يُنجَز الورد";
+          });
+        });
+      }
+      function initWird() {
+        const sel = document.getElementById("wirdSurahSelect");
+        if (!sel) return;
+        SURAHS.forEach((s) => {
+          const o = document.createElement("option");
+          o.value = s.n;
+          o.textContent = s.name + " (" + s.n + ")";
+          sel.appendChild(o);
+        });
+        fillWirdForm();
+        document
+          .getElementById("btnWirdCancel")
+          .addEventListener("click", () => {
+            wirdFormOpen = false;
+            document.getElementById("wirdFormBox").classList.remove("show");
+          });
+        document
+          .getElementById("btnWirdSave")
+          .addEventListener("click", () => {
+            const w = DATA.wird;
+            w.surahN =
+              parseInt(
+                document.getElementById("wirdSurahSelect").value,
+                10,
+              ) || 1;
+            const s = wirdSurah(w.surahN);
+            const from =
+              parseInt(document.getElementById("wirdFromInput").value, 10) ||
+              1;
+            let to =
+              parseInt(document.getElementById("wirdToInput").value, 10) ||
+              from;
+            if (!s || from < 1 || from > s.ayat) {
+              showToast("نطاق آيات غير صالح");
+              return;
+            }
+            to = Math.min(Math.max(to, from), s.ayat);
+            w.from = from;
+            w.to = to;
+            w.autoAdvance =
+              document.getElementById("wirdAutoAdvance").checked;
+            w.enabled = true;
+            const t = todayStr();
+            DATA.wirdLog[t] = {
+              surahN: w.surahN,
+              from: w.from,
+              to: w.to,
+              progress: 0,
+              done: false,
+            };
+            saveData();
+            wirdFormOpen = false;
+            document.getElementById("wirdFormBox").classList.remove("show");
+            renderAll();
+            showToast("تم حفظ الورد اليومي ✅");
+          });
+      }
+
+      /* ============ SAVED OPTIONS ============ */
+      function savedSurahs() {
+        return SURAHS.filter((s) => {
+          const rec = DATA.state[s.n];
+          return (
+            rec.status !== "none" || (rec.memorizedAyat || 0) > 0 || !!rec.notes
+          );
+        });
+      }
+      function renderSavedOptions(q, filter) {
+        const box = document.getElementById("savedOptionsList");
+        if (!box) return;
+        const all = savedSurahs();
+        let list = all;
+        if (filter && filter !== "all")
+          list = list.filter((s) => DATA.state[s.n].status === filter);
+        const qq = (q || "").trim();
+        if (qq)
+          list = list.filter(
+            (s) => s.name.includes(qq) || String(s.n) === qq,
+          );
+        const progress = all.filter(
+          (s) => DATA.state[s.n].status === "progress",
+        ).length;
+        const mem = all.filter((s) =>
+          ["memorized", "excellent"].includes(DATA.state[s.n].status),
+        ).length;
+        const stats =
+          '<div class="side-stats-row" style="margin-top:0;margin-bottom:14px">' +
+          '<div class="stat-mini"><div class="n">' +
+          all.length +
+          '</div><div class="l">سور لها خيارات محفوظة</div></div>' +
+          '<div class="stat-mini"><div class="n">' +
+          progress +
+          '</div><div class="l">قيد الحفظ</div></div>' +
+          '<div class="stat-mini"><div class="n">' +
+          mem +
+          '</div><div class="l">محفوظة / مراجعة ممتازة</div></div></div>';
+        if (!list.length) {
+          box.innerHTML =
+            stats +
+            '<div class="goal-empty">' +
+            (all.length
+              ? "لا توجد نتائج مطابقة"
+              : "لا توجد خيارات محفوظة بعد — افتح أي سورة من شبكة السور، عدّل حالتها وسجّلها، وستظهر هنا لتصل إليها بسرعة.") +
+            "</div>";
+          return;
+        }
+        box.innerHTML =
+          stats +
+          list
+            .map((s) => {
+              const rec = DATA.state[s.n];
+              return (
+                '<div class="saved-row" data-n="' +
+                s.n +
+                '">' +
+                '<span class="dot" style="background:' +
+                stateFill(rec.status) +
+                '"></span>' +
+                '<div class="saved-info"><div class="saved-name">' +
+                s.name +
+                " <small>(" +
+                s.n +
+                ")</small></div>" +
+                '<div class="saved-meta">' +
+                statusLabelAr(rec.status) +
+                " · " +
+                (rec.memorizedAyat || 0) +
+                "/" +
+                s.ayat +
+                " آية" +
+                (rec.lastReview ? " · آخر مراجعة: " + rec.lastReview : "") +
+                (rec.srsBox ? " · صندوق المراجعة " + rec.srsBox : "") +
+                (rec.notes ? " · 📝" : "") +
+                "</div></div>" +
+                '<button class="mini-review-btn">فتح</button></div>'
+              );
+            })
+            .join("");
+        box.querySelectorAll(".saved-row").forEach((row) => {
+          row.addEventListener("click", () => {
+            openModal(parseInt(row.dataset.n, 10));
+          });
+        });
+      }
+      function initSavedOptions() {
+        const search = document.getElementById("savedSearch");
+        const filter = document.getElementById("savedFilter");
+        if (search)
+          search.addEventListener("input", () => {
+            renderSavedOptions(search.value, filter.value);
+          });
+        if (filter)
+          filter.addEventListener("change", () => {
+            renderSavedOptions(search.value, filter.value);
+          });
+      }
+
       /* ============ MASTER RENDER ============ */
       function renderAll() {
         const d = computeDerived();
@@ -4215,6 +4830,8 @@
         renderJourney();
         renderTimeline();
         renderStreakBanner();
+        renderWird();
+        renderSavedOptions();
       }
 
       initTheme();
@@ -4229,6 +4846,8 @@
       syncBadgesSilently();
       checkJourneyMilestones();
       initSearch();
+      initWird();
+      initSavedOptions();
     </script>
   </body>
 </html>
