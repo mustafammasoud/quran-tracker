@@ -459,71 +459,6 @@
         color: var(--ink-soft);
       }
 
-      .today-plan {
-        margin-top: 18px;
-        background: var(--bg-soft);
-        border-radius: var(--radius);
-        padding: 16px 18px;
-        border: 1.5px solid var(--gray-line);
-      }
-      .today-plan-title {
-        font-family: var(--font);
-        font-size: 15.5px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: var(--emerald-deep);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .plan-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 10px;
-        border-radius: 10px;
-        margin-bottom: 6px;
-        background: var(--bg-panel);
-        border: 1px solid var(--gray-line);
-        font-size: 13px;
-      }
-      .plan-item.done {
-        opacity: 0.6;
-        text-decoration: line-through;
-      }
-      .plan-check {
-        width: 22px;
-        height: 22px;
-        border-radius: 6px;
-        border: 2px solid var(--gray);
-        background: transparent;
-        cursor: pointer;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        color: #fff;
-        padding: 0;
-      }
-      .plan-check.done {
-        background: var(--emerald);
-        border-color: var(--emerald);
-      }
-      .plan-text {
-        flex: 1;
-      }
-      .plan-type {
-        font-size: 10.5px;
-        color: var(--ink-soft);
-        margin-top: 2px;
-      }
-      .plan-empty {
-        font-size: 12.5px;
-        color: var(--ink-soft);
-        text-align: center;
-        padding: 8px 0;
-      }
       .review-list {
         margin-top: 18px;
       }
@@ -1567,8 +1502,6 @@
             </div>
           </div>
 
-          <div class="today-plan" id="todayPlanBox"></div>
-
           <div class="review-list">
             <div style="font-weight: 700; font-size: 13px; margin-bottom: 6px">
               🕑 بحاجة للمراجعة
@@ -2086,7 +2019,7 @@
             "
           >
             💡 ابدأ بفتح أي سورة، حدد حالتها، وسجّل آياتك. ولو حطيت هدف "حفظ
-            سورة"، هتلاقي خطة اليوم بتولّد لك آياتها.
+            سورة"، هيظهر لك في قسم الأهداف.
           </div>
         </div>
         <div class="modal-actions">
@@ -2813,158 +2746,6 @@
             true,
           );
         else showToast("تم تسجيل المراجعة ✅");
-      }
-
-      /* ============ TODAY'S SMART PLAN ============ */
-      const PLAN_KEY = "quranTrackerPlan";
-      function getPlanData() {
-        try {
-          const raw = localStorage.getItem(PLAN_KEY);
-          if (raw) return JSON.parse(raw);
-        } catch (e) {}
-        return {};
-      }
-      function savePlanData(plan) {
-        try {
-          localStorage.setItem(PLAN_KEY, JSON.stringify(plan));
-        } catch (e) {}
-      }
-      function extractSurahFromGoal(title) {
-        const t = title.trim();
-        const match = t.match(/سورة\s+([\u0600-\u06FF]+)/);
-        if (!match) return null;
-        const name = match[1];
-        return SURAHS.find((s) => s.name === name) || null;
-      }
-      function buildTodayPlan() {
-        const plan = getPlanData();
-        const today = todayStr();
-        if (plan.date !== today) {
-          plan.date = today;
-          plan.items = [];
-        }
-        const goal = DATA.settings.dailyGoal || 8;
-        const items = [];
-        const goalSurahs = DATA.goals
-          .map((g) => ({ g, s: extractSurahFromGoal(g.title) }))
-          .filter((o) => o.s && o.g.progress < 100);
-        if (goalSurahs.length) {
-          goalSurahs.forEach(({ g, s }) => {
-            const rec = DATA.state[s.n];
-            const mem = rec.memorizedAyat || 0;
-            if (mem < s.ayat) {
-              const remaining = s.ayat - mem;
-              const toMem = Math.min(goal, remaining);
-              items.push({
-                id: "hifz_" + s.n,
-                type: "hifz",
-                surahN: s.n,
-                text: "احفظ " + toMem + " آية من سورة " + s.name,
-                sub: "الآيات " + (mem + 1) + " إلى " + (mem + toMem),
-                done: false,
-              });
-            }
-          });
-        } else {
-          const inProgress = SURAHS.find(
-            (s) => DATA.state[s.n].status === "progress",
-          );
-          if (inProgress) {
-            const rec = DATA.state[inProgress.n];
-            const mem = rec.memorizedAyat || 0;
-            const remaining = inProgress.ayat - mem;
-            const toMem = Math.min(goal, remaining);
-            items.push({
-              id: "hifz_" + inProgress.n,
-              type: "hifz",
-              surahN: inProgress.n,
-              text: "احفظ " + toMem + " آية من سورة " + inProgress.name,
-              sub: "الآيات " + (mem + 1) + " إلى " + (mem + toMem),
-              done: false,
-            });
-          } else {
-            const firstNone = SURAHS.find(
-              (s) => DATA.state[s.n].status === "none",
-            );
-            if (firstNone) {
-              const toMem = Math.min(goal, firstNone.ayat);
-              items.push({
-                id: "hifz_" + firstNone.n,
-                type: "hifz",
-                surahN: firstNone.n,
-                text: "احفظ " + toMem + " آية من سورة " + firstNone.name,
-                sub: "الآيات 1 إلى " + toMem,
-                done: false,
-              });
-            }
-          }
-        }
-        const dueReviews = SURAHS.map((s) => ({ s, u: reviewUrgency(s.n) }))
-          .filter((o) => o.u && o.u.level !== "g")
-          .sort((a, b) => b.u.days - a.u.days)
-          .slice(0, 3);
-        dueReviews.forEach((o) => {
-          items.push({
-            id: "review_" + o.s.n,
-            type: "review",
-            surahN: o.s.n,
-            text: "راجع سورة " + o.s.name,
-            sub: "آخر مراجعة منذ " + o.u.days + " يوم",
-            done: false,
-          });
-        });
-        plan.items = items;
-        savePlanData(plan);
-        return plan;
-      }
-      function renderTodayPlan() {
-        const box = document.getElementById("todayPlanBox");
-        if (!box) return;
-        const plan = buildTodayPlan();
-        if (!plan.items.length) {
-          box.innerHTML =
-            '<div class="today-plan"><div class="today-plan-title">خطة اليوم</div><div class="plan-empty">أضف هدف "حفظ سورة" أو ابدأ حفظ سورة لتوليد خطة يومية.</div></div>';
-          return;
-        }
-        const doneCount = plan.items.filter((i) => i.done).length;
-        box.innerHTML =
-          '<div class="today-plan"><div class="today-plan-title">خطة اليوم <span style="font-size:12px;color:var(--ink-soft);font-weight:400">(' +
-          doneCount +
-          "/" +
-          plan.items.length +
-          ")</span></div>" +
-          plan.items
-            .map(
-              (item) =>
-                '<div class="plan-item ' +
-                (item.done ? "done" : "") +
-                '" data-id="' +
-                item.id +
-                '"><button class="plan-check ' +
-                (item.done ? "done" : "") +
-                '">' +
-                (item.done ? "✓" : "") +
-                '</button><div class="plan-text">' +
-                item.text +
-                '<div class="plan-type">' +
-                item.sub +
-                "</div></div></div>",
-            )
-            .join("") +
-          "</div>";
-        box.querySelectorAll(".plan-check").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const itemEl = btn.closest(".plan-item");
-            const id = itemEl.dataset.id;
-            const plan = getPlanData();
-            const item = plan.items.find((i) => i.id === id);
-            if (item) {
-              item.done = !item.done;
-              savePlanData(plan);
-              renderTodayPlan();
-            }
-          });
-        });
       }
 
       /* ============ STREAK RESCUE ============ */
@@ -4818,7 +4599,6 @@
         renderHeader(d);
         renderHeart();
         renderSideStats(d);
-        renderTodayPlan();
         renderWeeklySummary();
         renderJuz(d);
         renderStats(d);
