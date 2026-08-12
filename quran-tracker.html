@@ -1407,13 +1407,18 @@
         background: transparent;
         border: none;
         font-family: var(--font);
-        font-size: 12px;
+        font-size: 10.5px;
         color: var(--ink-soft);
-        padding: 8px 6px;
+        padding: 5px 2px 6px;
         border-radius: 10px;
         cursor: pointer;
         flex: 1;
-        white-space: nowrap;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        line-height: 1.2;
       }
       .bottom-nav button.active {
         color: var(--emerald);
@@ -1432,7 +1437,7 @@
           display: none;
         }
         .bottom-nav button {
-          font-size: 11px;
+          font-size: 10px;
         }
       }
       @media (max-width: 640px) {
@@ -1462,7 +1467,7 @@
           <button class="pill icon-only" id="btnSettings" title="الإعدادات">
             ⚙️
           </button>
-          <div class="pill streak"> <span id="streakVal">0</span> يوم</div>
+          <div class="pill streak"> ♾️ <span id="streakVal">0</span> يوم</div>
           <div class="pill level">⭐ <span id="levelVal">طالب</span></div>
         </div>
       </div>
@@ -1475,14 +1480,14 @@
 
     <nav class="tabs">
       <button data-view="heart" class="active">❤️ سور القرآن</button>
-      <button data-view="journey"> رحلتي</button>
+      <button data-view="journey">🧭 رحلتي</button>
       <button data-view="juz">📖 الأجزاء</button>
-      <button data-view="stats"> الإحصائيات</button>
-      <button data-view="goals"> الأهداف</button>
-      <button data-view="badges"> الإنجازات</button>
-      <button data-view="calendar"> التقويم</button>
+      <button data-view="stats">📋 الإحصائيات</button>
+      <button data-view="goals">🌿 الأهداف</button>
+      <button data-view="badges">🏅 الإنجازات</button>
+      <button data-view="calendar">🗓️ التقويم</button>
       <button data-view="wird">📿 الورد اليومي</button>
-      <button data-view="saved"> الخيارات المحفوظة</button>
+      <button data-view="saved">📂 الخيارات المحفوظة</button>
     </nav>
 
     <main>
@@ -2096,15 +2101,15 @@
 
     <!-- Bottom Navigation (mobile) -->
     <nav class="bottom-nav" id="bottomNav">
-      <button data-view="heart" class="active">سور</button>
-      <button data-view="journey">رحلتي</button>
-      <button data-view="juz">أجزاء</button>
-      <button data-view="stats">إحصائيات</button>
-      <button data-view="goals">أهداف</button>
-      <button data-view="badges">إنجازات</button>
-      <button data-view="calendar">تقويم</button>
-      <button data-view="wird">ورد</button>
-      <button data-view="saved">خيارات</button>
+      <button data-view="heart" class="active">❤️ سور</button>
+      <button data-view="journey">🧭 رحلتي</button>
+      <button data-view="juz">📖 أجزاء</button>
+      <button data-view="stats">📊 إحصائيات</button>
+      <button data-view="goals">🎯 أهداف</button>
+      <button data-view="badges">🏅 إنجازات</button>
+      <button data-view="calendar">📅 تقويم</button>
+      <button data-view="wird">📿 ورد</button>
+      <button data-view="saved">🔖 خيارات</button>
     </nav>
 
     <script>
