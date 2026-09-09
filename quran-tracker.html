@@ -7,6 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1"
     />
     <title>القرآن — متتبع الحفظ</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='lb' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230f2e3d'/%3E%3Cstop offset='100%25' style='stop-color:%230e8f84'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23lb)'/%3E%3Crect x='22' y='20' width='56' height='62' rx='4' fill='none' stroke='%23d8a94b' stroke-width='2.2'/%3E%3Crect x='26' y='24' width='48' height='54' rx='2' fill='none' stroke='%23d8a94b' stroke-width='1.2' opacity='0.6'/%3E%3Cline x1='50' y1='20' x2='50' y2='82' stroke='%23d8a94b' stroke-width='2'/%3E%3Cpath d='M32,28 Q50,16 68,28' fill='none' stroke='%23d8a94b' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='42' cy='24' r='1.2' fill='%23d8a94b'/%3E%3Ccircle cx='50' cy='22' r='1.5' fill='%23d8a94b'/%3E%3Ccircle cx='58' cy='24' r='1.2' fill='%23d8a94b'/%3E%3Cline x1='30' y1='36' x2='46' y2='36' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='41' x2='46' y2='41' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='46' x2='46' y2='46' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='51' x2='46' y2='51' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='56' x2='46' y2='56' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='61' x2='46' y2='61' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='30' y1='66' x2='46' y2='66' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='36' x2='70' y2='36' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='41' x2='70' y2='41' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='46' x2='70' y2='46' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='51' x2='70' y2='51' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='56' x2='70' y2='56' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='61' x2='70' y2='61' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cline x1='54' y1='66' x2='70' y2='66' stroke='%23d8a94b' stroke-width='1' opacity='0.5'/%3E%3Cpath d='M36,72 Q50,68 64,72' fill='none' stroke='%23d8a94b' stroke-width='1' opacity='0.7' stroke-linecap='round'/%3E%3C/svg%3E" />
     <style>
       :root {
         --bg: #f4f6fa;
@@ -110,17 +111,15 @@
         width: 42px;
         height: 42px;
         border-radius: 50%;
-        background: conic-gradient(
-          from 200deg,
-          var(--emerald),
-          var(--gold),
-          var(--emerald)
-        );
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: var(--shadow);
-        font-size: 20px;
+        overflow: hidden;
+      }
+      .brand-mark svg {
+        width: 100%;
+        height: 100%;
       }
       h1 {
         font-family: var(--font);
@@ -1389,7 +1388,39 @@
     <header>
       <div class="top-row">
         <div class="brand">
-          <div class="brand-mark">❤️</div>
+          <div class="brand-mark">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#0f2e3d"/>
+                  <stop offset="100%" style="stop-color:#0e8f84"/>
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="48" fill="url(#lb)"/>
+              <rect x="22" y="20" width="56" height="62" rx="4" fill="none" stroke="#d8a94b" stroke-width="2.2"/>
+              <rect x="26" y="24" width="48" height="54" rx="2" fill="none" stroke="#d8a94b" stroke-width="1.2" opacity="0.6"/>
+              <line x1="50" y1="20" x2="50" y2="82" stroke="#d8a94b" stroke-width="2"/>
+              <path d="M32,28 Q50,16 68,28" fill="none" stroke="#d8a94b" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="42" cy="24" r="1.2" fill="#d8a94b"/>
+              <circle cx="50" cy="22" r="1.5" fill="#d8a94b"/>
+              <circle cx="58" cy="24" r="1.2" fill="#d8a94b"/>
+              <line x1="30" y1="36" x2="46" y2="36" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="41" x2="46" y2="41" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="46" x2="46" y2="46" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="51" x2="46" y2="51" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="56" x2="46" y2="56" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="61" x2="46" y2="61" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="30" y1="66" x2="46" y2="66" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="36" x2="70" y2="36" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="41" x2="70" y2="41" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="46" x2="70" y2="46" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="51" x2="70" y2="51" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="56" x2="70" y2="56" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="61" x2="70" y2="61" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <line x1="54" y1="66" x2="70" y2="66" stroke="#d8a94b" stroke-width="1" opacity="0.5"/>
+              <path d="M36,72 Q50,68 64,72" fill="none" stroke="#d8a94b" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+            </svg>
+          </div>
           <div>
             <h1>القرآن</h1>
             <div class="sub">متتبع حفظ ومراجعة القرآن الكريم</div>
