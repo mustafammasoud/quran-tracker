@@ -13,7 +13,6 @@
   - 🔵 أزرق — مراجعة ممتازة
 - **البحث السريع:** اكتب اسم السورة (أو رقمها) في مربع البحث، اختر النتيجة، والمربع يعمل Scroll تلقائي إليها ويومض لتجدها بسرعة.
 - **تتبع الآيات بدقة:** سجّل نطاق الآيات المحفوظة (من آية إلى آية) مع شريط تقدم دقيق لكل سورة.
-- **خطة اليوم الذكية:** تولّد تلقائيًا خطة يومية من أهدافك (مثل "حفظ سورة الكهف") — تقترح الآيات المحددة للحفظ والمراجعات المستحقة، مع علامة إتمام لكل بند.
 - **تنبيه المراجعة:** أي سورة محفوظة ومرّ عليها وقت طويل من غير مراجعة تأخذ إطارًا لونيًا (أصفر/برتقالي/أحمر) حسب عدد الأيام، وتظهر في قائمة "بحاجة للمراجعة".
 
 ### نظام المراجعة الذكي (SRS)
@@ -122,7 +121,6 @@ A single-file HTML web app for tracking Qur'an memorization and review, surah by
 - **All 114 surahs** as color-coded tiles: gray (not started), yellow (in progress), green (memorized), blue (excellent review).
 - **Quick search:** type a surah's name or number, pick a result, and its tile auto-scrolls into view and pulses.
 - **Verse-level tracking:** log exact verse ranges (from-to) with a precise progress bar per surah.
-- **Smart daily plan:** auto-generated from your goals (e.g. "memorize Surah Al-Kahf") — suggests specific verses to memorize and due reviews, with checkboxes.
 - **Review reminders:** memorized surahs overdue for review get colored rings (yellow/orange/red) and appear in the "needs review" list.
 
 ### Smart Review System (SRS)
@@ -196,8 +194,7 @@ A single-file HTML web app for tracking Qur'an memorization and review, surah by
 3. Log the verse range you memorized (from-to) or an approximate count.
 4. If a surah is memorized, set the date of your last review.
 5. Use the search box above the grid to jump straight to a surah.
-6. Add "memorize surah" goals to generate a smart daily plan.
-7. Switch between tabs from the top nav (or bottom nav on mobile).
+6. Switch between tabs from the top nav (or bottom nav on mobile).
 
 ## Keyboard shortcuts
 
